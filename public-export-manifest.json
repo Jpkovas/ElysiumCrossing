@@ -1,0 +1,284 @@
+{
+  "schema": 1,
+  "export": "public-progress-2026-10-13",
+  "scope": "Own application subset and documentation; not a complete native game build",
+  "snapshotCandidate": "0c66814ef9b3191f556d",
+  "historicalExteriorEvidenceCandidate": "6d79af919605cb14f133",
+  "upstream": {
+    "repository": "https://github.com/turtlekiosk/slider",
+    "commit": "cfecc8d4019c7182133b444a671d3b62b42bee44",
+    "copiedFiles": 0
+  },
+  "files": [
+    {
+      "path": ".gitignore",
+      "bytes": 170,
+      "sha256": "856af1def24bdf6bfa1a0e5dd6f3999ada141b4392188b049093445066468dbb",
+      "origin": {
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "public-progress-2026-10-13"
+      }
+    },
+    {
+      "path": "README.md",
+      "bytes": 3559,
+      "sha256": "bd640fcd8c20e07c4a3acd18a34beb7ae05a85af10ac5732cfd42caaeb415b28",
+      "origin": {
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "public-progress-2026-10-13"
+      }
+    },
+    {
+      "path": "docs/milestones/2026-10-13-exterior-slice.md",
+      "bytes": 3890,
+      "sha256": "1bd0046f643329238a1742c41babad7ffa33f5e9b43c092a6058db6274333b7a",
+      "origin": {
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "public-progress-2026-10-13"
+      }
+    },
+    {
+      "path": "docs/modernization/architecture-baseline.md",
+      "bytes": 4531,
+      "sha256": "93f103c7f590df7e2692c15c4f0328cb897df5eddb73b7be185559b15783b258",
+      "origin": {
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "public-progress-2026-10-13"
+      }
+    },
+    {
+      "path": "docs/modernization/feature-parity.md",
+      "bytes": 3948,
+      "sha256": "630442076b79774edc0062d3426bfa68b962f5c5dea3cd25dc0f9cfa3b6f589a",
+      "origin": {
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "public-progress-2026-10-13"
+      }
+    },
+    {
+      "path": "docs/modernization/implementation-roadmap.md",
+      "bytes": 3245,
+      "sha256": "ea6a9c6b492c79308e0ce9a0a31e90a5b0bed1669e639f8ead03e6665e2b5d02",
+      "origin": {
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "public-progress-2026-10-13"
+      }
+    },
+    {
+      "path": "docs/modernization/plan-v1.md",
+      "bytes": 2947,
+      "sha256": "54b3199eb96d7dbc357b425f5bf8e1b183654cedb9ba8228a19eb2f8d4a587ed",
+      "origin": {
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "public-progress-2026-10-13"
+      }
+    },
+    {
+      "path": "docs/modernization/research/reference-catalog.md",
+      "bytes": 3235,
+      "sha256": "8a97c1ecb6d6ea921b3839ff23abafcfebcd250593a4ba56950d116f02624a35",
+      "origin": {
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "public-progress-2026-10-13"
+      }
+    },
+    {
+      "path": "docs/modernization/risk-register.md",
+      "bytes": 2804,
+      "sha256": "fb35c791bd677ac26fcd818c846c51fe95cb4ebefaf52d9c547216a1ed2b1b43",
+      "origin": {
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "public-progress-2026-10-13"
+      }
+    },
+    {
+      "path": "docs/public-source-scope.md",
+      "bytes": 4586,
+      "sha256": "b08b35a4b7e7a305dcc688e333ef295597c94911696d4fa89a7755059b32dd75",
+      "origin": {
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "public-progress-2026-10-13"
+      }
+    },
+    {
+      "path": "docs/verification.md",
+      "bytes": 2162,
+      "sha256": "25c6dc75711650f10804a13bb95a0375aefb7eb068ed9b605905c193ae6785aa",
+      "origin": {
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "public-progress-2026-10-13"
+      }
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 16757,
+      "sha256": "cd5cd353b92eddc2a63d5b2633bd6bafbc67d76141aca93519dbaa7bfbd1228a",
+      "origin": {
+        "kind": "dependency-metadata",
+        "source": "subset of the existing npm lock; no third-party source files",
+        "registry": "https://registry.npmjs.org/"
+      }
+    },
+    {
+      "path": "package.json",
+      "bytes": 460,
+      "sha256": "bed893d37c171a15d9f89c6f016e0ca04195a4ca0bc01bf54cad2bd8bdf886e4",
+      "origin": {
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "public-progress-2026-10-13"
+      }
+    },
+    {
+      "path": "shared/checkpoint-recovery.ts",
+      "bytes": 1747,
+      "sha256": "644294032e474f1e4fa0dcb5a96bf5895b3a18bb6fb1480170397d99cd475b60",
+      "origin": {
+        "kind": "project-source",
+        "relativeSource": "shared/checkpoint-recovery.ts",
+        "frozenWebCandidate": "0c66814ef9b3191f556d",
+        "sourceSHA256": "644294032e474f1e4fa0dcb5a96bf5895b3a18bb6fb1480170397d99cd475b60",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
+      "path": "shared/contracts.ts",
+      "bytes": 18141,
+      "sha256": "0f0987322438b2b7578759b2ee903327aee9890ae8a2fb861156ccafd3526c19",
+      "origin": {
+        "kind": "project-source",
+        "relativeSource": "shared/contracts.ts",
+        "frozenWebCandidate": "0c66814ef9b3191f556d",
+        "sourceSHA256": "0f0987322438b2b7578759b2ee903327aee9890ae8a2fb861156ccafd3526c19",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
+      "path": "shared/fishing.ts",
+      "bytes": 2369,
+      "sha256": "2dace8de9f17bb0100f8e1a23cd5e88e20b171b0fa9b133302764c4ba778d9df",
+      "origin": {
+        "kind": "project-source",
+        "relativeSource": "shared/fishing.ts",
+        "frozenWebCandidate": "0c66814ef9b3191f556d",
+        "sourceSHA256": "2dace8de9f17bb0100f8e1a23cd5e88e20b171b0fa9b133302764c4ba778d9df",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
+      "path": "shared/world.ts",
+      "bytes": 2182,
+      "sha256": "0ab537679a6e55267ad1b3214584fa35947066d012a78d0b827ce29f49038914",
+      "origin": {
+        "kind": "project-source",
+        "relativeSource": "shared/world.ts",
+        "frozenWebCandidate": "0c66814ef9b3191f556d",
+        "sourceSHA256": "0ab537679a6e55267ad1b3214584fa35947066d012a78d0b827ce29f49038914",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
+      "path": "tests/haptics.test.ts",
+      "bytes": 9952,
+      "sha256": "07893c8a3a2b4c96aaccc080573c09ba32ab23dcf5e891dce28333998c1dd9d5",
+      "origin": {
+        "kind": "project-source",
+        "relativeSource": "tests/haptics.test.ts",
+        "frozenWebCandidate": "0c66814ef9b3191f556d",
+        "sourceSHA256": "07893c8a3a2b4c96aaccc080573c09ba32ab23dcf5e891dce28333998c1dd9d5",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
+      "path": "tests/server-clock.test.ts",
+      "bytes": 1143,
+      "sha256": "52b31a6fee1734a55201ae44abd27d35fe2a9c4fc77e0174f39be44bb7fc42a0",
+      "origin": {
+        "kind": "project-source",
+        "relativeSource": "tests/server-clock.test.ts",
+        "frozenWebCandidate": "0c66814ef9b3191f556d",
+        "sourceSHA256": "52b31a6fee1734a55201ae44abd27d35fe2a9c4fc77e0174f39be44bb7fc42a0",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
+      "path": "tools/verify-public-export.mjs",
+      "bytes": 2641,
+      "sha256": "fdc581ffa3c5adbb712a995c73d56a55693f9e1e1b07d032d4e2b07da1dd6a27",
+      "origin": {
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "public-progress-2026-10-13"
+      }
+    },
+    {
+      "path": "tsconfig.json",
+      "bytes": 473,
+      "sha256": "17418ec335bbf9949d49b5e07b4f3c06e50b6d79f41893e30c7a68ee461689b5",
+      "origin": {
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "public-progress-2026-10-13"
+      }
+    },
+    {
+      "path": "web/checkpoint.ts",
+      "bytes": 57635,
+      "sha256": "8f603454331032d0537349f210d150d5f375d1ec250cf1199a63d49ab0606076",
+      "origin": {
+        "kind": "project-source",
+        "relativeSource": "web/checkpoint.ts",
+        "frozenWebCandidate": "0c66814ef9b3191f556d",
+        "sourceSHA256": "8f603454331032d0537349f210d150d5f375d1ec250cf1199a63d49ab0606076",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
+      "path": "web/haptics.ts",
+      "bytes": 8856,
+      "sha256": "04b0524383b0303f012205bef5707cba62ae487419f7c3b0fa469839cd1b74c9",
+      "origin": {
+        "kind": "project-source",
+        "relativeSource": "web/haptics.ts",
+        "frozenWebCandidate": "0c66814ef9b3191f556d",
+        "sourceSHA256": "04b0524383b0303f012205bef5707cba62ae487419f7c3b0fa469839cd1b74c9",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
+      "path": "web/server-clock.ts",
+      "bytes": 699,
+      "sha256": "f3bfd62549daab906545cdf46690e024141cc81baa1db16832bc1ee3ce4b7809",
+      "origin": {
+        "kind": "project-source",
+        "relativeSource": "web/server-clock.ts",
+        "frozenWebCandidate": "0c66814ef9b3191f556d",
+        "sourceSHA256": "f3bfd62549daab906545cdf46690e024141cc81baa1db16832bc1ee3ce4b7809",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
+      "path": "web/world-client.ts",
+      "bytes": 43702,
+      "sha256": "a6eaa08b801ce4d3a6f07384169c30ea942da79a4dfdfad154338149b86494b8",
+      "origin": {
+        "kind": "project-source",
+        "relativeSource": "web/world-client.ts",
+        "frozenWebCandidate": "0c66814ef9b3191f556d",
+        "sourceSHA256": "a6eaa08b801ce4d3a6f07384169c30ea942da79a4dfdfad154338149b86494b8",
+        "exportMode": "byte-identical"
+      }
+    }
+  ],
+  "exclusions": [
+    "native/client checkout and assets",
+    "dump and generated game data",
+    "saves and observed payloads",
+    "certificates, sessions, credentials and private environment",
+    "vendored third-party code",
+    "server/data and native-world-layout",
+    "network/recovery harnesses"
+  ],
+  "limits": [
+    "Full Native/backend integration remains private pending per-file provenance review",
+    "Manifest hashes do not substitute authorship/license review",
+    "Gameplay evidence is described, not redistributed as proprietary fixtures"
+  ]
+}

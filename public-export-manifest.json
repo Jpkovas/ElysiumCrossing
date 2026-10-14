@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "export": "public-progress-2026-10-13",
-  "scope": "Own application subset and documentation; not a complete native game build",
-  "snapshotCandidate": "0c66814ef9b3191f556d",
+  "export": "public-native-ui-source-progress-2026-10-14",
+  "scope": "Curated own application subset and documentation; no complete native game build or private UI assets",
+  "snapshotCandidate": "circular-ui-icons-only-20261014",
   "historicalExteriorEvidenceCandidate": "6d79af919605cb14f133",
   "upstream": {
     "repository": "https://github.com/turtlekiosk/slider",
@@ -21,11 +21,11 @@
     },
     {
       "path": "README.md",
-      "bytes": 3559,
-      "sha256": "bd640fcd8c20e07c4a3acd18a34beb7ae05a85af10ac5732cfd42caaeb415b28",
+      "bytes": 4766,
+      "sha256": "17479349a979c87a389c47c682ea67a296127184d996db7f2e6cc413cbf229cf",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-progress-2026-10-13"
+        "createdFor": "public-native-ui-source-progress-2026-10-14"
       }
     },
     {
@@ -35,6 +35,15 @@
       "origin": {
         "kind": "publication-documentation-or-tooling",
         "createdFor": "public-progress-2026-10-13"
+      }
+    },
+    {
+      "path": "docs/milestones/2026-10-14-native-ui.md",
+      "bytes": 5408,
+      "sha256": "ef9d305d6241cf26114c57e6e52c52783cfc1dcb23452a49bc05f0906fc3db59",
+      "origin": {
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "public-native-ui-source-progress-2026-10-14"
       }
     },
     {
@@ -93,11 +102,11 @@
     },
     {
       "path": "docs/public-source-scope.md",
-      "bytes": 4586,
-      "sha256": "b08b35a4b7e7a305dcc688e333ef295597c94911696d4fa89a7755059b32dd75",
+      "bytes": 5643,
+      "sha256": "23aa0751f271cbbe5122b273e944defbfd4d7c819a84b30c9ec994663ba3472d",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-progress-2026-10-13"
+        "createdFor": "public-native-ui-source-progress-2026-10-14"
       }
     },
     {
@@ -142,13 +151,13 @@
     },
     {
       "path": "shared/contracts.ts",
-      "bytes": 18141,
-      "sha256": "0f0987322438b2b7578759b2ee903327aee9890ae8a2fb861156ccafd3526c19",
+      "bytes": 19437,
+      "sha256": "ffa081f877e7226830132e3550cf15ff100b56ca6bbee7235ed13d330aafb57d",
       "origin": {
         "kind": "project-source",
         "relativeSource": "shared/contracts.ts",
-        "frozenWebCandidate": "0c66814ef9b3191f556d",
-        "sourceSHA256": "0f0987322438b2b7578759b2ee903327aee9890ae8a2fb861156ccafd3526c19",
+        "frozenWebCandidate": "circular-ui-icons-only-20261014",
+        "sourceSHA256": "ffa081f877e7226830132e3550cf15ff100b56ca6bbee7235ed13d330aafb57d",
         "exportMode": "byte-identical"
       }
     },
@@ -243,6 +252,18 @@
       }
     },
     {
+      "path": "web/private-assets.ts",
+      "bytes": 12201,
+      "sha256": "3ca6d7e19ad236653f14d96aa568f2b9fa4216fe47e9fd0e59ace6c60199b121",
+      "origin": {
+        "kind": "project-source",
+        "relativeSource": "web/private-assets.ts",
+        "frozenWebCandidate": "circular-ui-icons-only-20261014",
+        "sourceSHA256": "3ca6d7e19ad236653f14d96aa568f2b9fa4216fe47e9fd0e59ace6c60199b121",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
       "path": "web/server-clock.ts",
       "bytes": 699,
       "sha256": "f3bfd62549daab906545cdf46690e024141cc81baa1db16832bc1ee3ce4b7809",
@@ -274,11 +295,16 @@
     "certificates, sessions, credentials and private environment",
     "vendored third-party code",
     "server/data and native-world-layout",
-    "network/recovery harnesses"
+    "network/recovery harnesses",
+    "extracted UI font tables, private hand manifests and all UI atlases",
+    "visual UI consumers whose private dependencies are not exported"
   ],
   "limits": [
     "Full Native/backend integration remains private pending per-file provenance review",
     "Manifest hashes do not substitute authorship/license review",
-    "Gameplay evidence is described, not redistributed as proprietary fixtures"
-  ]
+    "Gameplay evidence is described, not redistributed as proprietary fixtures",
+    "Native equipment flow and canonical resource conservation verified; latest icons-only Web visual remains pending integrated acceptance"
+  ],
+  "nativeIntegrationCandidate": "fc29e6f82c26c626563d",
+  "retainedSourceSnapshotCandidate": "0c66814ef9b3191f556d"
 }

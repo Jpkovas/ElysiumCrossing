@@ -6,13 +6,30 @@ A personalidade e os sistemas do jogo original orientam a experiência;
 New Horizons serve de referência funcional para as extensões.
 
 Este repositório publica código próprio revisado e documentação do progresso.
-A primeira exportação contém contratos da aplicação, aplicação de estado
-compartilhado no cliente, infraestrutura de checkpoint, relógio do servidor e
-feedback háptico. Não contém o jogo executável nem todos os módulos do workspace
-privado de integração. O [mapa do código](docs/public-source-scope.md) explicita
-o que está disponível e o que ainda precisa de revisão para publicação.
+O recorte contém contratos da aplicação, aplicação de estado compartilhado no
+cliente, infraestrutura de checkpoint, relógio do servidor, feedback háptico e
+o carregador de assets privados. Não contém o jogo executável nem todos os
+módulos do workspace privado de integração. O
+[mapa do código](docs/public-source-scope.md) explicita o que está disponível e
+o que ainda precisa de revisão para publicação.
 
-## Estado em 13/10/2026
+## Estado em 14/10/2026
+
+O incremento de interfaces acrescenta ao contrato o orçamento de resolução
+efetivamente aceito pelo runtime nativo em 1x, 2x ou 3x e a seleção de
+ferramentas do bolso. O carregador publicado verifica tamanho e SHA-256 dos
+arquivos, restringe as rotas aceitas e exige autorização online antes de ler
+inclusive o cache local. Ele não contém os arquivos do jogo que carrega.
+
+A roda circular passou por verificação focal de interface em retrato, paisagem
+e desktop. Os ícones existentes e o cursor usam recursos originais na integração
+local; esses recursos, seus dados extraídos e os consumidores que dependem deles
+não fazem parte desta exportação. Equipar e voltar a Mãos livres foram
+verificados no Native, com conservação dos itens e consistência do checkpoint
+persistido. A roda sem legendas também foi conferida dentro do jogo real em retrato,
+paisagem e desktop, com nomes acessíveis preservados.
+O [relatório do incremento](docs/milestones/2026-10-14-native-ui.md) separa as
+fontes publicadas, as verificações focais e o aceite ainda aberto.
 
 O primeiro incremento de decoração exterior foi observado em dois clientes:
 prévia, cancelamento, colocação de um barril, colisão, retirada, reposição,
@@ -30,6 +47,7 @@ de conceito de terreno. A integração com WhatsApp fica para uma etapa posterio
 - [Paridade GameCube × New Horizons × Elysium](docs/modernization/feature-parity.md)
 - [Marcos e próximos critérios](docs/modernization/implementation-roadmap.md)
 - [Relatório do incremento exterior](docs/milestones/2026-10-13-exterior-slice.md)
+- [Relatório do incremento de interfaces nativas](docs/milestones/2026-10-14-native-ui.md)
 - [Origem dos arquivos e exclusões](docs/public-source-scope.md)
 
 ## Verificar este subconjunto
@@ -45,8 +63,8 @@ npm test
 ```
 
 Os testes públicos executam o código de relógio e vibração com ambiente
-controlado. O typecheck verifica também o grafo de contratos, WorldClient e
-checkpoint. Não são uma simulação do jogo, uma prova do multiplayer completo
+controlado. O typecheck verifica também o grafo de contratos, WorldClient,
+checkpoint e carregador privado. Não são uma simulação do jogo, uma prova do multiplayer completo
 ou validação de vibração física no iPhone. O relatório de validação distingue
 esses resultados das evidências de gameplay mantidas localmente.
 

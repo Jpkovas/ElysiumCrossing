@@ -99,7 +99,7 @@ export type TownSnapshot = { players: Ghost[]; revision: number };
 /** Read-only presentation snapshot; it grants no play lease, room or save-writing capability. */
 export type PresentationBootstrap = { serverTime: number; save: { url: string; size: number; sha256: string } };
 /** Native hooks only request a canonical capture. Their JSON is never a fact. */
-export const NATIVE_EVENT_KINDS = ['rare_fish', 'rare_insect', 'fossil_donated', 'debt_paid', 'house_expanded', 'neighbor_arrived', 'neighbor_left'] as const;
+export const NATIVE_EVENT_KINDS = ['rare_fish', 'rare_insect', 'fossil_donated', 'debt_paid', 'house_expanded', 'neighbor_arrived', 'neighbor_left', 'first_plant'] as const;
 export type NativeEventKind = typeof NATIVE_EVENT_KINDS[number];
 export function isNativeEventKind(value: unknown): value is NativeEventKind {
   return typeof value === 'string' && (NATIVE_EVENT_KINDS as readonly string[]).includes(value);
@@ -107,7 +107,8 @@ export function isNativeEventKind(value: unknown): value is NativeEventKind {
 export type NativeEventReceipt = { id: string; sequence: number; kind: NativeEventKind; townId: string; pid: string | null;
   details: Record<string, number | string | boolean>; createdAt: number;
   source: { kind: 'checkpoint'; previousRevision: number; revision: number } |
-    { kind: 'fishing'; operationId: string; castId: string; revision: number } };
+    { kind: 'fishing'; operationId: string; castId: string; revision: number } |
+    { kind: 'world'; operationId: string; revision: number } };
 export type Activity = { id: string; userName: string; townName: string; kind: string; description: string; createdAt: number };
 export type RoomTicket = { token: string; townId: string; userId: string; expiresAt: number; serverTime: number };
 /** Server-internal live grant; never exposed in browser snapshots. */
@@ -124,7 +125,9 @@ export type HDTextureStats = {
   bc7: boolean; s3tc: boolean;
   lastSourceWidth: number; lastSourceHeight: number; lastWidth: number; lastHeight: number;
 };
-export type GraphicsState = { ready: boolean; settings: GraphicsSettings; resolutionError: string | null; hdError: string | null; hd: HDTextureStats | null };
+/** Accepted Native raster dimensions; ephemeral and independent of display DPR. */
+export type UIRasterBudget = { cssWidth: number; cssHeight: number; pixelWidth: number; pixelHeight: number; factor: 1 | 2 | 3 };
+export type GraphicsState = { ready: boolean; settings: GraphicsSettings; raster: UIRasterBudget | null; resolutionError: string | null; hdError: string | null; hd: HDTextureStats | null };
 export type HDTextureManifest = { version: string; source: { title: string; url: string }; files: Record<string, { size: number; sha256: string }> };
 export type ControlMode = 'touch' | 'joystick';
 export type GameBootstrap = { ownTownId: string; targetTownId: string; ownRevision: number; nativeTownId: number; residentName: string; serverTime: number; ownSave: ArrayBuffer | null; targetSave: ArrayBuffer | null; passport: ArrayBuffer | null; nes: ArrayBuffer | null; graphics: GraphicsSettings; controlMode: ControlMode };
@@ -146,6 +149,11 @@ export type TouchUI = {
   calendarEvents?: number;
   addressPages?: boolean;
   inventorySelection?: boolean;
+  /** Current native pockets only; no client-owned tool registry. */
+  tools?: { equipped: number; equippedLabel: string; storeSlot: number | null; items: { slot: number; item: number; label: string }[] };
+  toolPending?: boolean;
+  /** Transient native touch instruction; no gameplay state or input action. */
+  touchNotice?: 'tree_tool';
   /** Native placement preview; it never consumes or persists an item. */
   exteriorPreview?: { x: number; z: number; rotation: 0 | 1 | 2 | 3; valid: boolean; pending: boolean };
   /** Present only when the native drawing editor can sample a canvas color. */
@@ -161,6 +169,8 @@ export interface NativeGame {
   start(config: GameBootstrap): Promise<void>;
   position(): Position | null;
   setGhost(slot: number, ghost: Ghost): void;
+  /** Server-confirmed transient reaction; zero/empty cancels, never saved. */
+  reaction(emote: Emote | ''): void;
   removeGhost(slot: number): void;
   serverTime(epochSeconds: number): void;
   /** Copies current RAM at a native safepoint; never substitutes a physical Card A read. */
@@ -183,6 +193,11 @@ export interface NativeGame {
   worldSnapshot(world: WorldSnapshot, actor: ActorSnapshot): Promise<void>;
   worldCommit(world: WorldCommit, actor: ActorCommit | null): Promise<void>;
   worldComplete(operationId: string, receipt?: { sequence: number; ownRevision: number }): void;
+  /** Starts a native admission; no network or inventory mutation. */
+  worldCraftMenu(): boolean;
+  worldCraftRequest(kind: 'learn_recipe' | 'craft_recipe'): number;
+  worldCraftCancel(intent: number): boolean;
+  worldCrafting(): { ready: boolean; apples: number };
   worldRequest(): WorldOperation | null;
   worldAdmission(): WorldAdmission | null;
   worldResumeAdmission(): 0 | 1 | 2 | 3;
@@ -211,9 +226,13 @@ export interface NativeGame {
   plantingVisualStart(intent: number): boolean;
   /** 0 awaits native proof; 1 awaits the original animation; 2 is fully settled. */
   plantingReceiptFinish(operationId: string, sequence: number, ownRevision: number): 0 | 1 | 2;
+  /** Capture all gameplay inputs; release waits for neutral hardware state. */
+  inputModal(held: boolean): void;
   focus(): void;
   touch(input: TouchInput): void;
   action(name: TouchAction, text?: string): void;
+  /** Queues one native equipment selection; settlement belongs to its animation. */
+  equipTool(slot: number, item: number): boolean;
   choose(index: number): void;
   uiInsets(insets: NativeUIInsets): void;
   uiSnapshot(): TouchUI;

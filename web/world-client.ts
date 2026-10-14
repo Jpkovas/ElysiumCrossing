@@ -1,3 +1,4 @@
+import { BARREL_RECIPE } from '../shared/crafting';
 import { WORLD_HEIGHT, WORLD_WIDTH, WORLD_FURNITURE_ITEM, WORLD_FURNITURE_LIMIT, type ActorCommit, type ActorSnapshot, type WorldCommit, type WorldFurniture, type WorldOperation, type WorldSnapshot } from '../shared/world';
 import type { CheckpointProviderState, NativeCheckpoint, NativeGame, WorldIdentity } from '../shared/contracts';
 import { isCheckpoint } from './checkpoint';
@@ -14,10 +15,11 @@ export interface PlantingWorldPort {
   reject(operationId: string): void;
 }
 type Intention = WorldOperation | FishingOperation;
-const isFishing = (value: Intention): value is FishingOperation => value.kind !== 'shake_tree' && value.kind !== 'pickup' && value.kind !== 'plant_fruit' && value.kind !== 'place_furniture' && value.kind !== 'remove_furniture';
+const isCrafting = (value: Intention): value is Extract<WorldOperation, { kind: 'learn_recipe' | 'craft_recipe' }> => value.kind === 'learn_recipe' || value.kind === 'craft_recipe';
+const isFishing = (value: Intention): value is FishingOperation => value.kind !== 'shake_tree' && value.kind !== 'pickup' && value.kind !== 'plant_fruit' && value.kind !== 'place_furniture' && value.kind !== 'remove_furniture' && !isCrafting(value);
 
 /** Native implementations acknowledge application only after their main-loop safepoint. */
-export type WorldNative = Pick<NativeGame, 'lifecycle' | 'checkpointLineage' | 'worldIdentity' | 'checkpointContinuation' | 'worldEnabled' | 'worldBind' | 'worldSnapshot' | 'worldCommit' | 'worldComplete' | 'worldRequest' | 'worldRevision' | 'worldOwnCheckpoint' | 'worldAdmission' | 'worldResumeAdmission'>;
+export type WorldNative = Pick<NativeGame, 'lifecycle' | 'checkpointLineage' | 'worldIdentity' | 'checkpointContinuation' | 'worldEnabled' | 'worldBind' | 'worldSnapshot' | 'worldCommit' | 'worldComplete' | 'worldRequest' | 'worldRevision' | 'worldOwnCheckpoint' | 'worldAdmission' | 'worldResumeAdmission' | 'worldCraftRequest' | 'worldCraftCancel' | 'worldCrafting'>;
 export interface WorldSocket {
   send(type: string, payload: unknown): void;
   onMessage<T>(type: string, callback: (payload: T) => void): () => void;
@@ -69,6 +71,7 @@ export function sameFurniture(left: WorldFurniture[], right: WorldFurniture[]): 
 function validActor(value: unknown): value is ActorSnapshot {
   return object(value) && typeof value.pid === 'string' && /^[a-f0-9]{40}$/.test(value.pid) && integer(value.ownRevision)
     && Array.isArray(value.pockets) && value.pockets.length === 15 && value.pockets.every(item => integer(item, 0xffff))
+    && Array.isArray(value.learnedRecipes) && value.learnedRecipes.length <= 1 && value.learnedRecipes.every(id => id === BARREL_RECIPE.id)
     && integer(value.conditions, 0xffffffff) && integer(value.wallet, 0xffffffff);
 }
 function validSnapshot(value: unknown, townId: string): value is WorldSnapshot {
@@ -77,9 +80,9 @@ function validSnapshot(value: unknown, townId: string): value is WorldSnapshot {
     && value.foreground.every(item => integer(item, 0xffff)) && validEntities(value.entities) && validFurniture(value.furniture, value.version);
 }
 function validCommit(value: unknown, townId: string): value is WorldCommit {
-  return object(value) && (value.kind === 'world' || value.kind === 'fishing') && value.townId === townId && typeof value.operationId === 'string' && value.operationId.length <= 200
+  return object(value) && (value.kind === 'world' || value.kind === 'fishing' || value.kind === 'crafting') && value.townId === townId && typeof value.operationId === 'string' && value.operationId.length <= 200
     && integer(value.version) && integer(value.sequence) && Array.isArray(value.tiles) && value.tiles.length <= WORLD_WIDTH * WORLD_HEIGHT
-    && (value.kind !== 'fishing' || value.tiles.length === 0)
+    && (value.kind === 'world' || value.tiles.length === 0)
     && value.tiles.every(tile => object(tile) && target(tile) && integer(tile.before, 0xffff) && integer(tile.after, 0xffff)) && validEntities(value.entities)
     && validFurniture(value.furniture, value.version);
 }
@@ -88,11 +91,33 @@ function validOperation(value: unknown): value is WorldOperation {
     && integer(value.expectedWorldVersion) && value.expectedWorldVersion > 0 && integer(value.expectedOwnRevision) && value.expectedOwnRevision > 0 && integer(value.appliedSequence)
     && (value.kind === 'shake_tree' || value.kind === 'pickup' || value.kind === 'plant_fruit' && integer(value.pocketSlot, 14)
       || value.kind === 'place_furniture' && integer(value.pocketSlot, 14) && integer(value.rotation, 3)
+      || (value.kind === 'learn_recipe' || value.kind === 'craft_recipe') && value.recipeId === BARREL_RECIPE.id
       || value.kind === 'remove_furniture' && typeof value.objectId === 'string' && /^[\w-]{8,96}$/u.test(value.objectId)) && target(value.target);
 }
 
 /** One live room and one native intention. Rewards enter RAM only from durable server replies. */
 export class WorldClient {
+  private actorState: ActorSnapshot | null = null;
+  private craftWaiter: { intent: number; operationId: string | null; resolve(): void; reject(error: Error): void } | null = null;
+  private failCraft(message: string): void {
+    const waiter = this.craftWaiter;
+    if (!waiter) return;
+    this.craftWaiter = null;
+    if (!waiter.operationId) this.options.native.worldCraftCancel(waiter.intent);
+    waiter.reject(new Error(message));
+  }
+  craftingState(): { learned: boolean; apples: number; ready: boolean } {
+    const state = this.options.native.worldCrafting();
+    return { learned: !!this.actorState?.learnedRecipes.includes(BARREL_RECIPE.id), apples: state.apples,
+      ready: this.options.townId === this.options.ownTownId && this.isReady() && !this.intention && !this.craftWaiter && state.ready };
+  }
+  craftRecipe(kind: 'learn_recipe' | 'craft_recipe', recipeId: typeof BARREL_RECIPE.id): Promise<void> {
+    if ((kind !== 'learn_recipe' && kind !== 'craft_recipe') || recipeId !== BARREL_RECIPE.id || !this.craftingState().ready) return Promise.reject(new Error('Espere a conexão e volte ao campo da sua vila.'));
+    if (kind === 'craft_recipe' && !this.actorState?.learnedRecipes.includes(recipeId)) return Promise.reject(new Error('Aprenda a receita antes de criar.'));
+    const intent = this.options.native.worldCraftRequest(kind);
+    if (!Number.isSafeInteger(intent) || intent <= 0) return Promise.reject(new Error('O morador ainda não está pronto para criar.'));
+    return new Promise<void>((resolve, reject) => { this.craftWaiter = { intent, operationId: null, resolve, reject }; this.tick(); });
+  }
   private socket: WorldSocket | null = null;
   private unsubscribe: (() => void)[] = [];
   private epoch = 0;
@@ -167,6 +192,7 @@ export class WorldClient {
     this.version = 0;
     this.sequence = 0;
     this.furniture = [];
+    this.actorState = null;
     this.changingTown = true;
     this.changed();
   }
@@ -192,6 +218,7 @@ export class WorldClient {
   }
 
   disconnect(): void {
+    this.failCraft('A conexão foi interrompida. Confira os bolsos após sincronizar antes de tentar novamente.');
     this.epoch++;
     for (const unsubscribe of this.unsubscribe.splice(0)) unsubscribe();
     this.socket = null;
@@ -210,10 +237,12 @@ export class WorldClient {
     if (!this.socket || this.paused) return;
     const liveIdentity = this.nativeIdentity();
     if (!liveIdentity) {
+      this.failCraft('O morador saiu do campo. Confira o progresso quando voltar.');
       if (this.ready) { this.ready = false; this.options.native.worldEnabled(false); this.changed(); }
       return;
     }
     if (this.identity && liveIdentity.pid !== this.identity.pid) {
+      this.failCraft('O morador mudou. Reabra a cidade antes de criar.');
       this.paused = true;
       this.ready = false;
       this.options.native.worldEnabled(false);
@@ -223,6 +252,7 @@ export class WorldClient {
     }
     if (liveIdentity.visitor !== (this.options.townId !== this.options.ownTownId) || this.options.activeTownId() !== this.options.townId
       || !this.changingTown && this.identity && liveIdentity.townIdentity !== this.identity.townIdentity) {
+      this.failCraft('A receita aguarda o campo da sua vila. Confira o progresso quando voltar.');
       this.ready = false; this.options.native.worldEnabled(false); this.changed();
       return; // A native train arrival requires the parent's room retarget, not a guessed binding.
     }
@@ -249,13 +279,13 @@ export class WorldClient {
     if (this.intention) { this.sendIntention(); return; }
     const admission = this.options.native.worldResumeAdmission();
     if (admission === 2) { this.changed(true); return; }
-    if (admission === 3) { this.options.onError('A interação foi cancelada porque o alvo ou a cidade mudou. Tente novamente quando chegar.', 'admission_cancelled'); return; }
+    if (admission === 3) { this.failCraft('A receita foi cancelada porque a cidade ou o contexto mudou.'); this.options.onError('A interação foi cancelada porque o alvo ou a cidade mudou. Tente novamente quando chegar.', 'admission_cancelled'); return; }
     const request = this.options.native.worldRequest();
     if (request) this.operation(request);
   }
 
   operation(value: unknown): void {
-    if (!validOperation(value)) { this.options.onError('O pedido nativo de interação está incompleto.', 'invalid_operation'); return; }
+    if (!validOperation(value)) { this.failCraft('O pedido da receita está incompleto.'); this.options.onError('O pedido nativo de interação está incompleto.', 'invalid_operation'); return; }
     if (this.intention?.id === value.id) return;
     if (value.kind === 'plant_fruit') {
       // Associate this exact native request before a prequeue terminal rejection.
@@ -272,6 +302,7 @@ export class WorldClient {
     }
     if (!this.isReady() || !this.socket || this.intention) {
       this.options.native.worldComplete(value.id);
+      if (isCrafting(value)) this.failCraft('Espere a confirmação da interação anterior.');
       if (value.kind === 'plant_fruit') this.planting?.reject(value.id);
       this.options.onError('Espere a conexão e a confirmação da interação anterior para tentar novamente.', 'world_unavailable');
       return;
@@ -281,6 +312,8 @@ export class WorldClient {
       || value.expectedOwnRevision !== Math.max(this.ownRevision, this.options.ownRevision())) {
       this.options.native.worldComplete(value.id);
       if (value.kind === 'plant_fruit') this.planting?.reject(value.id);
+      if (isCrafting(value)) this.failCraft('Os bolsos mudaram. Aguarde sincronização antes de criar.');
+      this.options.onError('A interação não foi enviada porque a cidade ou seus bolsos mudaram. Aguarde a sincronização e tente novamente.', 'stale_world');
       this.requestSnapshot();
       return;
     }
@@ -288,7 +321,9 @@ export class WorldClient {
       appliedSequence: value.appliedSequence, target: { x: value.target.x, z: value.target.z },
       ...(value.kind === 'plant_fruit' ? { kind: value.kind, pocketSlot: value.pocketSlot }
         : value.kind === 'place_furniture' ? { kind: value.kind, pocketSlot: value.pocketSlot, rotation: value.rotation }
-        : value.kind === 'remove_furniture' ? { kind: value.kind, objectId: value.objectId } : { kind: value.kind }) };
+        : value.kind === 'remove_furniture' ? { kind: value.kind, objectId: value.objectId }
+        : isCrafting(value) ? { kind: value.kind, recipeId: value.recipeId } : { kind: value.kind }) };
+    if (isCrafting(value) && this.craftWaiter) this.craftWaiter.operationId = value.id;
     this.options.native.worldEnabled(false);
     this.sendIntention();
   }
@@ -303,6 +338,7 @@ export class WorldClient {
   }
   fishingError(value: WorldError): void { this.receiveError(value); }
   private rejectIntention(value: Intention): void {
+    if (isCrafting(value)) this.failCraft('A receita não foi confirmada. Confira a conexão e os materiais.');
     if (isFishing(value)) this.fishing?.reject(value.id);
     else {
       this.options.native.worldComplete(value.id);
@@ -497,6 +533,7 @@ export class WorldClient {
   }
   private changed(requestFreshCapture = false): void { this.options.onChange?.(this.context(), this.isReady(), requestFreshCapture); }
   private invalidDelivery(): void {
+    this.failCraft('A confirmação da receita está incompleta. Aguarde sincronização.');
     this.options.onError('O estado recebido do mundo está incompleto. A interação aguarda sincronização.', 'invalid_world_state');
     this.requestSnapshot();
   }
@@ -541,7 +578,7 @@ export class WorldClient {
     }
     if (this.recovering && !this.deliveries.some(delivery => delivery.kind === 'snapshot')) return;
     const own = this.intention?.id === value.operationId;
-    if (own && value.kind !== (isFishing(this.intention!) ? 'fishing' : 'world')) { this.invalidDelivery(); return; }
+    if (own && value.kind !== (isFishing(this.intention!) ? 'fishing' : isCrafting(this.intention!) ? 'crafting' : 'world')) { this.invalidDelivery(); return; }
     if (value.sequence <= this.sequence && !own) return;
     if (this.deliveries.some(delivery => delivery.kind === 'commit' && delivery.world.operationId === value.operationId)) return;
     this.deliveries.push({ kind: 'commit', world: structuredClone(value), actor: null, own });
@@ -564,9 +601,11 @@ export class WorldClient {
       delivery.actor = structuredClone(value); this.pump(); return;
     }
     const actorIncrement = intention.kind === 'shake_tree' && this.options.townId !== this.options.ownTownId ? 0 : 1;
-    if (delivery.world.kind !== 'world' || delivery.world.sequence !== intention.appliedSequence + 1 || delivery.world.version !== intention.expectedWorldVersion + 1
+    if (delivery.world.kind !== (isCrafting(intention) ? 'crafting' : 'world') || delivery.world.sequence !== intention.appliedSequence + 1 || delivery.world.version !== intention.expectedWorldVersion + 1
       || value.ownRevision !== intention.expectedOwnRevision + actorIncrement
-      || (intention.kind === 'place_furniture'
+      || (isCrafting(intention)
+        ? delivery.world.tiles.length !== 0 || !sameFurniture(delivery.world.furniture, this.furniture) || !value.learnedRecipes.includes(BARREL_RECIPE.id)
+        : intention.kind === 'place_furniture'
         ? !delivery.world.furniture.some(item => item.id === intention.id && item.x === intention.target.x && item.z === intention.target.z && item.rotation === intention.rotation)
         : intention.kind === 'remove_furniture'
           ? delivery.world.furniture.some(item => item.id === intention.objectId)
@@ -578,6 +617,7 @@ export class WorldClient {
     if (!object(value) || typeof value.code !== 'string' || typeof value.message !== 'string') { this.invalidDelivery(); return; }
     const rejectedIntention = !!value.operationId && this.intention?.id === value.operationId;
     if (rejectedIntention) {
+      this.failCraft(value.message);
       this.rejectIntention(this.intention!);
       this.intention = null;
       this.intentionSent = false;
@@ -591,7 +631,7 @@ export class WorldClient {
       return;
     }
     if (value.code === 'stale_world' || value.code === 'target_changed') this.requestSnapshot();
-    else if (!value.operationId) { this.ready = false; this.recovering = false; this.paused = true; this.options.native.worldEnabled(false); this.changed(); }
+    else if (!value.operationId) { this.failCraft(value.message); this.ready = false; this.recovering = false; this.paused = true; this.options.native.worldEnabled(false); this.changed(); }
     else this.options.native.worldEnabled(this.ready && !this.intention && !this.deliveries.length);
   }
   private pump(): void {
@@ -610,12 +650,13 @@ export class WorldClient {
       const delivery = this.deliveries[0]!;
       if ((delivery.kind === 'snapshot' || delivery.own) && !delivery.actor) return;
       if (delivery.kind === 'commit' && delivery.world.sequence > this.sequence + 1) { this.requestSnapshot(); return; }
-      if (delivery.kind === 'commit' && (delivery.world.kind === 'fishing'
+      if (delivery.kind === 'commit' && (delivery.world.kind === 'fishing' || delivery.world.kind === 'crafting'
         ? !sameFurniture(delivery.world.furniture, this.furniture)
         : delivery.world.tiles.length === 0 && sameFurniture(delivery.world.furniture, this.furniture))) { this.invalidDelivery(); return; }
       const liveIdentity = this.nativeIdentity();
       if (!liveIdentity || liveIdentity.visitor !== (this.options.townId !== this.options.ownTownId) || this.options.activeTownId() !== this.options.townId
         || this.identity && (liveIdentity.pid !== this.identity.pid || liveIdentity.townIdentity !== this.identity.townIdentity)) {
+        this.failCraft('O morador mudou de contexto. Confira o progresso quando voltar.');
         this.deliveries = []; this.pendingSnapshot = null; this.recovering = false; this.ready = false;
         this.options.native.worldEnabled(false);
         if (liveIdentity && this.identity && liveIdentity.pid !== this.identity.pid) this.tick();
@@ -651,6 +692,7 @@ export class WorldClient {
         }
       } catch (error) {
         if (this.epoch !== epoch) return;
+        this.failCraft('A receita aguarda sincronização. Confira os bolsos antes de repetir.');
         this.options.onError(error instanceof Error ? error.message : 'O jogo não aplicou o estado confirmado. A interação aguarda sincronização.', 'world_apply_failed');
         this.recovering = false;
         if (this.applyFailed) {
@@ -671,6 +713,7 @@ export class WorldClient {
       this.sequence = Math.max(this.sequence, delivery.world.sequence); // Only native success advances appliedSequence.
       this.furniture = structuredClone(delivery.world.furniture);
       if (delivery.actor && delivery.actor.ownRevision >= this.ownRevision) {
+        this.actorState = structuredClone(delivery.actor);
         this.ownRevision = delivery.actor.ownRevision;
         this.options.onOwnRevision(this.ownRevision);
       } else if (this.options.townId === this.options.ownTownId && delivery.world.version > this.ownRevision) {
@@ -684,12 +727,16 @@ export class WorldClient {
             const receipt = { sequence: delivery.world.sequence, ownRevision: delivery.actor!.ownRevision };
             this.options.native.worldComplete(this.intention.id, receipt);
             if (this.intention.kind === 'plant_fruit') this.planting!.complete(this.intention.id, receipt);
+            if (isCrafting(this.intention) && this.craftWaiter?.operationId === this.intention.id) {
+              const waiter = this.craftWaiter; this.craftWaiter = null; waiter.resolve();
+            }
           }
         }
         catch (error) {
           this.paused = true; this.ready = false;
           this.deliveries = []; this.pendingSnapshot = null;
           this.options.native.worldEnabled(false);
+          this.failCraft('A receita confirmada aguarda sincronização. Confira os bolsos antes de repetir.');
           this.options.onError(error instanceof Error ? error.message : 'A interação confirmada aguarda sincronização.', 'world_apply_failed');
           this.changed();
           return; // The durable ID remains available for reconnect, without an unbounded replay loop.

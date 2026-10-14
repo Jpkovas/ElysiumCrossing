@@ -304,9 +304,15 @@ export function entryCommitContainedByLive(original: CheckpointCapture, later: C
   // Only native serialization clocks, scene and checksums lack gameplay meaning.
   const clock = (offset: number) => offset >= 0x0a && offset < 0x12 || offset >= 0x12 && offset < 0x14
     || offset >= 0x14 && offset < 0x18;
+  // The native shop actor load marker is set by lineup renewal and cleared
+  // when its exterior actor loads. BE shop_info bit 11 is not gameplay state;
+  // every other shop bit and byte still participates in the containment proof.
+  const sameEntryByte = (a: number, b: number, offset: number) =>
+    offset === 0x20340 + 0x126 ? ((a ^ b) & ~0x08) === 0 : a === b;
   for (const base of [0x26040, 0x4c040]) {
     for (let offset = 0; offset < 0x26000; offset++) {
-      if (entry[base + offset] !== before[base + offset] && !clock(offset) && entry[base + offset] !== live[base + offset]) return false;
+      if (!sameEntryByte(entry[base + offset], before[base + offset], offset) && !clock(offset)
+        && !sameEntryByte(entry[base + offset], live[base + offset], offset)) return false;
     }
     if (!sameRegion(entry, live, base + 0x20, 4 * 0x2440)
       || !sameRegion(entry, live, base + 0x137a8, 80 * 96 * 2)) return false;

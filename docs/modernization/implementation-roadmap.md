@@ -1,41 +1,53 @@
-# Roadmap de implementação
+# Roadmap e critérios de lançamento
 
-Escopo: [plano ativo](plan-v1.md). Revisão pública de 13/10/2026.
-O estado abaixo descreve resultados verificáveis e pendências; não depende
-de um servidor estar aberto no momento em que a documentação é consultada.
+Revisão pública de 14/10/2026. O [plano completo](plan-v1.md) continua ativo.
+A primeira build para amigos tem prioridade de entrega, em paralelo à
+modernização. Apenas WhatsApp fica para uma etapa posterior.
 
-| Marco / tickets | Resultado | Estado atual | Próximo passo |
-| --- | --- | --- | --- |
-| 0 / MOD-000–001 | Auditoria, paridade, riscos e proveniência | Auditoria inicial entregue; ancestral exato ac-decomp e CI ainda não confirmados | Manter docs alinhados às fontes/candidatos; revisar a procedência da integração para publicar código adicional |
-| 1 / MOD-010–013 | Um móvel exterior sincronizado e persistido | Slice observado: prévia, cancelamento, modelo/collider, colocar/recolher/repor, dois clientes, retorno e restart/reabertura | Concorrência de ocupação, paridade controle e regressão interior antes de encerrar marco |
-| 2 / MOD-020–022 | Inventário, regras de quantidade e atalhos | Menus touch adaptados; pilhas e roda modernas pendentes | Regras por tipo e estado individual, transferência atômica e equipar existente |
-| 3 / MOD-030–031 | Crafting funcional | Pendente | Uma receita orientada a dados, desbloqueio, materiais e resultado canônicos |
-| 4 / MOD-040 | Expansão social | Base de seis reações existe; marco pendente | Animação, replicação, cancelamento e interrupção usando infraestrutura atual |
-| 5 / MOD-050–051 | Jardinagem, progressão e pequenas variações | Bases de plantio/crescimento/eventos existem; expansão pendente | Primeira regra persistente e meta/recompensa por fato real; auditar NPCs |
-| 6 / MOD-060–062 | Terreno e infraestrutura | Estudo/POC pendentes | Traçar altura/água/mesh/colisão/nav; alterar uma célula isolada ou justificar alternativa |
+## Primeira build para amigos
 
-## Pendências do port original
+Nenhum dos sete aceites abaixo foi declarado integralmente encerrado. Evidência
+válida de caminhos inalterados deve ser preservada; executar novamente apenas
+mudanças, dependências afetadas e lacunas concretas.
 
-Continuam ativos a validação de captura de peixe no candidato corrente,
-conflitos ordinários de recursos, gráficos/performance e os refinamentos de
-touch pedidos pelo usuário. Preservar movimento contínuo de câmera, controles
-contextuais, autosave e isolamento entre villas durante a modernização.
+| Frente | Prova existente | Falta para liberar |
+| --- | --- | --- |
+| Acesso HTTPS | Autenticação local e pacote/providers inspecionados | Endereço/túnel real, acesso autorizado e negativos no link final |
+| Primeiro passeio | Tutorial mínimo, pagamento, saída/reabertura | Lacunas do tutorial, touch essencial e journal observado |
+| Multiplayer | Visita normal, encontro, chat bilateral, móvel, permissões e retorno no 63b | Suavidade, itens/ferramentas remotos e recorte final |
+| Progresso/autoridade | Autosave e offline/retomada do cliente | Queda do processo, reentrada e isolamento no ambiente de release |
+| Gameplay compartilhado | Fruta coletada com resultado durável | Captura natural de peixe e disputa ordinária pelo mesmo recurso |
+| Estabilidade | Roda em três proporções; baseline de baixo custo para QA | Editor de desenhos, controles essenciais, sessão estável e capacidade publicada |
+| Operação | Ferramentas de preparação; backup/restore reais íntegros | Jogar sobre restore, supervisão, instruções e procedimento de atualização |
 
-O refinamento atual cobre bolso/peixes/insetos, caixa de correio, mapa, avisos,
-popups de ações, zoom/luz interior e interação direta com alvos do mundo.
-No candidato `0c66814ef9b3191f556d`, a escrita e leitura de aviso por touch e
-a contenção do popup do bolso em retrato/paisagem/desktop foram observadas.
-O toque na placa distante e outras regressões ainda não encerraram o incremento.
-Uma correção de glyph de data permanece em fonte, sem nova execução renderizada.
+O preparador não implantou o jogo. A publicação do código e do relatório não
+constitui deploy. O teste físico de iPhone foi dispensado como requisito.
 
-## Ordem de execução
+## Modernização ativa
 
-1. Fechar o incremento de interfaces em andamento sem perder as provas verdes.
-2. Encerrar critérios restantes do primeiro móvel exterior no mesmo conjunto
-   de artefatos, mantendo os testes do port anterior distintos.
-3. Avançar inventário/atalhos e depois crafting em fluxos completos.
-4. Ampliar social, jardinagem/progressão e estudo de terreno incrementalmente.
-5. Publicar marcos grandes verificados com fontes de origem revisada,
-   documentação e limites conhecidos. Não publicar inputs proprietários.
+| Marco | Estado atual | Menor próxima entrega |
+| --- | --- | --- |
+| 0 / MOD-000–001 | Auditoria inicial e docs; proveniência exata da base/CI com lacunas | Manter código/candidato/evidência alinhados e revisar fontes para publicação |
+| 1 / MOD-010–013 | Slice exterior observado e sincronizado; aceites complementares abertos | Recolha compreensível, conflito e regressão interior delimitados |
+| 2 / MOD-020–022 | Inventário adaptado, pilhas de fruta e roda funcional | Corrigir editor e compor regras de materiais/transferências |
+| 3 / MOD-030–031 | Protótipo econômico presente; receita rejeitada; materiais em Source isolado | Compor madeira/ferro e receita pesquisada; caderno com base própria |
+| 4 / MOD-040 | Reações e presença existentes; expansão parcial | Corrigir apresentação remota e fechar interrupção/cancelamento |
+| 5 / MOD-050–051 | Plantio, crescimento, eventos e frentes isoladas | Regra persistente e recompensa por fato confirmado, sem concessão duplicada |
+| 6 / MOD-060–062 | Estudo/POC isolada de terreno e continuidade | Prova pequena de terreno com visual, colisão, navegação e persistência |
 
-Somente WhatsApp fica fora desta meta. O projeto ainda não está concluído.
+## Ordem de continuidade
+
+1. Preservar o pacote fechado e WIP; conferir o estado real dos ambientes.
+2. Corrigir bugs de input/editor/fundo e apresentação multiplayer sem um
+   redesenho especulativo ou troca de arquitetura.
+3. Compor materiais por regiões e contratos, medindo ABI de qualquer Native
+   novo; não substituir módulos inteiros que têm sobreposição.
+4. Fechar os fluxos restantes do lançamento com o menor roteiro relevante.
+5. Preparar acesso e operação por HTTPS, validar e publicar a build somente
+   dentro da autorização correspondente; manter marcos 0–6 em paralelo.
+
+Toda UI nova ou redesenhada exige referência GameCube e referência funcional
+NH, conceito ImageGen, alvo definido, implementação e comparação no artefato
+real. Caderno tem composição própria; não reutiliza o desenho da roda.
+Fonte/ícones/raster/input podem ser compartilhados, com alvos touch e ARIA.
+Polimento sem impacto funcional não bloqueia sozinho o primeiro lançamento.

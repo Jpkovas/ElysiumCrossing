@@ -1,9 +1,11 @@
 {
   "schema": 1,
-  "export": "public-native-ui-source-progress-2026-10-14",
-  "scope": "Curated own application subset and documentation; no complete native game build or private UI assets",
+  "export": "public-current-state-2026-10-14",
+  "scope": "Reviewed own application snapshot, operational tools and sanitized continuation documentation; no proprietary game distribution",
   "snapshotCandidate": "circular-ui-icons-only-20261014",
+  "nativeIntegrationCandidate": "fc29e6f82c26c626563d",
   "historicalExteriorEvidenceCandidate": "6d79af919605cb14f133",
+  "historicalMultiplayerEvidenceCandidate": "63b36dc74874f0244e99",
   "upstream": {
     "repository": "https://github.com/turtlekiosk/slider",
     "commit": "cfecc8d4019c7182133b444a671d3b62b42bee44",
@@ -21,11 +23,20 @@
     },
     {
       "path": "README.md",
-      "bytes": 4766,
-      "sha256": "17479349a979c87a389c47c682ea67a296127184d996db7f2e6cc413cbf229cf",
+      "bytes": 4732,
+      "sha256": "f184ce2b5f5f313ec9f7c96361fb87a1955677cb6b071582e6d5afc73791a576",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-native-ui-source-progress-2026-10-14"
+        "createdFor": "public-current-state-2026-10-14"
+      }
+    },
+    {
+      "path": "docs/continuation.md",
+      "bytes": 7918,
+      "sha256": "ce55c4b19cff82c0486168e593d7e66d5946a89af2ab7102db88576d3d48f099",
+      "origin": {
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "public-current-state-2026-10-14"
       }
     },
     {
@@ -35,6 +46,15 @@
       "origin": {
         "kind": "publication-documentation-or-tooling",
         "createdFor": "public-progress-2026-10-13"
+      }
+    },
+    {
+      "path": "docs/milestones/2026-10-14-current-state.md",
+      "bytes": 7871,
+      "sha256": "682bf9744f03af306cdbf49877c964e08ca94a956be6d7ffb9d1cbf8fde51cb9",
+      "origin": {
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "public-current-state-2026-10-14"
       }
     },
     {
@@ -48,29 +68,29 @@
     },
     {
       "path": "docs/modernization/architecture-baseline.md",
-      "bytes": 4531,
-      "sha256": "93f103c7f590df7e2692c15c4f0328cb897df5eddb73b7be185559b15783b258",
+      "bytes": 5101,
+      "sha256": "48b45853543c787af51160e2665827b5ccdd0a125d7cc59ec85a47a025c955a2",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-progress-2026-10-13"
+        "createdFor": "public-current-state-2026-10-14"
       }
     },
     {
       "path": "docs/modernization/feature-parity.md",
-      "bytes": 3948,
-      "sha256": "630442076b79774edc0062d3426bfa68b962f5c5dea3cd25dc0f9cfa3b6f589a",
+      "bytes": 3364,
+      "sha256": "46064e5cf610a84c2cc188556a29bb53a2c574e2f2b824688f88877d6d6942b6",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-progress-2026-10-13"
+        "createdFor": "public-current-state-2026-10-14"
       }
     },
     {
       "path": "docs/modernization/implementation-roadmap.md",
-      "bytes": 3245,
-      "sha256": "ea6a9c6b492c79308e0ce9a0a31e90a5b0bed1669e639f8ead03e6665e2b5d02",
+      "bytes": 3924,
+      "sha256": "0614109d56fe016fbcafffb711f0c550dcb3dd65c4c0484bd49998f859a3bdeb",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-progress-2026-10-13"
+        "createdFor": "public-current-state-2026-10-14"
       }
     },
     {
@@ -93,29 +113,29 @@
     },
     {
       "path": "docs/modernization/risk-register.md",
-      "bytes": 2804,
-      "sha256": "fb35c791bd677ac26fcd818c846c51fe95cb4ebefaf52d9c547216a1ed2b1b43",
+      "bytes": 2749,
+      "sha256": "1f81f0973dec042b79710086f74304f2abca799b044e2cc5796b260e1773b350",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-progress-2026-10-13"
+        "createdFor": "public-current-state-2026-10-14"
       }
     },
     {
       "path": "docs/public-source-scope.md",
-      "bytes": 5643,
-      "sha256": "23aa0751f271cbbe5122b273e944defbfd4d7c819a84b30c9ec994663ba3472d",
+      "bytes": 5655,
+      "sha256": "2dd469532f49211fbcf7ba44d9014ff6d0ed1854999759612e1318e1da7a3755",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-native-ui-source-progress-2026-10-14"
+        "createdFor": "public-current-state-2026-10-14"
       }
     },
     {
       "path": "docs/verification.md",
-      "bytes": 2162,
-      "sha256": "25c6dc75711650f10804a13bb95a0375aefb7eb068ed9b605905c193ae6785aa",
+      "bytes": 2279,
+      "sha256": "6e3306c80681d323f92e1e2138b34e2da9558848b2bc9cd8422c301eb039fb49",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-progress-2026-10-13"
+        "createdFor": "public-current-state-2026-10-14"
       }
     },
     {
@@ -144,7 +164,7 @@
       "origin": {
         "kind": "project-source",
         "relativeSource": "shared/checkpoint-recovery.ts",
-        "frozenWebCandidate": "0c66814ef9b3191f556d",
+        "frozenWebCandidate": "circular-ui-icons-only-20261014",
         "sourceSHA256": "644294032e474f1e4fa0dcb5a96bf5895b3a18bb6fb1480170397d99cd475b60",
         "exportMode": "byte-identical"
       }
@@ -162,26 +182,62 @@
       }
     },
     {
+      "path": "shared/crafting.ts",
+      "bytes": 551,
+      "sha256": "1fb8c3e0a6c7761da191b1c5aecdedb11024896d7a00b51515372442af4152ac",
+      "origin": {
+        "kind": "project-source",
+        "relativeSource": "shared/crafting.ts",
+        "frozenWebCandidate": "circular-ui-icons-only-20261014",
+        "sourceSHA256": "1fb8c3e0a6c7761da191b1c5aecdedb11024896d7a00b51515372442af4152ac",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
       "path": "shared/fishing.ts",
       "bytes": 2369,
       "sha256": "2dace8de9f17bb0100f8e1a23cd5e88e20b171b0fa9b133302764c4ba778d9df",
       "origin": {
         "kind": "project-source",
         "relativeSource": "shared/fishing.ts",
-        "frozenWebCandidate": "0c66814ef9b3191f556d",
+        "frozenWebCandidate": "circular-ui-icons-only-20261014",
         "sourceSHA256": "2dace8de9f17bb0100f8e1a23cd5e88e20b171b0fa9b133302764c4ba778d9df",
         "exportMode": "byte-identical"
       }
     },
     {
+      "path": "shared/fruit-stack.ts",
+      "bytes": 3951,
+      "sha256": "7b4cb224fb26a14dcf640f9d668ab57cb5b87bb90a71c7c382b6cdcbbe4817ba",
+      "origin": {
+        "kind": "project-source",
+        "relativeSource": "shared/fruit-stack.ts",
+        "frozenWebCandidate": "circular-ui-icons-only-20261014",
+        "sourceSHA256": "7b4cb224fb26a14dcf640f9d668ab57cb5b87bb90a71c7c382b6cdcbbe4817ba",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
+      "path": "shared/item-icons.ts",
+      "bytes": 894,
+      "sha256": "0edc1b34dc5efbfaefa1ec3754306619693cc713d8cffbbab9bbe992421f9753",
+      "origin": {
+        "kind": "project-source",
+        "relativeSource": "shared/item-icons.ts",
+        "frozenWebCandidate": "circular-ui-icons-only-20261014",
+        "sourceSHA256": "0edc1b34dc5efbfaefa1ec3754306619693cc713d8cffbbab9bbe992421f9753",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
       "path": "shared/world.ts",
-      "bytes": 2182,
-      "sha256": "0ab537679a6e55267ad1b3214584fa35947066d012a78d0b827ce29f49038914",
+      "bytes": 2377,
+      "sha256": "e48cb22cbecee2b5bfe5421e9451406da001777622317bd5c28de78c79c46696",
       "origin": {
         "kind": "project-source",
         "relativeSource": "shared/world.ts",
-        "frozenWebCandidate": "0c66814ef9b3191f556d",
-        "sourceSHA256": "0ab537679a6e55267ad1b3214584fa35947066d012a78d0b827ce29f49038914",
+        "frozenWebCandidate": "circular-ui-icons-only-20261014",
+        "sourceSHA256": "e48cb22cbecee2b5bfe5421e9451406da001777622317bd5c28de78c79c46696",
         "exportMode": "byte-identical"
       }
     },
@@ -192,7 +248,7 @@
       "origin": {
         "kind": "project-source",
         "relativeSource": "tests/haptics.test.ts",
-        "frozenWebCandidate": "0c66814ef9b3191f556d",
+        "frozenWebCandidate": "circular-ui-icons-only-20261014",
         "sourceSHA256": "07893c8a3a2b4c96aaccc080573c09ba32ab23dcf5e891dce28333998c1dd9d5",
         "exportMode": "byte-identical"
       }
@@ -204,8 +260,41 @@
       "origin": {
         "kind": "project-source",
         "relativeSource": "tests/server-clock.test.ts",
-        "frozenWebCandidate": "0c66814ef9b3191f556d",
+        "frozenWebCandidate": "circular-ui-icons-only-20261014",
         "sourceSHA256": "52b31a6fee1734a55201ae44abd27d35fe2a9c4fc77e0174f39be44bb7fc42a0",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
+      "path": "tools/release/README.md",
+      "bytes": 3239,
+      "sha256": "573f85d923c25e25db9bea124d3f11958ee7f2bf22b5c65e1952fac86fb7799c",
+      "origin": {
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "public-current-state-2026-10-14"
+      }
+    },
+    {
+      "path": "tools/release/prepare.mjs",
+      "bytes": 11615,
+      "sha256": "397abf41aff31072649e27ea1fa6b721ff29d6de25d24e69590be4161bddf3f3",
+      "origin": {
+        "kind": "project-operational-tool",
+        "sourceUnit": "friends-release-kit-providers",
+        "pathWithinUnit": "after/prepare.mjs",
+        "sourceSHA256": "397abf41aff31072649e27ea1fa6b721ff29d6de25d24e69590be4161bddf3f3",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
+      "path": "tools/release/store-snapshot.mjs",
+      "bytes": 10791,
+      "sha256": "1d4ba63a8f6f6e8bae114fa7aea3d5650072df010c84dd2d13d765c78b58d645",
+      "origin": {
+        "kind": "project-operational-tool",
+        "sourceUnit": "friends-release-backup-restore",
+        "pathWithinUnit": "store-snapshot.mjs",
+        "sourceSHA256": "1d4ba63a8f6f6e8bae114fa7aea3d5650072df010c84dd2d13d765c78b58d645",
         "exportMode": "byte-identical"
       }
     },
@@ -229,13 +318,25 @@
     },
     {
       "path": "web/checkpoint.ts",
-      "bytes": 57635,
-      "sha256": "8f603454331032d0537349f210d150d5f375d1ec250cf1199a63d49ab0606076",
+      "bytes": 58054,
+      "sha256": "5cc5096b043add8f96c24987245d3745b6fc929282d72eca7c0ab76a98fc41ea",
       "origin": {
         "kind": "project-source",
         "relativeSource": "web/checkpoint.ts",
-        "frozenWebCandidate": "0c66814ef9b3191f556d",
-        "sourceSHA256": "8f603454331032d0537349f210d150d5f375d1ec250cf1199a63d49ab0606076",
+        "frozenWebCandidate": "circular-ui-icons-only-20261014",
+        "sourceSHA256": "5cc5096b043add8f96c24987245d3745b6fc929282d72eca7c0ab76a98fc41ea",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
+      "path": "web/graphics-settings.ts",
+      "bytes": 7347,
+      "sha256": "5615f305f8fdc7827604274eb399b66cd43d4ede0f5be3dbc7a61c6df1bd799d",
+      "origin": {
+        "kind": "project-source",
+        "relativeSource": "web/graphics-settings.ts",
+        "frozenWebCandidate": "circular-ui-icons-only-20261014",
+        "sourceSHA256": "5615f305f8fdc7827604274eb399b66cd43d4ede0f5be3dbc7a61c6df1bd799d",
         "exportMode": "byte-identical"
       }
     },
@@ -246,8 +347,20 @@
       "origin": {
         "kind": "project-source",
         "relativeSource": "web/haptics.ts",
-        "frozenWebCandidate": "0c66814ef9b3191f556d",
+        "frozenWebCandidate": "circular-ui-icons-only-20261014",
         "sourceSHA256": "04b0524383b0303f012205bef5707cba62ae487419f7c3b0fa469839cd1b74c9",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
+      "path": "web/hd-textures.ts",
+      "bytes": 5651,
+      "sha256": "4df5530be2a38986d856bb6e0d1430f5a7d1d2c75fe38bfadaed8753d950923d",
+      "origin": {
+        "kind": "project-source",
+        "relativeSource": "web/hd-textures.ts",
+        "frozenWebCandidate": "circular-ui-icons-only-20261014",
+        "sourceSHA256": "4df5530be2a38986d856bb6e0d1430f5a7d1d2c75fe38bfadaed8753d950923d",
         "exportMode": "byte-identical"
       }
     },
@@ -270,20 +383,20 @@
       "origin": {
         "kind": "project-source",
         "relativeSource": "web/server-clock.ts",
-        "frozenWebCandidate": "0c66814ef9b3191f556d",
+        "frozenWebCandidate": "circular-ui-icons-only-20261014",
         "sourceSHA256": "f3bfd62549daab906545cdf46690e024141cc81baa1db16832bc1ee3ce4b7809",
         "exportMode": "byte-identical"
       }
     },
     {
       "path": "web/world-client.ts",
-      "bytes": 43702,
-      "sha256": "a6eaa08b801ce4d3a6f07384169c30ea942da79a4dfdfad154338149b86494b8",
+      "bytes": 48145,
+      "sha256": "2067f503f869a4e62a438a2182c2c0a55fe423211917dda55b076de5a153f390",
       "origin": {
         "kind": "project-source",
         "relativeSource": "web/world-client.ts",
-        "frozenWebCandidate": "0c66814ef9b3191f556d",
-        "sourceSHA256": "a6eaa08b801ce4d3a6f07384169c30ea942da79a4dfdfad154338149b86494b8",
+        "frozenWebCandidate": "circular-ui-icons-only-20261014",
+        "sourceSHA256": "2067f503f869a4e62a438a2182c2c0a55fe423211917dda55b076de5a153f390",
         "exportMode": "byte-identical"
       }
     }
@@ -297,14 +410,17 @@
     "server/data and native-world-layout",
     "network/recovery harnesses",
     "extracted UI font tables, private hand manifests and all UI atlases",
-    "visual UI consumers whose private dependencies are not exported"
+    "visual UI consumers whose private dependencies are not exported",
+    "complete private handoff, environment/team registry and transfer pins",
+    "private operational test inputs, backups and generated deployment configuration"
   ],
   "limits": [
-    "Full Native/backend integration remains private pending per-file provenance review",
+    "Full Native/backend integration remains private pending per-file provenance review; this tree cannot start or build the whole game",
     "Manifest hashes do not substitute authorship/license review",
-    "Gameplay evidence is described, not redistributed as proprietary fixtures",
-    "Native equipment flow and canonical resource conservation verified; latest icons-only Web visual remains pending integrated acceptance"
-  ],
-  "nativeIntegrationCandidate": "fc29e6f82c26c626563d",
-  "retainedSourceSnapshotCandidate": "0c66814ef9b3191f556d"
+    "Gameplay evidence is described by candidate, without private captures, payloads or fixtures",
+    "Final icons-only wheel visual is accepted in portrait, landscape and desktop; later reported UI and multiplayer defects remain open",
+    "Literal current snapshot still includes the rejected three-apple crafting prototype; wood/iron replacements are not integrated",
+    "Operational tools require the matching private backend/package/providers; syntax verification is not runtime or deployment qualification",
+    "Source-only materials, shadows and recent input repairs are not represented as merged or accepted gameplay"
+  ]
 }

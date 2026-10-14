@@ -1,81 +1,80 @@
 # Escopo das fontes públicas
 
-Exportação explícita do progresso local, atualizada em 14/10/2026. A raiz de desenvolvimento
-contém código próprio da aplicação; o checkout de terceiros fica em `client/`.
-Nenhum arquivo desse checkout foi copiado nesta exportação. O manifesto registra
-origem relativa, tamanho e hash de cada arquivo incluído.
+Exportação curada de 14/10/2026. O workspace de desenvolvimento contém a
+aplicação própria e uma base Native de terceiros. Esta árvore publica somente
+fontes próprias revisadas, metadados declarativos e documentação sanitizada.
+Não é uma cópia completa do workspace nem um backup do jogo.
 
-## Código incluído
+## Código publicado
 
-| Caminho | Responsabilidade | Integrações fora desta árvore |
+| Arquivo | Responsabilidade | Dependências privadas ou limites |
 | --- | --- | --- |
-| `shared/world.ts` | Intenções, objetos exteriores, inventário e snapshots/commits | Validação e armazenamento do servidor; consumidor nativo |
-| `shared/fishing.ts` | Tipos de estados e operações de pesca compartilhada | Simulação/validação, tabelas e consumidor nativo |
-| `shared/contracts.ts` | Contrato comum Web/API/sala/ponte C; envelope de checkpoint, orçamento de raster aceito e seleção de ferramentas | Implementação nativa, API e sala |
-| `shared/checkpoint-recovery.ts` | Representação canônica de identidade da captura/recibo | Autoridade e produtor do checkpoint |
-| `web/world-client.ts` | Validação de mensagens e aplicação de mundo/inventário via safepoint | Socket autenticado, autoridade e NativeGame concretos |
-| `web/checkpoint.ts` | Envelope, leitura do par, identidade e journal de checkpoint | Arquivos da instância e transporte concretos |
-| `web/server-clock.ts` | Hora de servidor com elapsed monotônico | Resposta autenticada do servidor |
-| `web/haptics.ts` | Preferência, ativação, padrões sutis e cancelamento | APIs reais do navegador/dispositivo |
-| `web/private-assets.ts` | Allowlist de rotas, autorização online, verificação de integridade e cache limitado de assets | Endpoints autenticados, manifestos e arquivos privados reais |
-| `tests/haptics.test.ts` | Casos controlados de vibração, capacidades e cancelamento | Não comprova vibração física |
-| `tests/server-clock.test.ts` | Calendário sob mudança do relógio local e dados inválidos | Não executa crescimento no jogo |
+| `shared/world.ts` | Intenções, inventário, objetos e commits | Autoridade e consumidor Native concretos |
+| `shared/fishing.ts` | Contratos da pesca compartilhada | Simulação, regras e consumidor concretos |
+| `shared/contracts.ts` | Contratos Web/API/Native, checkpoint, raster e ferramentas | Implementações concretas |
+| `shared/checkpoint-recovery.ts` | Identidade canônica de captura e recibo | Produtor e autoridade do checkpoint |
+| `shared/fruit-stack.ts` | Codec próprio e operações de quantidade | Persistência e consumidores Native/servidor |
+| `shared/item-icons.ts` | IDs finitos e tipos do mapeamento de ícones | Nenhum sprite, atlas ou manifesto real incluído |
+| `shared/crafting.ts` | Contrato literal do protótipo presente no candidato | Receita com maçãs rejeitada; não é crafting final |
+| `web/world-client.ts` | Validação e aplicação de mundo/inventário no safepoint | Sala autenticada, autoridade e Native concretos |
+| `web/checkpoint.ts` | Envelope, par, identidade e journal | Arquivos da instância e transportes concretos |
+| `web/private-assets.ts` | Rotas autorizadas, integridade e cache limitado | Manifestos e arquivos reais ficam privados |
+| `web/hd-textures.ts` | Indexação, pedidos, cancelamento e ponte de texturas HD | Nenhuma textura, DDS ou catálogo real incluído |
+| `web/graphics-settings.ts` | Controles e preferências de resolução/HD | Runtime e CSS concretos; visual não redesenhado neste envio |
+| `web/server-clock.ts` | Hora do servidor com elapsed monotônico | Resposta autenticada da autoridade |
+| `web/haptics.ts` | Ativação, preferências, padrões e cancelamento | APIs reais do navegador/dispositivo |
+| `tests/haptics.test.ts` | 12 casos controlados de haptics | Não comprova vibração física |
+| `tests/server-clock.test.ts` | 2 casos controlados de relógio | Não executa crescimento no jogo |
+| `tools/release/store-snapshot.mjs` | Snapshot e restauração de store em destino novo | Exige leitores do backend privado correspondente |
+| `tools/release/prepare.mjs` | Validação e preparação local de pacote/configuração | Exige pacote fechado e providers privados; não faz deploy |
 
-As onze fontes acima são cópias byte a byte dos seus snapshots de origem.
-`shared/contracts.ts` e `web/private-assets.ts` correspondem ao snapshot Web
-congelado `circular-ui-icons-only-20261014`, ligado ao Native
-`fc29e6f82c26c626563d`. As nove fontes anteriores preservam o snapshot
-`0c66814ef9b3191f556d`; elas não foram substituídas para aparentar uma integração
-completa. O manifesto registra a origem por arquivo. O relatório de decoração
-histórico continua vinculado ao candidato `6d79af919605cb14f133`.
-Não houve stubs novos, adaptação de API para esconder módulos ausentes ou
-reimplementação de gameplay.
-O grafo está fechado para typecheck; imports relativos resolvem somente para
-arquivos incluídos. Os dois testes públicos existentes usam dados sintéticos
-gerados pelo código de teste e não contêm save, dump ou fixture extraída.
+As 16 fontes TypeScript/testes são cópias byte a byte do snapshot Web
+`circular-ui-icons-only-20261014`, ligado ao Native `fc29e6f82c26c626563d`.
+As duas ferramentas operacionais são cópias integrais das unidades próprias
+revisadas depois desse snapshot; não são apresentadas como parte do runtime
+congelado. O manifesto registra tamanho, SHA-256 e origem por arquivo.
+Não foram criados stubs ou adaptações de gameplay para esconder módulos ausentes.
 
-O carregador contém nomes finitos de rotas e IDs de itens, mas nenhum pixel,
-modelo, tabela de glifos, manifesto privado, hash de atlas ou arquivo do jogo.
-As constantes de formato do contrato já fazem parte da interface própria da
-aplicação; não são um payload de save observado.
+O grafo de imports está fechado para typecheck. A presença dos contratos não
+significa que o servidor, a simulação Native ou a UI completa foram publicados.
+O novo `WorldClient` exige os hooks de crafting e `learnedRecipes` do candidato
+atual; não foi adicionada compatibilidade com snapshots antigos.
 
-## Dependências declarativas
+A receita experimental com maçãs permanece somente porque esta é uma cópia
+literal do candidato fechado. Ela foi rejeitada para a experiência final.
+Madeira/ferro e a receita pretendida estão em trabalho isolado; não foram
+substituídos em fonte pública para aparentar uma integração ainda inexistente.
 
-`package.json` declara ferramentas de desenvolvimento; `package-lock.json`
-conserva seus registros e integridades da instalação local já utilizada.
-Nenhum código ou pacote de terceiros está vendorizado. A licença de cada
-dependência continua sendo a do seu autor: `tsx`/tipos Node e dependências MIT,
-TypeScript Apache-2.0. Essas ferramentas não fornecem assets do jogo.
+## Origem e limites dos recursos
 
-Não foi criada uma licença nova para o projeto por inferência. A disponibilização
-do progresso foi autorizada pelo proprietário do projeto; a escolha de uma
-licença de reutilização para o código próprio permanece distinta dessa ação.
+IDs finitos, codecs, tipos, rotas e os pins de integridade no preparador são
+lógica/metadados da aplicação. Não carregam pixels, modelos, tabelas de glifos,
+payload de save, credenciais ou os arquivos privados identificados pelos hashes.
+As ferramentas recebem inputs locais explicitamente; seus outputs são privados.
 
-## Exclusões obrigatórias
+O `package.json` e o lockfile declaram ferramentas existentes. Nenhuma biblioteca
+ou código de terceiros foi vendorizado. TypeScript conserva Apache-2.0; tsx,
+tipos Node e suas dependências conservam seus próprios termos. Não se inferiu
+uma licença de reutilização para o código próprio pela autorização de publicação.
 
-- `client/` completo: decomp, port e bibliotecas de terceiros; inclui recursos
-  embutidos em C e arquivos cuja procedência ainda exige revisão individual.
-- Dump e derivados: ROM, executáveis, modelos, texturas, áudio, tabelas e textos
-  extraídos do jogo, inclusive quando transformados em `.ts`, `.json` ou `.c`.
-- `shared/ui-font.ts`, que contém tabelas extraídas; `shared/ui-hand.ts`, ligado
-  ao manifesto privado de captura; atlas, capturas e consumidores da roda que
-  dependem desses recursos. O incremento visual é documentado, sem publicar um
-  componente incompleto ou criar substitutos para encobrir as exclusões.
-- Saves, checkpoints, passaportes, bancos, payloads de observação e fixtures
-  geradas com dados do jogo. Relatórios públicos conservam apenas resultados
-  e identificadores do candidato, sem dados pessoais ou conteúdo de save.
-- Certificados/chaves, sessões, convites, credenciais, arquivos de ambiente,
-  logs de rede e configuração privada do ambiente local.
-- `server/data/`, `server/native-world-layout.ts`, recursos observados ou
-  gerados e dependências vendorizadas.
-- O restante de Native/backend/Web permanece na integração privada até revisão
-  de origem por arquivo. A ausência desses módulos não decorre apenas de assets
-  faltantes; este recorte não reconstrói nem inicia o jogo completo.
+## Exclusões
 
-## Verificação antes do envio
+- `client/` completo, port/decomp e deltas Native sem revisão individual.
+- Dump, ROM, executáveis, modelos, texturas, áudio, textos e dados extraídos,
+  mesmo quando codificados em `.ts`, `.json` ou `.c`.
+- Fonte extraída, tabelas de glifos, atlas, sprites, manifestos privados da mão,
+  capturas e consumidores da UI que dependem dessas famílias.
+- `server/data/`, layouts gerados, saves, checkpoints, passports, NES, bancos,
+  backups e fixtures/payloads observados durante jogo.
+- Credenciais, convites, sessões, certificados, chaves, ambiente local e logs.
+- Handoff privado, índice de pins e registros de equipe/ambiente completos.
+- Testes operacionais que dependem de backend/providers/fixtures privados.
+- Dependências vendorizadas, builds e a integração completa ainda não revisada.
 
-`npm run verify:export` confere o inventário exato e os hashes do manifesto,
-rejeita arquivos adicionais, symlinks, conteúdo binário e extensões privadas.
-Essa verificação mecânica não substitui a revisão de autoria/licença. O root
-da execução faz a revisão final da árvore e do estado remoto antes de commit
-e push. O workspace privado e seus dados ficam preservados.
+## Verificação do envio
+
+`npm run verify:export` confere inventário exato, bytes e hashes. Rejeita extras,
+symlinks, binários e extensões privadas. Não substitui revisão de autoria,
+conteúdo ou licença. Antes do push, os blobs e modos do índice e da árvore do
+commit são comparados separadamente ao mesmo manifesto. O SHA remoto é
+confirmado depois do envio. O workspace de integração permanece preservado.

@@ -1,33 +1,27 @@
 # Paridade funcional
 
-Matriz inicial revisada para o relatório de 13/10/2026. O estado é da integração
-local, não uma indicação de que todas as fontes já estejam nesta exportação.
-“Ausente” e “Não investigado” referem-se aos caminhos auditados.
+Revisão pública de 14/10/2026. Os estados descrevem a integração local; não
+significam que o runtime completo esteja publicado. **Confirmado** exige código
+ou dado verificável; **Documentado**, fonte confiável; **Observado**, reprodução
+no jogo; **Hipótese**, interpretação ainda não demonstrada.
 
-| Sistema | GameCube aproveitado | Referência NH | Elysium / evidência | Próximo aceite |
-| --- | --- | --- | --- | --- |
-| Inventário e organização P0 | Slots, equipamento, ações e overlays | Organização, quantidade e regras por tipo | **Parcial**: drag, seleção múltipla, menus e coleções adaptados; sem pilhas genéricas | Transferências e pilhas conservam quantidade; estado consistente após reentrada |
-| Decoração exterior P0 | Geometria, perfil e colisão de móvel original | Mobiliário montado no exterior | **Parcial / Observado**: um barril, prévia/cancelamento, colocação/recolha e duas perspectivas | Concorrência de ocupação, paridade PAD e regressão interior |
-| Persistência de objetos P0 | Save, terreno e inventário originais | Decoração persistente | **Parcial / Observado**: identidade/dono/revisão, transação e preservação após reinício no slice exterior | Completar os critérios de conflito e regressão do mesmo candidato |
-| Roda de ferramentas P1 | Equipar e desequipar existentes | Seleção rápida | **Ausente** como roda moderna | Touch e controle chamam equipar existente; cancelar e alternar sem input preso |
-| Crafting P1 | IDs, itens, economia e obtenção originais | Receita, materiais e produção | **Ausente** como sistema integrado | Receita mínima, desbloqueio e consumo/resultado canônicos |
-| Reações P1 | Animações e avatares remotos | Interação social por reações | **Parcial**: seis reações e duração limitada no sistema atual | Expandir cancelamento/interrupção e conferir pares |
-| Personalização P2 | Variações e estados de móveis originais | Cores e padrões | **Não investigado** como extensão integrada | Uma variação com posse e estado preservados |
-| Jardinagem P2 | Calendário, crescimento, árvores e flores | Plantio, crescimento e cruzamentos | **Parcial**: base de plantio/crescimento sob servidor; não jardinagem completa | Regras explícitas e resultado consistente entre participantes |
-| Metas e recompensas P2 | Eventos e economia existentes | Progressão por realizações | **Parcial**: eventos/recibos/feed; sem catálogo moderno de metas | Progresso individual por fatos confirmados e concessão única |
-| Rotinas NPC P2 | Agendas, eventos, movimento e diálogos | Variedade de rotinas/interações | **Não investigado** para expansão | Separar estado global/individual e ampliar uma rotina existente |
-| Infraestrutura P3 | Estruturas e colisões existentes | Pontes, rampas e posicionamento | **Não investigado** como edição persistente | Incremento pequeno após auditoria de ocupação e terreno |
-| Terraformação P3 | Tiles, altura/água, meshes e colisões | Ferramentas de terreno | **Não investigado** para edição integrada | Estudo e POC de célula com visual, colisão, pares, persistência e recuperação |
-| Construção avançada P3 | Arrumação interior adaptada | Edição interior/exterior | **Parcial**: interior touch e primeiro móvel exterior | Consolidar ações existentes antes de editor amplo |
+| Sistema | GameCube reutilizado / referência NH | Elysium e evidência | Próximo aceite |
+| --- | --- | --- | --- |
+| Inventário e organização P0 | Slots, condições, menus / organização e quantidades | **Parcial**: touch, drag, seleção múltipla e codec de pilhas de fruta; materiais em Source isolado | Compor materiais, conservar transferências e corrigir editor |
+| Decoração exterior P0 | Geometria e colisão / móveis no exterior | **Parcial, Observado**: colocar/recolher/repor e duas perspectivas; usuário relata recolha pouco clara | Distinguir móvel/item/visitante e fechar affordance e regressões |
+| Persistência de objetos P0 | Save/terreno / estado durável compartilhado | **Parcial, Observado**: decisão canônica, dono/revisão, restart e retorno em slices delimitados | Concorrência, reconexão e recorte final consistente |
+| Roda de ferramentas P1 | Equipar existente / seleção rápida | **Parcial, Observado**: roda circular aceita, equipar/guardar e três proporções | Fundo do botão, continuidade e ações remotas |
+| Crafting P1 | Economia/itens / materiais e receitas | **Parcial**: protótipo de autoridade; receita com maçãs rejeitada ainda no pacote; madeira/ferro em Source | Integrar obtenção, consumo e resultado; novo alvo do caderno |
+| Reações P1 | Animações/ghosts / interação social | **Parcial**: seis reações e provas focais/visita | Cancelamento/interrupção e apresentação remota sem piscadas |
+| Personalização P2 | Variações originais / aparência e estados | **Parcial em frentes isoladas**, sem novo fluxo integrado aceito | Uma variação funcional e persistida |
+| Jardinagem P2 | Calendário/crescimento / plantio e cruzamentos | **Parcial**: plantio/crescimento sob servidor; evolução isolada | Regra persistente, resultado compartilhado e cruzamentos |
+| Metas e recompensas P2 | Eventos/economia / realizações | **Parcial**: eventos/recibos e provas focais | Progresso persistente e concessão única em fluxo real |
+| Rotinas NPC P2 | Agendas/diálogos / variedade de rotinas | **Não investigado** para expansão concluída | Separar estado global/individual e ampliar rotina existente |
+| Infraestrutura P3 | Estruturas/colisão / pontes e rampas | **Não investigado** para editor integrado | Auditar ocupação e terreno |
+| Terraformação P3 | Acres/altura/água / edição de terreno | **Parcial, estudo e POC isolada**; sem terraforming integrado | Visual, colisão, navegação, persistência e recuperação juntos |
+| Construção avançada P3 | Interior adaptado / edição interior/exterior | **Parcial**: interior touch e primeiro móvel exterior | Consolidar controles e permissões antes de ampliar editor |
 
-## Grau de evidência
-
-- **Confirmado:** código ou dado verificável da revisão consultada.
-- **Documentado:** fonte técnica primária ou documentação oficial.
-- **Observado:** comportamento reproduzido no jogo e vinculado a candidato.
-- **Hipótese:** interpretação ou solução proposta ainda não demonstrada.
-
-As referências funcionais NH não certificam sua implementação interna. Não
-copiamos offsets de NH para o save GameCube nem inferimos regras de pilha,
-genética ou rede pela existência de nomes semelhantes. O
+Câmera contínua e cache visual não eliminam por si só setores, lifecycle de
+atores ou colisões. POCs e focais não equivalem a integração. As referências NH
+orientam comportamento, sem importar offsets ou assets. O
 [catálogo de pesquisa](research/reference-catalog.md) conserva as limitações.

@@ -1,84 +1,86 @@
 # Elysium Crossing
 
 Modernização incremental de Animal Crossing de GameCube para navegador, com
-interface mobile, controles touch, multiplayer e persistência no servidor.
-A personalidade e os sistemas do jogo original orientam a experiência;
-New Horizons serve de referência funcional para as extensões.
+controles touch, interface mobile, multiplayer e persistência no servidor.
+New Horizons orienta as extensões funcionais; a identidade visual, atmosfera
+e sistemas existentes do GameCube continuam sendo a base.
 
-Este repositório publica código próprio revisado e documentação do progresso.
-O recorte contém contratos da aplicação, aplicação de estado compartilhado no
-cliente, infraestrutura de checkpoint, relógio do servidor, feedback háptico e
-o carregador de assets privados. Não contém o jogo executável nem todos os
-módulos do workspace privado de integração. O
-[mapa do código](docs/public-source-scope.md) explicita o que está disponível e
-o que ainda precisa de revisão para publicação.
+Este repositório contém **código próprio revisado e documentação do estado
+atual**. Não contém dump, assets proprietários, saves ou um jogo executável.
+A integração Native, o backend completo e parte da UI permanecem no workspace
+privado. O [mapa das fontes](docs/public-source-scope.md) identifica cada limite.
 
 ## Estado em 14/10/2026
 
-O incremento de interfaces acrescenta ao contrato o orçamento de resolução
-efetivamente aceito pelo runtime nativo em 1x, 2x ou 3x e a seleção de
-ferramentas do bolso. O carregador publicado verifica tamanho e SHA-256 dos
-arquivos, restringe as rotas aceitas e exige autorização online antes de ler
-inclusive o cache local. Ele não contém os arquivos do jogo que carrega.
+A composição local fechada é Native `fc29e6f82c26c626563d` com Web
+`circular-ui-icons-only-20261014`. Os módulos da aplicação publicados aqui
+correspondem byte a byte a esse snapshot. Isso não transforma o subconjunto
+público em um build independente.
 
-A roda circular passou por verificação focal de interface em retrato, paisagem
-e desktop. Os ícones existentes e o cursor usam recursos originais na integração
-local; esses recursos, seus dados extraídos e os consumidores que dependem deles
-não fazem parte desta exportação. Equipar e voltar a Mãos livres foram
-verificados no Native, com conservação dos itens e consistência do checkpoint
-persistido. A roda sem legendas também foi conferida dentro do jogo real em retrato,
-paisagem e desktop, com nomes acessíveis preservados.
-O [relatório do incremento](docs/milestones/2026-10-14-native-ui.md) separa as
-fontes publicadas, as verificações focais e o aceite ainda aberto.
+- A roda circular sem legendas foi conferida no jogo em retrato, paisagem e
+  desktop. Equipar e guardar a ferramenta preservaram os recursos canônicos.
+- Visita por trem, encontro, movimento e chat bilateral, móvel visto por dois
+  clientes, restrição de recolha pelo visitante, coleta de fruta e retorno à
+  própria vila têm evidência local no candidato anterior `63b36dc74874f0244e99`.
+  A suavidade de animação, itens segurados e ações remotas continuam pendentes.
+- O bloqueio de gameplay durante desconexão do cliente e a retomada conservando
+  recursos foram observados nesse candidato anterior. Queda do processo e
+  acesso por Cloudflare ainda precisam de validação.
+- Backup e restauração reais preservaram 23 tabelas e 7.064 blobs referenciados.
+  Ainda falta jogar sobre o restore. As ferramentas operacionais próprias estão
+  em [tools/release](tools/release/README.md); seus inputs privados não estão aqui.
+- Madeira/ferro, regras de materiais, sombras e reparos recentes estão em
+  incrementos isolados, ainda sem composição e aceite integrado.
 
-O primeiro incremento de decoração exterior foi observado em dois clientes:
-prévia, cancelamento, colocação de um barril, colisão, retirada, reposição,
-visita, retorno à própria vila e preservação após reinício e reabertura.
-O marco completo ainda tem critérios em aberto, incluindo concorrência de
-ocupação, paridade com controle físico e regressão de interiores. Essas provas
-locais pertencem ao candidato `6d79af919605cb14f133`; elas não tornam esta árvore
-pública um jogo independente ou uma versão pronta para lançamento.
+**Limite do snapshot de crafting:** o código fechado ainda usa o protótipo
+`fruit-barrel-v1` com três maçãs, rejeitado como receita final. A fonte aparece
+nesta exportação para representar fielmente o contrato atual do cliente; não é
+uma receita de New Horizons nem uma entrega aprovada. A substituição por madeira
+e ferro está documentada como trabalho pendente de integração.
 
-Os painéis touch continuam em refinamento. O plano ativo inclui inventário e
-atalhos, crafting, interações sociais, jardinagem/progressão e estudo com prova
-de conceito de terreno. A integração com WhatsApp fica para uma etapa posterior.
+A primeira build para amigos via HTTPS tem prioridade. O plano completo de
+modernização continua ativo em paralelo; somente WhatsApp fica para depois.
+O teste físico de iPhone foi dispensado como requisito, sem substituir as
+verificações de navegador, touch, proporções, persistência e multiplayer.
 
-- [Arquitetura verificada e limites](docs/modernization/architecture-baseline.md)
-- [Paridade GameCube × New Horizons × Elysium](docs/modernization/feature-parity.md)
-- [Marcos e próximos critérios](docs/modernization/implementation-roadmap.md)
-- [Relatório do incremento exterior](docs/milestones/2026-10-13-exterior-slice.md)
-- [Relatório do incremento de interfaces nativas](docs/milestones/2026-10-14-native-ui.md)
-- [Origem dos arquivos e exclusões](docs/public-source-scope.md)
+- [Estado detalhado e pendências](docs/milestones/2026-10-14-current-state.md)
+- [Handoff público para continuidade](docs/continuation.md)
+- [Arquitetura e limites](docs/modernization/architecture-baseline.md)
+- [Paridade funcional](docs/modernization/feature-parity.md)
+- [Roadmap e sete critérios do primeiro lançamento](docs/modernization/implementation-roadmap.md)
+- [Histórico do incremento exterior](docs/milestones/2026-10-13-exterior-slice.md)
+- [Incremento da roda e interface nativa](docs/milestones/2026-10-14-native-ui.md)
+- [Verificação desta exportação](docs/verification.md)
 
-## Verificar este subconjunto
+## Verificar o subconjunto público
 
-Requer Node.js 24 ou posterior. As dependências de desenvolvimento são
-declaradas no `package.json`; seu código não está vendorizado.
+Requer Node.js 24 ou posterior. Os pacotes de desenvolvimento são declarados
+no lockfile; código de dependências não está vendorizado.
 
 ```sh
-npm ci
+npm ci --ignore-scripts
 npm run verify:export
 npm run typecheck
 npm test
+node --check tools/release/store-snapshot.mjs
+node --check tools/release/prepare.mjs
 ```
 
-Os testes públicos executam o código de relógio e vibração com ambiente
-controlado. O typecheck verifica também o grafo de contratos, WorldClient,
-checkpoint e carregador privado. Não são uma simulação do jogo, uma prova do multiplayer completo
-ou validação de vibração física no iPhone. O relatório de validação distingue
-esses resultados das evidências de gameplay mantidas localmente.
+Uma instalação limpa, o typecheck, os 14 testes e os dois checks de sintaxe
+passaram em Node 24.11.1. Os testes públicos cobrem relógio e haptics em ambiente
+controlado. Não executam o jogo, a rede, os providers privados ou um deploy.
 
-## Integração local do jogo
+## Integração local e origem
 
-A base nativa do workspace é
+A base nativa é
 [turtlekiosk/slider no commit cfecc8d4019c7182133b444a671d3b62b42bee44](https://github.com/turtlekiosk/slider/tree/cfecc8d4019c7182133b444a671d3b62b42bee44).
-O runtime exige a base nativa, as alterações próprias ainda em revisão de
-publicação e inputs gerados localmente a partir de uma cópia legítima do jogo.
-Este repositório não oferece esses inputs e não inclui um comando `start` ou
-um build completo enquanto faltam fontes da integração.
+Nenhum arquivo desse checkout foi copiado para esta árvore. A integração exige
+alterações locais adicionais e inputs obtidos legitimamente. Não existe comando
+`start` ou build completo neste recorte.
 
-ROMs, dumps, saves, modelos, texturas, áudio, executáveis, extrações do jogo,
-certificados e segredos permanecem fora desta árvore. Referenciar uma licença
-de código aberto não concede direitos sobre os assets do jogo. Não foi
-atribuída por inferência uma nova licença ao código próprio do projeto;
-declarações de dependências preservam os termos dos respectivos autores.
+ROMs, dumps, saves, modelos, texturas, fontes, áudio, executáveis, certificados
+e segredos permanecem privados. Links e identificadores de interoperabilidade
+não incorporam os recursos correspondentes. Licenças de código aberto não
+concedem direitos sobre assets do jogo. Não foi atribuída por inferência uma
+licença nova ao código próprio; termos das dependências continuam sendo os dos
+respectivos autores.

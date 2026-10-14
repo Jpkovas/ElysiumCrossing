@@ -1,6 +1,6 @@
 # Arquitetura de referência
 
-Auditoria inicial de 12/10, atualizada para esta exportação em 13/10/2026.
+Auditoria inicial de 12/10, atualizada para esta exportação em 14/10/2026.
 As descrições abaixo distinguem a implementação local completa do subconjunto
 de código publicado. Não há um motor novo ou um segundo protocolo de rede.
 
@@ -65,3 +65,13 @@ SHA de WASM, ABI, Web e servidor precisam corresponder ao candidato testado.
 Evidências de candidatos distintos não são somadas como se fossem uma única
 versão concluída. A verificação pública cobre somente os arquivos descritos
 em [escopo das fontes](../public-source-scope.md).
+
+## Snapshot de transferência
+
+A composição fechada atual é Native `fc29e6f82c26c626563d` com Web
+`circular-ui-icons-only-20261014`. O grafo TypeScript publicado foi alinhado a
+esse snapshot, incluindo codecs de fruta, roteamento do protótipo de crafting
+e controles de gráficos. Não é uma publicação do servidor/Native completo.
+Materiais, sombras e reparos recentes ainda estão isolados. O
+[handoff público](../continuation.md) e o [estado atual](../milestones/2026-10-14-current-state.md)
+registram integração, provas por candidato e próximos aceites.

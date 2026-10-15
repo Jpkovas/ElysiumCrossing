@@ -13,6 +13,24 @@
   },
   "files": [
     {
+      "path": ".claude/hooks/session-start.sh",
+      "bytes": 772,
+      "sha256": "aef75667e316bfe673c879c49e45dfac5f54a105b0521ba937d8c648e6228d8f",
+      "origin": {
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "cloud-session-environment-2026-10-15"
+      }
+    },
+    {
+      "path": ".claude/settings.json",
+      "bytes": 225,
+      "sha256": "ef056e55192969b7dfa2e7286657886425112eb7c8de4a55ea55f0ffa5ce7e06",
+      "origin": {
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "cloud-session-environment-2026-10-15"
+      }
+    },
+    {
       "path": ".gitignore",
       "bytes": 170,
       "sha256": "856af1def24bdf6bfa1a0e5dd6f3999ada141b4392188b049093445066468dbb",

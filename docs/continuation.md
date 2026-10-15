@@ -1,7 +1,8 @@
 # Continuidade de implementação
 
-Este é o handoff público do estado de 14/10/2026, com a candidata de 15/10
-registrada em [marco da candidata](milestones/2026-10-15-lote-c.md). Ele explica o que preservar
+Este é o handoff público do estado de 14/10/2026, com as candidatas de 15/10
+registradas no [marco do lote C](milestones/2026-10-15-lote-c.md) e no
+[marco da build H](milestones/2026-10-15-build-h.md). Ele explica o que preservar
 e a ordem de integração, sem transportar o ambiente privado. Consulte primeiro
 o [estado atual](milestones/2026-10-14-current-state.md), a
 [arquitetura](modernization/architecture-baseline.md), a

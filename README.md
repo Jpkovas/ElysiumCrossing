@@ -12,12 +12,16 @@ privado. O [mapa das fontes](docs/public-source-scope.md) identifica cada limite
 
 ## Estado em 15/10/2026
 
-A candidata local do primeiro lançamento é a árvore `b75becf` com Native
-`452e50a30e467588df6e`. Os módulos da aplicação publicados aqui correspondem
-byte a byte a essa árvore. Isso não transforma o subconjunto público em um
-build independente. [Marco da candidata](docs/milestones/2026-10-15-lote-c.md):
-viagem, disputa por fruta, avatar remoto com ferramenta na mão e sombras
-verificados com dois clientes; captura de peixe com crédito ainda pendente.
+A candidata final local do primeiro lançamento é a **build H**: árvore
+`294bcc8` com Native `9038499072698e635f5c`. Os módulos da aplicação publicados
+aqui correspondem byte a byte a essa árvore. Isso não transforma o subconjunto
+público em um build independente. [Marco da build H](docs/milestones/2026-10-15-build-h.md):
+convite com passkey, telas do site e do jogo redesenhadas, dois jogadores e
+queda do servidor com reconexão verificados no servidor de casa. O jogo não
+está publicado; o domínio segue em manutenção até a aprovação do Jp.
+
+A candidata anterior, `b75becf` com Native `452e50a30e467588df6e`, está no
+[marco do lote C](docs/milestones/2026-10-15-lote-c.md).
 
 O histórico abaixo descreve o estado de 14/10 (Native `fc29e6f82c26c626563d`,
 Web `circular-ui-icons-only-20261014`):
@@ -48,7 +52,8 @@ modernização continua ativo em paralelo; somente WhatsApp fica para depois.
 O teste físico de iPhone foi dispensado como requisito, sem substituir as
 verificações de navegador, touch, proporções, persistência e multiplayer.
 
-- [Candidata do primeiro lançamento (15/10)](docs/milestones/2026-10-15-lote-c.md)
+- [Build H, candidata final (15/10)](docs/milestones/2026-10-15-build-h.md)
+- [Candidata do lote C (15/10)](docs/milestones/2026-10-15-lote-c.md)
 - [Estado detalhado e pendências](docs/milestones/2026-10-14-current-state.md)
 - [Handoff público para continuidade](docs/continuation.md)
 - [Arquitetura e limites](docs/modernization/architecture-baseline.md)

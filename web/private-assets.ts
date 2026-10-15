@@ -9,11 +9,26 @@ const corePaths = new Set(['/index.js', '/index.wasm', '/index.data', '/nipplejs
 const itemIconPaths = new Set(['/item-icons/8704.png', '/item-icons/8705.png', '/item-icons/8706.png', '/item-icons/8707.png', '/item-icons/8761.png', '/item-icons/8762.png', '/item-icons/8763.png', '/item-icons/8764.png', '/item-icons/8765.png', '/item-icons/8766.png', '/item-icons/8767.png', '/item-icons/8768.png', '/item-icons/8769.png', '/item-icons/8770.png', '/item-icons/8771.png', '/item-icons/10240.png', '/item-icons/10241.png', '/item-icons/10242.png', '/item-icons/10243.png', '/item-icons/10244.png', '/item-icons/10247.png', '/item-icons/4696.png']);
 const uiFontPaths = new Set(['/ui-font/atlas.png']);
 const uiHandPaths = new Set(['/ui-hand/atlas-1.png', '/ui-hand/atlas-2.png', '/ui-hand/atlas-3.png']);
+const uiIconPaths = new Set(['/ui-icons/atlas-sd.png', '/ui-icons/atlas-hd.png']);
 const hdPath = /^\/textures\/[a-zA-Z0-9-]{1,80}\/tex1_\d+x\d+_(?:m_)?[a-f0-9]{16}(?:_(?:[a-f0-9]{16}|\$))?_\d+\.dds$/;
 export async function assetSHA256(bytes: ArrayBuffer): Promise<string> {
   return [...new Uint8Array(await crypto.subtle.digest('SHA-256', bytes))].map(value => value.toString(16).padStart(2, '0')).join('');
 }
 function abort(signal?: AbortSignal): void { signal?.throwIfAborted(); }
+const incomplete = () => new Error('O arquivo recebido está incompleto. Reabra o jogo para baixar novamente.');
+/** Streams into a buffer of the pinned size, reporting progress; more bytes than pinned is refused. */
+async function readCounting(body: ReadableStream<Uint8Array>, size: number, onProgress: (loaded: number) => void): Promise<ArrayBuffer> {
+  const out = new Uint8Array(size), reader = body.getReader();
+  let loaded = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    if (loaded + value.byteLength > size) { await reader.cancel(); throw incomplete(); }
+    out.set(value, loaded); loaded += value.byteLength; onProgress(loaded);
+  }
+  if (loaded !== size) throw incomplete();
+  return out.buffer;
+}
 
 /** One IndexedDB backend: immutable verified assets, fresh online gates, never saves or tokens. */
 export class PrivateAssets {
@@ -27,7 +42,7 @@ export class PrivateAssets {
   state(): PrivateAssetState { return { ...this.info }; }
   async manifest<T>(path: string, signal?: AbortSignal): Promise<T> {
     const root = this.access.prefix;
-    if (![`${root}${root === '/game' ? '/assets' : ''}/manifest`, `${root}/mods/manifest`, `${root}/textures/manifest`, ...(root === '/game' ? ['/game/item-icons/manifest', '/game/ui-font/manifest', '/game/ui-hand/manifest'] : [])].includes(path)) throw new Error('Catálogo de arquivos não permitido.');
+    if (![`${root}${root === '/game' ? '/assets' : ''}/manifest`, `${root}/mods/manifest`, `${root}/textures/manifest`, ...(root === '/game' ? ['/game/item-icons/manifest', '/game/ui-font/manifest', '/game/ui-hand/manifest', '/game/ui-icons/manifest'] : [])].includes(path)) throw new Error('Catálogo de arquivos não permitido.');
     this.authorized = false;
     const response = await fetch(path, { credentials: 'same-origin', cache: 'no-store', signal });
     if (!response.ok) throw new Error(response.status === 401 ? 'Sua sessão expirou. Entre novamente.' : 'O catálogo de arquivos não está disponível.');
@@ -159,7 +174,8 @@ export class PrivateAssets {
       this.info.bytes = result.total; this.info.evicted += result.evicted; this.info.storageError = null;
     } catch (error) { abort(signal); this.storageFailed(error); }
   }
-  async load(path: string, expected: AssetDigest, signal?: AbortSignal): Promise<ArrayBuffer> {
+  /** onProgress receives the bytes received so far; a verified cache hit reports the whole size at once. */
+  async load(path: string, expected: AssetDigest, signal?: AbortSignal, onProgress?: (loaded: number) => void): Promise<ArrayBuffer> {
     let relative = path.startsWith(`${this.access.prefix}/`) ? path.slice(this.access.prefix.length) : '';
     if (this.group === 'hd') {
       const parts = /^\/textures\/([^/]+)\/([^/]+)$/.exec(relative);
@@ -173,15 +189,15 @@ export class PrivateAssets {
           relative = `/textures/${version}/${name}`;
       } catch { /* Malformed percent escapes fail the same whitelist below. */ }
     }
-    if (!(this.group === 'core' ? corePaths.has(relative) || this.access.prefix === '/game' && (itemIconPaths.has(relative) || uiFontPaths.has(relative) || uiHandPaths.has(relative)) : hdPath.test(relative))
+    if (!(this.group === 'core' ? corePaths.has(relative) || this.access.prefix === '/game' && (itemIconPaths.has(relative) || uiFontPaths.has(relative) || uiHandPaths.has(relative) || uiIconPaths.has(relative)) : hdPath.test(relative))
       || !Number.isSafeInteger(expected?.size) || expected.size < 1 || expected.size > this.info.budgetBytes
       || !/^[a-f0-9]{64}$/.test(expected.sha256)) throw new Error('Arquivo do jogo não permitido.');
     await this.session(signal);
     const cached = await this.read(expected, signal);
-    if (cached) return cached;
+    if (cached) { onProgress?.(cached.byteLength); return cached; }
     const response = await fetch(path, { credentials: 'same-origin', cache: 'no-store', signal });
     if (!response.ok) throw new Error(response.status === 401 ? 'Sua sessão expirou. Entre novamente.' : 'Um arquivo do jogo não pôde ser baixado.');
-    const bytes = await response.arrayBuffer();
+    const bytes = onProgress && response.body ? await readCounting(response.body, expected.size, onProgress) : await response.arrayBuffer();
     if (bytes.byteLength !== expected.size || await assetSHA256(bytes) !== expected.sha256) throw new Error('O arquivo recebido está incompleto. Reabra o jogo para baixar novamente.');
     abort(signal); this.info.downloads++;
     await this.store(expected, bytes, signal);

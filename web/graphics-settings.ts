@@ -1,5 +1,6 @@
 import { DEFAULT_GRAPHICS, type GraphicsSettings, type GraphicsState, type NativeGame } from '../shared/contracts';
 import { pulseHaptic } from './haptics';
+import { optionRow } from './option-rows';
 
 const storageKey = 'elysium.graphics';
 
@@ -14,59 +15,27 @@ export function readGraphicsSettings(): GraphicsSettings {
   return { ...DEFAULT_GRAPHICS };
 }
 
-export type GraphicsPanel = { element: HTMLDetailsElement; refresh(remember?: boolean): void };
+export type GraphicsPanel = { element: HTMLElement; refresh(remember?: boolean): void };
 
 /** Preferences are stored only after the native renderer reports its result. */
 export function createGraphicsPanel(getNative: () => NativeGame | null): GraphicsPanel {
-  const element = document.createElement('details');
-  element.className = 'graphics-settings';
-  const summary = document.createElement('summary');
-  summary.textContent = 'Visual do jogo';
-  const content = document.createElement('div');
-  content.className = 'graphics-content';
-  const resolution = document.createElement('fieldset');
-  const legend = document.createElement('legend');
-  legend.textContent = 'Resolução';
-  const resolutions = document.createElement('div');
-  resolutions.className = 'resolution-options';
-  const radios = ([1, 2, 3] as const).map(value => {
-    const label = document.createElement('label');
-    const input = document.createElement('input');
-    input.type = 'radio'; input.name = 'graphics-resolution'; input.value = String(value);
-    const text = document.createElement('span');
-    text.textContent = `${value}x`;
-    label.append(input, text); resolutions.append(label);
-    input.addEventListener('change', () => {
-      if (!input.checked) return;
-      const native = getNative();
-      if (native) void apply({ ...native.graphicsState().settings, resolution: value });
-    });
-    return input;
+  const element = document.createElement('div'); element.className = 'graphics-settings';
+  const current = () => getNative()?.graphicsState().settings;
+  const resolution = optionRow('Resolução', 'graphics-resolution', [['1', '1x'], ['2', '2x'], ['3', '3x']] as const, value => {
+    const settings = current(); if (settings) void apply({ ...settings, resolution: Number(value) as 1 | 2 | 3 });
   });
-  resolution.append(legend, resolutions);
-  const hdLabel = document.createElement('label');
-  hdLabel.className = 'hd-toggle';
-  const hdText = document.createElement('span'); hdText.textContent = 'Texturas HD';
-  const hd = document.createElement('input'); hd.type = 'checkbox'; hd.setAttribute('role', 'switch');
-  hd.addEventListener('change', () => {
-    const native = getNative();
-    if (native) void apply({ ...native.graphicsState().settings, hdTextures: hd.checked });
+  const hdRow = optionRow('Texturas HD', 'graphics-hd', [['on', 'Sim'], ['off', 'Não']] as const, value => {
+    const settings = current(); if (settings) void apply({ ...settings, hdTextures: value === 'on' });
   });
-  hdLabel.append(hdText, hd);
-  const explanation = document.createElement('p');
-  explanation.className = 'small muted';
-  explanation.textContent = 'A imagem muda; os controles mantêm o tamanho. Suas escolhas ficam neste aparelho.';
+  const radios = resolution.inputs, hdInputs = hdRow.inputs;
   const status = document.createElement('p');
-  status.className = 'graphics-status'; status.setAttribute('role', 'status');
-  const stats = document.createElement('dl'); stats.className = 'graphics-stats'; stats.hidden = true;
-  content.append(resolution, hdLabel, explanation, status, stats);
-  element.append(summary, content);
+  status.className = 'graphics-status'; status.dataset.raster = 'note'; status.setAttribute('role', 'status');
+  element.append(resolution.row, hdRow.row, status);
   let pending = false;
   let settingsKey = '';
-  let statsKey = '';
   let storageError = false;
   let available: boolean | null = null;
-  const controls = [...radios, hd];
+  const controls = [...radios, ...hdInputs];
 
   function remember(settings: GraphicsSettings): void {
     try { localStorage.setItem(storageKey, JSON.stringify(settings)); storageError = false; }
@@ -77,31 +46,10 @@ export function createGraphicsPanel(getNative: () => NativeGame | null): Graphic
     if (key !== settingsKey) {
       settingsKey = key;
       radios.forEach(radio => { radio.checked = Number(radio.value) === state.settings.resolution; });
-      hd.checked = state.settings.hdTextures;
+      hdInputs.forEach(input => { input.checked = (input.value === 'on') === state.settings.hdTextures; });
       const errors = [state.resolutionError, state.hdError].filter(Boolean);
-      const applied = `${state.ready ? 'Em uso' : 'Preparado'}: ${state.settings.resolution}x · texturas ${state.settings.hdTextures ? 'HD' : 'originais'}.`;
-      status.textContent = [applied, ...errors, storageError ? 'Aplicado nesta aba. O navegador não permitiu guardar a preferência neste aparelho.' : ''].filter(Boolean).join(' ');
+      status.textContent = [...errors, storageError ? 'Aplicado nesta aba. O navegador não permitiu guardar a preferência neste aparelho.' : ''].filter(Boolean).join(' ');
       status.classList.toggle('error', errors.length > 0 || storageError);
-      if (errors.length) element.open = true;
-    }
-    const nextStats = JSON.stringify(state.hd);
-    if (nextStats !== statsKey) {
-      statsKey = nextStats;
-      stats.hidden = !state.hd || !state.settings.hdTextures;
-      const data = state.hd;
-      if (data) {
-        const mb = (bytes: number) => `${(bytes / 1024 / 1024).toFixed(1)} MB`;
-        const values = [
-          ['Carregadas', String(data.loaded)], ['Aguardando', String(data.pending)],
-          ['Preparando', String(data.decoding)], ['Falhas', String(data.failed)],
-          ['Reduzidas', String(data.downscaled)], ['Memória gráfica', `${mb(data.gpuBytes)} / ${mb(data.budgetBytes)}`],
-        ];
-        stats.replaceChildren(...values.flatMap(([name, value]) => {
-          const term = document.createElement('dt'); term.textContent = name;
-          const detail = document.createElement('dd'); detail.textContent = value;
-          return [term, detail];
-        }));
-      } else stats.replaceChildren();
     }
   }
   function refresh(rememberEffective = false): void {
@@ -114,7 +62,7 @@ export function createGraphicsPanel(getNative: () => NativeGame | null): Graphic
       controls.forEach(control => { control.disabled = !ready; });
     }
     if (!state || !ready) {
-      if (status.textContent !== 'As opções ficam disponíveis quando o jogo abrir.') status.textContent = 'As opções ficam disponíveis quando o jogo abrir.';
+      if (status.textContent !== 'Disponível quando o jogo abrir.') status.textContent = 'Disponível quando o jogo abrir.';
       return;
     }
     render(state);
@@ -129,7 +77,7 @@ export function createGraphicsPanel(getNative: () => NativeGame | null): Graphic
     pending = true;
     element.setAttribute('aria-busy', 'true');
     controls.forEach(control => { control.disabled = true; });
-    status.textContent = 'Aplicando o visual…';
+    status.textContent = 'Aplicando...';
     settingsKey = '';
     try {
       const state = await native.configureGraphics(settings);
@@ -141,7 +89,7 @@ export function createGraphicsPanel(getNative: () => NativeGame | null): Graphic
     } catch (error) {
       if (!element.isConnected) return;
       render(native.graphicsState());
-      status.textContent += ` ${error instanceof Error ? error.message : 'Não foi possível aplicar o visual.'}`;
+      status.textContent = `${error instanceof Error ? error.message : 'Não foi possível aplicar o visual.'}`;
       status.classList.add('error');
     } finally {
       pending = false;
@@ -149,7 +97,6 @@ export function createGraphicsPanel(getNative: () => NativeGame | null): Graphic
       controls.forEach(control => { control.disabled = !getNative()?.graphicsState().ready; });
     }
   }
-  element.addEventListener('toggle', () => { if (element.open) refresh(); });
   refresh();
   return { element, refresh };
 }

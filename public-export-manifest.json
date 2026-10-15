@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "export": "public-current-state-2026-10-15",
+  "export": "public-build-h-2026-10-15",
   "scope": "Reviewed own application snapshot, operational tools and sanitized continuation documentation; no proprietary game distribution",
-  "snapshotCandidate": "b75becf",
-  "nativeIntegrationCandidate": "452e50a30e467588df6e",
+  "snapshotCandidate": "294bcc8",
+  "nativeIntegrationCandidate": "9038499072698e635f5c",
   "historicalExteriorEvidenceCandidate": "6d79af919605cb14f133",
   "historicalMultiplayerEvidenceCandidate": "63b36dc74874f0244e99",
   "upstream": {
@@ -41,20 +41,20 @@
     },
     {
       "path": "README.md",
-      "bytes": 5141,
-      "sha256": "38bd13d0a82f1b10737e909fdfe65a45224c6a962a6df775a4babf5dc8b61b77",
+      "bytes": 5434,
+      "sha256": "a4667c42427ccb8a51bf0d3700b3ad9ea34a81623bba754da4a65f0b23966519",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-current-state-2026-10-15"
+        "createdFor": "public-build-h-2026-10-15"
       }
     },
     {
       "path": "docs/continuation.md",
-      "bytes": 8192,
-      "sha256": "24165e6a7d7df75d994ad442530a34deedea6023e39cf8c6adac2ec70a91439f",
+      "bytes": 8250,
+      "sha256": "32ff04e88199687037716708ba2a8a51e7b4aeb885a07397aa0a9d8eda728e77",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-current-state-2026-10-15"
+        "createdFor": "public-build-h-2026-10-15"
       }
     },
     {
@@ -82,6 +82,15 @@
       "origin": {
         "kind": "publication-documentation-or-tooling",
         "createdFor": "public-native-ui-source-progress-2026-10-14"
+      }
+    },
+    {
+      "path": "docs/milestones/2026-10-15-build-h.md",
+      "bytes": 4515,
+      "sha256": "9ed18259ad0e31d2a7534096af4c38c22ed5107ea2307d14de6ab7c9eb49ba22",
+      "origin": {
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "public-build-h-2026-10-15"
       }
     },
     {
@@ -158,11 +167,11 @@
     },
     {
       "path": "docs/verification.md",
-      "bytes": 1456,
-      "sha256": "5e63e16c8912d8f58b4472eae310cbe1dc2e5d060fb0dc60254a422f5e26829e",
+      "bytes": 1566,
+      "sha256": "df96084e2b837bcb716d282d224762067d1660495035736830f43afa1dd44b0d",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-current-state-2026-10-15"
+        "createdFor": "public-build-h-2026-10-15"
       }
     },
     {
@@ -198,15 +207,15 @@
     },
     {
       "path": "shared/contracts.ts",
-      "bytes": 19711,
-      "sha256": "97db491d5b9eb5960ffce40eef649211df80c7879a9c348e1e3176510c2de9e0",
+      "bytes": 20025,
+      "sha256": "f552932796b5432ffd252a04713a74019e8ca63cd91c12dd03d986e391e824ad",
       "origin": {
         "kind": "project-source",
         "relativeSource": "shared/contracts.ts",
-        "sourceTree": "b75becf",
-        "nativeIntegrationCandidate": "452e50a30e467588df6e",
+        "sourceTree": "294bcc8",
+        "nativeIntegrationCandidate": "9038499072698e635f5c",
         "exportMode": "byte-identical",
-        "sourceSHA256": "97db491d5b9eb5960ffce40eef649211df80c7879a9c348e1e3176510c2de9e0"
+        "sourceSHA256": "f552932796b5432ffd252a04713a74019e8ca63cd91c12dd03d986e391e824ad"
       }
     },
     {
@@ -346,26 +355,28 @@
     },
     {
       "path": "web/checkpoint.ts",
-      "bytes": 58054,
-      "sha256": "5cc5096b043add8f96c24987245d3745b6fc929282d72eca7c0ab76a98fc41ea",
+      "bytes": 58584,
+      "sha256": "545b9f8316e576d0e036eec6ea48d643357b7120bb77c2348a2a9b77e06fa13b",
       "origin": {
         "kind": "project-source",
         "relativeSource": "web/checkpoint.ts",
-        "frozenWebCandidate": "circular-ui-icons-only-20261014",
-        "sourceSHA256": "5cc5096b043add8f96c24987245d3745b6fc929282d72eca7c0ab76a98fc41ea",
-        "exportMode": "byte-identical"
+        "sourceTree": "294bcc8",
+        "nativeIntegrationCandidate": "9038499072698e635f5c",
+        "exportMode": "byte-identical",
+        "sourceSHA256": "545b9f8316e576d0e036eec6ea48d643357b7120bb77c2348a2a9b77e06fa13b"
       }
     },
     {
       "path": "web/graphics-settings.ts",
-      "bytes": 7347,
-      "sha256": "5615f305f8fdc7827604274eb399b66cd43d4ede0f5be3dbc7a61c6df1bd799d",
+      "bytes": 4836,
+      "sha256": "2b2535b45fbcaf1648b67eb66563fe507756f711270e8068213d0a2f7be5e247",
       "origin": {
         "kind": "project-source",
         "relativeSource": "web/graphics-settings.ts",
-        "frozenWebCandidate": "circular-ui-icons-only-20261014",
-        "sourceSHA256": "5615f305f8fdc7827604274eb399b66cd43d4ede0f5be3dbc7a61c6df1bd799d",
-        "exportMode": "byte-identical"
+        "sourceTree": "294bcc8",
+        "nativeIntegrationCandidate": "9038499072698e635f5c",
+        "exportMode": "byte-identical",
+        "sourceSHA256": "2b2535b45fbcaf1648b67eb66563fe507756f711270e8068213d0a2f7be5e247"
       }
     },
     {
@@ -393,15 +404,29 @@
       }
     },
     {
+      "path": "web/option-rows.ts",
+      "bytes": 1387,
+      "sha256": "975f95b885a16263483e86ac8d7008439a82482d8847d86bb83587a92f1ae582",
+      "origin": {
+        "kind": "project-source",
+        "relativeSource": "web/option-rows.ts",
+        "sourceTree": "294bcc8",
+        "nativeIntegrationCandidate": "9038499072698e635f5c",
+        "exportMode": "byte-identical",
+        "sourceSHA256": "975f95b885a16263483e86ac8d7008439a82482d8847d86bb83587a92f1ae582"
+      }
+    },
+    {
       "path": "web/private-assets.ts",
-      "bytes": 12201,
-      "sha256": "3ca6d7e19ad236653f14d96aa568f2b9fa4216fe47e9fd0e59ace6c60199b121",
+      "bytes": 13372,
+      "sha256": "43c2cd2917bbf1306ab6a7fd213e86c6a781f3a3ec9716f4b7b8ffed28d12dff",
       "origin": {
         "kind": "project-source",
         "relativeSource": "web/private-assets.ts",
-        "frozenWebCandidate": "circular-ui-icons-only-20261014",
-        "sourceSHA256": "3ca6d7e19ad236653f14d96aa568f2b9fa4216fe47e9fd0e59ace6c60199b121",
-        "exportMode": "byte-identical"
+        "sourceTree": "294bcc8",
+        "nativeIntegrationCandidate": "9038499072698e635f5c",
+        "exportMode": "byte-identical",
+        "sourceSHA256": "43c2cd2917bbf1306ab6a7fd213e86c6a781f3a3ec9716f4b7b8ffed28d12dff"
       }
     },
     {
@@ -418,14 +443,15 @@
     },
     {
       "path": "web/world-client.ts",
-      "bytes": 48145,
-      "sha256": "2067f503f869a4e62a438a2182c2c0a55fe423211917dda55b076de5a153f390",
+      "bytes": 48348,
+      "sha256": "82540d5d45ade021900939e8560623d630e7f6d3d58f5996b312aa7e71f3a327",
       "origin": {
         "kind": "project-source",
         "relativeSource": "web/world-client.ts",
-        "frozenWebCandidate": "circular-ui-icons-only-20261014",
-        "sourceSHA256": "2067f503f869a4e62a438a2182c2c0a55fe423211917dda55b076de5a153f390",
-        "exportMode": "byte-identical"
+        "sourceTree": "294bcc8",
+        "nativeIntegrationCandidate": "9038499072698e635f5c",
+        "exportMode": "byte-identical",
+        "sourceSHA256": "82540d5d45ade021900939e8560623d630e7f6d3d58f5996b312aa7e71f3a327"
       }
     }
   ],

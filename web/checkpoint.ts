@@ -89,6 +89,12 @@ export function isCheckpointProducer(value: unknown): value is CheckpointProduce
     && Number(producer.ownTownIdentity.split(':')[0]) <= 0xffff;
 }
 
+/** The game kept the request pending (a menu or scene change has not reached a safe point). Not a failure. */
+export class CheckpointDeferredError extends Error { override readonly name = 'CheckpointDeferredError'; }
+/** The capture runs in the game iframe, whose CheckpointDeferredError is not this realm's class. */
+export const isCheckpointDeferred = (error: unknown): boolean =>
+  !!error && typeof error === 'object' && (error as { name?: unknown }).name === 'CheckpointDeferredError';
+
 /** Status, metadata and both reads are synchronous: no other native request can interleave. */
 export async function captureLiveCheckpoint(capture: LiveCheckpointCapture, files: CheckpointFiles, options: {
   signal?: AbortSignal; timeoutMs?: number; pollMs?: number;
@@ -122,7 +128,7 @@ export async function captureLiveCheckpoint(capture: LiveCheckpointCapture, file
     }
     if (status === -2) throw new Error('A cópia da cidade foi substituída antes de ficar pronta. Tente novamente.');
     if (status !== 0) throw new Error('Não foi possível copiar o progresso atual da cidade. Ele continua na memória desta aba.');
-    if (clock() >= deadline) throw new Error('A cópia do progresso atual demorou demais. Tente novamente antes de fechar a cidade.');
+    if (clock() >= deadline) throw new CheckpointDeferredError('A cópia do progresso atual aguarda um momento seguro do jogo. Tente novamente antes de fechar a cidade.');
     await wait(Math.min(poll, Math.max(1, deadline - clock())));
   }
 }

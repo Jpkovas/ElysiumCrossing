@@ -42,6 +42,8 @@ type WorldClientOptions = {
 };
 const integer = (value: unknown, maximum = Number.MAX_SAFE_INTEGER): value is number => Number.isSafeInteger(value) && (value as number) >= 0 && (value as number) <= maximum;
 const object = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value);
+/** Native commands throw from the game iframe, whose Error is not this realm's Error. */
+export const errorMessage = (error: unknown, fallback: string): string => object(error) && typeof error.message === 'string' ? error.message : fallback;
 const target = (value: unknown): boolean => object(value) && integer(value.x, WORLD_WIDTH - 1) && integer(value.z, WORLD_HEIGHT - 1);
 function validEntities(value: unknown): boolean {
   return Array.isArray(value) && value.length <= WORLD_WIDTH * WORLD_HEIGHT && value.every(entity => object(entity)
@@ -693,7 +695,7 @@ export class WorldClient {
       } catch (error) {
         if (this.epoch !== epoch) return;
         this.failCraft('A receita aguarda sincronização. Confira os bolsos antes de repetir.');
-        this.options.onError(error instanceof Error ? error.message : 'O jogo não aplicou o estado confirmado. A interação aguarda sincronização.', 'world_apply_failed');
+        this.options.onError(errorMessage(error, 'O jogo não aplicou o estado confirmado. A interação aguarda sincronização.'), 'world_apply_failed');
         this.recovering = false;
         if (this.applyFailed) {
           this.paused = true;
@@ -737,7 +739,7 @@ export class WorldClient {
           this.deliveries = []; this.pendingSnapshot = null;
           this.options.native.worldEnabled(false);
           this.failCraft('A receita confirmada aguarda sincronização. Confira os bolsos antes de repetir.');
-          this.options.onError(error instanceof Error ? error.message : 'A interação confirmada aguarda sincronização.', 'world_apply_failed');
+          this.options.onError(errorMessage(error, 'A interação confirmada aguarda sincronização.'), 'world_apply_failed');
           this.changed();
           return; // The durable ID remains available for reconnect, without an unbounded replay loop.
         }

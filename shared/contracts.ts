@@ -237,14 +237,18 @@ export interface NativeGame {
   choose(index: number): void;
   uiInsets(insets: NativeUIInsets): void;
   uiSnapshot(): TouchUI;
+  /** m_banti.c: the clock alpha drawn this frame, 0 when banti_draw skips it. */
+  uiClockAlpha(): number;
   configureGraphics(settings: GraphicsSettings): Promise<GraphicsState>;
   graphicsState(): GraphicsState;
   controlMode(mode: ControlMode): void;
   selectedControlMode(): ControlMode;
 }
 
-/* HTTP endpoints (all private except login and health; JSON errors {error, code}):
- * POST /api/login {phone, code} -> Session; POST /api/logout -> 204
+/* HTTP endpoints (all private except signup, login and health; JSON errors {error, code}):
+ * POST /api/signup/invite {invite, name} -> {user, options} + enrollment cookie (no session)
+ * POST /api/signup/passkey {credential} -> Session; POST /api/login/options -> {options}
+ * POST /api/login {credential} -> Session (passkey only); POST /api/logout -> 204
  * GET /api/session -> Session; GET /api/towns -> {towns: Town[]}
  * POST /api/play/lease -> PlayLease; PUT /api/play/lease {token} renews
  * DELETE /api/play/lease {token} releases

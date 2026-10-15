@@ -92,7 +92,8 @@ export type User = { id: string; name: string; phone: string; townName: string }
 export type Town = { id: string; ownerName: string; name: string; revision: number; online: boolean; hasSave: boolean; landId?: number; identity?: string };
 export type Session = { user: User; serverTime: number };
 export type SaveVersion = { revision: number; sha256: string; size: number; createdAt: number };
-export type Position = { x: number; y: number; z: number; rotation: number; animation: number; rootMotionFlags: 0 | 2 | 4 | 6; scene: number; character: number; town?: number; townIdentity?: string; visitor?: boolean };
+/** Visible avatar pose only: animation layers, frame, loop and the drawable tool in hand (-1 none). Grants nothing. */
+export type Position = { x: number; y: number; z: number; rotation: number; animation: number; animation1: number; partTable: number; frame: number; speed: number; loop: boolean; item: number; rootMotionFlags: 0 | 2 | 4 | 6; scene: number; character: number; town?: number; townIdentity?: string; visitor?: boolean };
 export type Ghost = Position & { id: string; name: string; emote: Emote | '' };
 /** Revision of the town's last server-confirmed GCI; no save bytes travel through the room. */
 export type TownSnapshot = { players: Ghost[]; revision: number };
@@ -116,7 +117,7 @@ export type RoomAuthorization = { userId: string; sessionDigest: string; leaseDi
 export type PlayLease = { token: string; revision: number; expiresAt: number; nativeTownId: number; serverTime: number };
 
 export type GraphicsSettings = { resolution: 1 | 2 | 3; hdTextures: boolean };
-export const DEFAULT_GRAPHICS: GraphicsSettings = { resolution: 1, hdTextures: true };
+export const DEFAULT_GRAPHICS: GraphicsSettings = { resolution: 1, hdTextures: false };
 export type HDTextureStats = {
   enabled: boolean; indexed: number; pending: number; decoding: number;
   loaded: number; failed: number; evicted: number; downscaled: number;
@@ -153,7 +154,7 @@ export type TouchUI = {
   tools?: { equipped: number; equippedLabel: string; storeSlot: number | null; items: { slot: number; item: number; label: string }[] };
   toolPending?: boolean;
   /** Transient native touch instruction; no gameplay state or input action. */
-  touchNotice?: 'tree_tool';
+  touchNotice?: 'tree_tool' | 'pockets_full';
   /** Native placement preview; it never consumes or persists an item. */
   exteriorPreview?: { x: number; z: number; rotation: 0 | 1 | 2 | 3; valid: boolean; pending: boolean };
   /** Present only when the native drawing editor can sample a canvas color. */
@@ -258,7 +259,7 @@ export interface NativeGame {
  * Colyseus joinOrCreate('town', {token, townId}); messages: position(Position), chat({text}),
  * emote({emote}), snapshot(TownSnapshot), chat({id,name,text}), error({code,message}).
  * Room delegates verifyTicket, getTown, setPresence(townId,userId,online) to API service.
- * C bridge exports ec_position_json, ec_set_ghost(slot,x,y,z,rot,anim,rootMotionFlags,scene,char,nameUtf8,emoteId),
+ * C bridge exports ec_position_json, ec_set_ghost(slot,x,y,z,rot,anim,anim1,partTable,frame,speed,loop,item,rootMotionFlags,scene,char,nameUtf8,emoteId),
  * ec_remove_ghost(slot), ec_set_server_time(seconds), ec_set_visitor(bool).
  * ec_set_new_town_id(id) receives the server reservation before new-town creation.
  * callMain(['--direct-start', residentName]) enters through original native title

@@ -1,6 +1,7 @@
 # Continuidade de implementação
 
-Este é o handoff público do estado de 14/10/2026. Ele explica o que preservar
+Este é o handoff público do estado de 14/10/2026, com a candidata de 15/10
+registrada em [marco da candidata](milestones/2026-10-15-lote-c.md). Ele explica o que preservar
 e a ordem de integração, sem transportar o ambiente privado. Consulte primeiro
 o [estado atual](milestones/2026-10-14-current-state.md), a
 [arquitetura](modernization/architecture-baseline.md), a
@@ -31,10 +32,13 @@ para o repositório público.
 
 ## Base que deve ser preservada
 
-O candidato local fechado é Native `fc29e6f82c26c626563d` com Web
-`circular-ui-icons-only-20261014`. A roda circular sem legendas está aprovada
-e foi conferida no jogo. Os incrementos mais recentes de materiais, sombras,
-fundo do botão da roda e editor de desenhos não fazem parte desse pacote.
+A candidata local é a árvore `b75becf` com Native `452e50a30e467588df6e`,
+sobre a roda sem legendas aprovada (Native anterior `fc29e6f82c26c626563d`,
+Web `circular-ui-icons-only-20261014`). Ela já integra sombras, editor de
+desenhos, fundo do botão da roda, perfil gráfico básico, avatar remoto com
+ferramenta e Guardar móvel externo; materiais e caderno ainda não. Os itens 2 a
+4 abaixo foram implementados nessa candidata; o que falta verificar no jogo está
+no marco.
 
 O fluxo mutável existente é input semântico → intenção Native → admissão →
 cliente de mundo → validação e transação canônicas → persistência e recibo →

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "export": "public-current-state-2026-10-14",
+  "export": "public-current-state-2026-10-15",
   "scope": "Reviewed own application snapshot, operational tools and sanitized continuation documentation; no proprietary game distribution",
-  "snapshotCandidate": "circular-ui-icons-only-20261014",
-  "nativeIntegrationCandidate": "fc29e6f82c26c626563d",
+  "snapshotCandidate": "b75becf",
+  "nativeIntegrationCandidate": "452e50a30e467588df6e",
   "historicalExteriorEvidenceCandidate": "6d79af919605cb14f133",
   "historicalMultiplayerEvidenceCandidate": "63b36dc74874f0244e99",
   "upstream": {
@@ -41,20 +41,20 @@
     },
     {
       "path": "README.md",
-      "bytes": 4732,
-      "sha256": "f184ce2b5f5f313ec9f7c96361fb87a1955677cb6b071582e6d5afc73791a576",
+      "bytes": 5141,
+      "sha256": "38bd13d0a82f1b10737e909fdfe65a45224c6a962a6df775a4babf5dc8b61b77",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-current-state-2026-10-14"
+        "createdFor": "public-current-state-2026-10-15"
       }
     },
     {
       "path": "docs/continuation.md",
-      "bytes": 7918,
-      "sha256": "ce55c4b19cff82c0486168e593d7e66d5946a89af2ab7102db88576d3d48f099",
+      "bytes": 8192,
+      "sha256": "24165e6a7d7df75d994ad442530a34deedea6023e39cf8c6adac2ec70a91439f",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-current-state-2026-10-14"
+        "createdFor": "public-current-state-2026-10-15"
       }
     },
     {
@@ -82,6 +82,15 @@
       "origin": {
         "kind": "publication-documentation-or-tooling",
         "createdFor": "public-native-ui-source-progress-2026-10-14"
+      }
+    },
+    {
+      "path": "docs/milestones/2026-10-15-lote-c.md",
+      "bytes": 3608,
+      "sha256": "4e5a0dfb8b7ac8618b946424e56036ad1a4041c81d073c02ebb6f2051b56f984",
+      "origin": {
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "public-current-state-2026-10-15"
       }
     },
     {
@@ -149,11 +158,11 @@
     },
     {
       "path": "docs/verification.md",
-      "bytes": 2279,
-      "sha256": "6e3306c80681d323f92e1e2138b34e2da9558848b2bc9cd8422c301eb039fb49",
+      "bytes": 1456,
+      "sha256": "5e63e16c8912d8f58b4472eae310cbe1dc2e5d060fb0dc60254a422f5e26829e",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-current-state-2026-10-14"
+        "createdFor": "public-current-state-2026-10-15"
       }
     },
     {
@@ -189,14 +198,15 @@
     },
     {
       "path": "shared/contracts.ts",
-      "bytes": 19437,
-      "sha256": "ffa081f877e7226830132e3550cf15ff100b56ca6bbee7235ed13d330aafb57d",
+      "bytes": 19711,
+      "sha256": "97db491d5b9eb5960ffce40eef649211df80c7879a9c348e1e3176510c2de9e0",
       "origin": {
         "kind": "project-source",
         "relativeSource": "shared/contracts.ts",
-        "frozenWebCandidate": "circular-ui-icons-only-20261014",
-        "sourceSHA256": "ffa081f877e7226830132e3550cf15ff100b56ca6bbee7235ed13d330aafb57d",
-        "exportMode": "byte-identical"
+        "sourceTree": "b75becf",
+        "nativeIntegrationCandidate": "452e50a30e467588df6e",
+        "exportMode": "byte-identical",
+        "sourceSHA256": "97db491d5b9eb5960ffce40eef649211df80c7879a9c348e1e3176510c2de9e0"
       }
     },
     {
@@ -439,6 +449,11 @@
     "Final icons-only wheel visual is accepted in portrait, landscape and desktop; later reported UI and multiplayer defects remain open",
     "Literal current snapshot still includes the rejected three-apple crafting prototype; wood/iron replacements are not integrated",
     "Operational tools require the matching private backend/package/providers; syntax verification is not runtime or deployment qualification",
-    "Source-only materials, shadows and recent input repairs are not represented as merged or accepted gameplay"
-  ]
+    "Candidate b75becf integrates shadows, pattern-editor repairs, remote avatar pose, exterior Put away and the basic graphics default; fish catch with credit and several of these flows in game remain unverified",
+    "Materials (wood/iron), recipe notebook and the final barrel recipe are not part of candidate b75becf"
+  ],
+  "previousSnapshotCandidate": {
+    "web": "circular-ui-icons-only-20261014",
+    "native": "fc29e6f82c26c626563d"
+  }
 }

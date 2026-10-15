@@ -10,12 +10,17 @@ atual**. Não contém dump, assets proprietários, saves ou um jogo executável.
 A integração Native, o backend completo e parte da UI permanecem no workspace
 privado. O [mapa das fontes](docs/public-source-scope.md) identifica cada limite.
 
-## Estado em 14/10/2026
+## Estado em 15/10/2026
 
-A composição local fechada é Native `fc29e6f82c26c626563d` com Web
-`circular-ui-icons-only-20261014`. Os módulos da aplicação publicados aqui
-correspondem byte a byte a esse snapshot. Isso não transforma o subconjunto
-público em um build independente.
+A candidata local do primeiro lançamento é a árvore `b75becf` com Native
+`452e50a30e467588df6e`. Os módulos da aplicação publicados aqui correspondem
+byte a byte a essa árvore. Isso não transforma o subconjunto público em um
+build independente. [Marco da candidata](docs/milestones/2026-10-15-lote-c.md):
+viagem, disputa por fruta, avatar remoto com ferramenta na mão e sombras
+verificados com dois clientes; captura de peixe com crédito ainda pendente.
+
+O histórico abaixo descreve o estado de 14/10 (Native `fc29e6f82c26c626563d`,
+Web `circular-ui-icons-only-20261014`):
 
 - A roda circular sem legendas foi conferida no jogo em retrato, paisagem e
   desktop. Equipar e guardar a ferramenta preservaram os recursos canônicos.
@@ -43,6 +48,7 @@ modernização continua ativo em paralelo; somente WhatsApp fica para depois.
 O teste físico de iPhone foi dispensado como requisito, sem substituir as
 verificações de navegador, touch, proporções, persistência e multiplayer.
 
+- [Candidata do primeiro lançamento (15/10)](docs/milestones/2026-10-15-lote-c.md)
 - [Estado detalhado e pendências](docs/milestones/2026-10-14-current-state.md)
 - [Handoff público para continuidade](docs/continuation.md)
 - [Arquitetura e limites](docs/modernization/architecture-baseline.md)

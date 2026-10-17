@@ -1,3 +1,6 @@
+> Registro de planejamento anterior. A base vigente e a ordem de retomada estão
+> em [continuation.md](../continuation.md), atualizado em 17/10/2026.
+
 # Roadmap e critérios de lançamento
 
 Revisão pública de 14/10/2026. O [plano completo](plan-v1.md) continua ativo.

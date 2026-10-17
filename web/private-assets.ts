@@ -1,3 +1,4 @@
+import { ORIGINAL_ITEM_ICON_IDS } from '../shared/item-icons.ts';
 export type AssetDigest = { size: number; sha256: string };
 export const PRIVATE_ASSET_BUDGETS = { core: 64 * 1024 * 1024, hd: 96 * 1024 * 1024 } as const;
 export const PRIVATE_ASSET_DATABASE = 'elysium-private-assets';
@@ -6,8 +7,8 @@ export type AssetAccess = { prefix: '/game' | '/presentation/assets'; gate: '/ap
 export type PrivateAssetState = { budgetBytes: number; bytes: number; hits: number; downloads: number; evicted: number; storageError: string | null };
 type Metadata = { key: string; size: number; used: number };
 const corePaths = new Set(['/index.js', '/index.wasm', '/index.data', '/nipplejs.min.js', '/rom.ciso', '/mods/forest_1st.arc', '/mods/forest_2nd.arc', '/mods/item-names.bin']);
-const itemIconPaths = new Set(['/item-icons/8704.png', '/item-icons/8705.png', '/item-icons/8706.png', '/item-icons/8707.png', '/item-icons/8761.png', '/item-icons/8762.png', '/item-icons/8763.png', '/item-icons/8764.png', '/item-icons/8765.png', '/item-icons/8766.png', '/item-icons/8767.png', '/item-icons/8768.png', '/item-icons/8769.png', '/item-icons/8770.png', '/item-icons/8771.png', '/item-icons/10240.png', '/item-icons/10241.png', '/item-icons/10242.png', '/item-icons/10243.png', '/item-icons/10244.png', '/item-icons/10247.png', '/item-icons/4696.png']);
-const uiFontPaths = new Set(['/ui-font/atlas.png']);
+const itemIconPaths = new Set(ORIGINAL_ITEM_ICON_IDS.map(id => `/item-icons/${id}.png`));
+const uiFontPaths = new Set(['/ui-font/atlas-sd.png', '/ui-font/atlas-hd.png']);
 const uiHandPaths = new Set(['/ui-hand/atlas-1.png', '/ui-hand/atlas-2.png', '/ui-hand/atlas-3.png']);
 const uiIconPaths = new Set(['/ui-icons/atlas-sd.png', '/ui-icons/atlas-hd.png']);
 const hdPath = /^\/textures\/[a-zA-Z0-9-]{1,80}\/tex1_\d+x\d+_(?:m_)?[a-f0-9]{16}(?:_(?:[a-f0-9]{16}|\$))?_\d+\.dds$/;

@@ -1,133 +1,84 @@
-# Continuidade de implementação
+# Retomada — Deluxe principal, 17/10/2026
 
-Este é o handoff público do estado de 14/10/2026, com as candidatas de 15/10
-registradas no [marco do lote C](milestones/2026-10-15-lote-c.md) e no
-[marco da build H](milestones/2026-10-15-build-h.md). Ele explica o que preservar
-e a ordem de integração, sem transportar o ambiente privado. Consulte primeiro
-o [estado atual](milestones/2026-10-14-current-state.md), a
-[arquitetura](modernization/architecture-baseline.md), a
-[paridade funcional](modernization/feature-parity.md), o
-[roadmap](modernization/implementation-roadmap.md) e o
-[escopo das fontes públicas](public-source-scope.md).
+## Decisão e fonte de verdade
 
-## O que este repositório permite continuar
+O usuário promoveu a composição experimental Deluxe a versão principal e pediu
+publicação do progresso com pendências documentadas. A decisão substitui a build H
+como direção de desenvolvimento; não afirma QA completo nem autoriza deploy.
 
-A publicação contém código próprio selecionado, contratos e documentação.
-Ela **não reconstrói nem inicia o jogo completo**. A ausência de componentes
-não decorre apenas de arquivos de mídia: a integração Native, partes do
-backend e Web e seus providers ainda dependem de revisão de origem por arquivo
-ou de material privado. Não adicionar stubs, caminhos alternativos ou APIs
-incompatíveis para fingir que o recorte é um produto executável.
+No workspace completo, a fonte agora é `canonical/`, branch `main`. O laboratório
+original e as outras worktrees foram preservados. A raiz encaminha os comandos
+npm à fonte canônica; ler o `AGENTS.md` e `docs/continuation.md` locais antes de
+retomar. Não sobrepor árvores antigas nem usar um handoff histórico como baseline.
 
-Dump, executáveis, textos e tabelas extraídos, modelos, texturas, áudio, fonte,
-ícones, atlas e poses da mão permanecem fora desta árvore. Também ficam fora
-saves, checkpoints, bancos, certificados, credenciais, sessões e registros
-privados de execução. Bibliotecas e ferramentas conservam suas licenças;
-nenhum código de terceiros deve ser incorporado por mera disponibilidade.
-Não foi atribuída uma licença nova ao projeto por inferência.
+Composição: Native 33 / Web 35 / backend 24, projetor 10 e transferência 29.
+`current-version.json` local e os manifestos fixam fontes/artefatos por hash.
+O GitHub contém um subconjunto próprio, não os providers privados nem o executável.
 
-A continuidade completa exige acesso autorizado ao workspace privado e seus
-contratos de integração. Este documento não substitui o handoff local com
-artefatos e evidências detalhadas, que não deve ser copiado indiscriminadamente
-para o repositório público.
+## Próximo passo: entrada do segundo morador
 
-## Base que deve ser preservada
+PrioridadeP0: o primeiro boot de um morador já vinculado, em perfil independente,
+recebeu HTTP409 em `/api/saves` antes de movimento. O iframe Native foi retirado
+pela recuperação. A cópia C/B/contexto ainda precisa ser exportada e comparada
+com o canônico. Não há causa demonstrada; não apagar journal, normalizar bytes
+ou afrouxar guards para atravessar esse ponto.
 
-A candidata local é a árvore `b75becf` com Native `452e50a30e467588df6e`,
-sobre a roda sem legendas aprovada (Native anterior `fc29e6f82c26c626563d`,
-Web `circular-ui-icons-only-20261014`). Ela já integra sombras, editor de
-desenhos, fundo do botão da roda, perfil gráfico básico, avatar remoto com
-ferramenta e Guardar móvel externo; materiais e caderno ainda não. Os itens 2 a
-4 abaixo foram implementados nessa candidata; o que falta verificar no jogo está
-no marco.
+A única cópia local ainda não exportada está no IndexedDB de uma janela incógnita
+própria do Dia, que foi mantida aberta. Não fechar essa janela antes do backup.
+A proteção self-XSS do Console bloqueou a colagem do diagnóstico readonly;
+nenhum código foi executado para ultrapassá-la. A liberação exige intervenção
+humana e ficou pendente. A autenticação autorizada no lobby já havia passado.
 
-O fluxo mutável existente é input semântico → intenção Native → admissão →
-cliente de mundo → validação e transação canônicas → persistência e recibo →
-replicação → aplicação validada no Native. Reutilizar o transporte, a
-autoridade, o SQLite e o journal existentes. Não criar motor, banco, protocolo,
-camada de compatibilidade ou segunda lógica de inventário por preferência.
-O servidor permanece autoridade sobre saves e o jogo não continua offline.
+Após obter a cópia integral com buffers e hashes:
 
-Não montar uma nova build misturando pastas ou versões arbitrárias. Para C
-alterado, produzir o Native e a ABI correspondentes; não reutilizar offsets
-antigos sem medir o resultado. Uma alteração Web isolada só reaproveita o
-Native anterior quando a identidade e o contrato forem comprovadamente
-preservados. Não tratar compilação, fixture ou resumo de agente como prova do
-fluxo do jogador.
+1. Congelar o canônico e reproduzir a recusa com C/B/contexto originais.
+2. Corrigir somente a causa demonstrada, mantendo autoridade, identidade e
+   conservação dos demais moradores, casas, mapa e inventários.
+3. Repetir a entrada desde perfil independente, sem edição de save ou RAM.
+4. Reunir os dois moradores no jardim, observar a mesma rega/recibo, desconectar
+   e reconectar, sair normalmente, reiniciar e reabrir; conferir conservação.
 
-## Primeiras entregas recomendadas
+O aviso `JKRAramPiece.cpp:102: Abort.` foi rastreado no WASM como diagnóstico não
+fatal de alinhamento 32. Ele não demonstra crash causal nem explica o HTTP409.
+Sem os argumentos históricos da transferência, não declarar essa DMA verificada.
 
-1. **Inventariar antes de operar.** Conferir branch/remoto, trabalho pendente,
-   artefatos, serviços e operador de cada sessão. Preservar progresso útil e
-   não dirigir a sessão de outra pessoa. Registros históricos não provam que
-   um processo continua ativo. Testes devem ficar mudos; ampliar instâncias
-   somente após avaliar a memória disponível.
-2. **Fechar os reparos pequenos.** Estabilizar a reserva de HUD do editor de
-   desenhos durante o traço, confirmar a ferramenta real quando a categoria
-   é escolhida e restaurar o fundo do botão da roda. A precisão da grade não
-   deve ser reescrita com base em hipóteses já refutadas pelo diagnóstico.
-3. **Convergir apresentação multiplayer.** Revisar sombras de visitante e
-   contato dos móveis. Investigar travadas/piscadas, ferramenta segurada e
-   ações visíveis no outro cliente, coordenando as mesmas regiões da bridge.
-   O contrato atual não representa a ferramenta segurada; isso é uma lacuna
-   concreta, mas não uma explicação confirmada para todo defeito de animação.
-4. **Conferir a recolha externa.** Exercitar a ação existente com proprietário,
-   visitante, bolso cheio, distância e orientação. Distinguir móvel posicionado
-   de item largado. Corrigir a descoberta e o acionamento touch sem permitir
-   que o visitante remova mobiliário protegido.
-5. **Integrar materiais de ponta a ponta.** Revisar coleta, consumo, pilhas,
-   nomes/ícones, desenho por estação, drop/pickup e o último golpe da ferramenta.
-   A proposta reserva a coleta antes do desgaste e aplica o desgaste original
-   uma vez após a conclusão; ainda requer revisão e teste real. Não liberar
-   emissão apenas porque o ícone e o nome já existem.
-6. **Entregar o caderno em base própria.** Preservar contratos e providers
-   técnicos do trabalho anterior, descartando o desenho rejeitado que copiava
-   a roda. Gerar o novo alvo antes de redesenhar. O novo ImageGen ainda não
-   foi executado.
-7. **Fechar a release dos amigos.** Verificar somente caminhos alterados e
-   dependências relevantes, preservar as provas válidas e executar um roteiro
-   integrado curto para os sete aceites. Concluir pesca natural, disputa por
-   recurso, recuperação e operação antes de declarar o lançamento pronto.
+## Depois: regressões e preparação para amigos
 
-Materiais têm regra e autoridade próprias: o barril de referência usa cinco
-madeiras e dois ferros. O protótipo de três maçãs ainda presente no candidato
-é legado rejeitado, não alternativa de produção. Obter materiais novos deve
-ser funcional; renomear um item antigo não resolve a dependência. Ações de
-inventário, chão e crafting devem usar operações canônicas existentes, com
-consumo atômico, capacidade validada e proteção contra duplicação.
+- P1: visita e retorno entre vilas na composição final, com roupa, pele e desenho
+  remotos, interação compartilhada e conservação após reconexão.
+- P1: corrigir fixtures da suíte/typecheck global que ainda usam contratos antigos;
+  os 53 diagnósticos atuais ficam em testes, sem erro de produto nessa execução.
+- P1: rever módulos Deluxe não exercitados/stubs e sua origem. Build/link não
+  comprova design, storage, ordinances, museu ou todas as espécies.
+- P1: preparar pacote fechado, repetir checks no host alvo e no domínio, somente
+  quando houver autorização de deploy. PC/Cloudflare/produção não foram alterados.
+- Futuro: crafting além das três receitas, extensão do ranking, terreno amplo e
+  WhatsApp. Não ampliar esses sistemas para adiar a primeira versão para amigos.
 
-## Processo visual obrigatório
+## Execução local e dados
 
-Toda família de interface nova ou redesenhada segue: observar a UI nativa do
-GameCube e a referência funcional de New Horizons → gerar propostas com
-ImageGen → escolher o alvo → implementar → comparar com captura executável.
-Aplicar também às telas do site e painéis já redesenhados. Cada família tem
-composição própria; a roda aprovada não é o fundo universal de outros menus.
+O launcher principal usa relógio real e store novo `data/deluxe-main-v7/`.
+Saves antigos não são migrados. O laboratório de reprodução mantém seu store e
+relógio +156 h separados; isso foi um cenário de QA, não dias reais decorridos.
+A origem local 3478 é reutilizada, sem trocar portas desnecessariamente.
 
-Preservar formas orgânicas e arredondadas, superfícies planas, tipografia,
-cores e animações do jogo. Evitar cartões modernos com relevo ou excesso de
-nitidez. Reutilizar fonte, ícones por ID, mão, raster e input existentes,
-mantendo os recursos privados protegidos. O raster acompanha o fator aceito
-1x/2x/3x do Native, sem DPR; legibilidade, alvos touch e nomes acessíveis
-continuam adequados. Retrato vem primeiro, com paisagem e desktop conferidos.
-Correções conservadoras de coordenadas, tamanho, ferramentas ou fundo perdido
-podem avançar preservando o desenho aprovado.
+Antes de rodar, `npm run verify:current` no workspace completo confere 127 hashes
+iniciais de fontes/artefatos. `npm start` da raiz inicia a fonte canônica com os
+providers privados existentes. Ao modificar componentes, produzir novos pins e
+artefatos deliberadamente; não contornar divergência de hash ou servir uma build
+antiga com o nome da nova.
 
-## Escopo e critério de conclusão
+## Evidências e histórico preservado
 
-O [plano de modernização](modernization/plan-v1.md) integra o escopo original.
-Os marcos 0–6 permanecem ativos, com a primeira build para amigos como prioridade
-de entrega e modernização em paralelo. Apenas WhatsApp fica para depois;
-validação física em iPhone foi dispensada como requisito de conclusão.
+O workspace privado conserva a fila, o relatório atual, o relatório de pesca,
+capturas, recibos, replays e os manifestos da composição. O marco público resume
+os resultados sem copiar dados privados. As verificações antigas permanecem
+atribuídas às suas builds, sem serem promovidas a prova da versão atual.
 
-Para cada incremento, registrar fonte e versão da referência, mudanças,
-impacto em multiplayer/persistência, testes executados e limitações. Separar
-**implementado**, **verificado**, **publicado**, **parcial** e **inconclusivo**.
-Não ampliar automaticamente uma prova de visita para animações, pesca ou todas
-as ações; não ampliar um restore íntegro para uma sessão de jogo restaurada.
+A base anterior foi preservada em branch de arquivo, bundle completo verificado
+e arquivo físico com 7.199 arquivos conferidos. Worktrees e WIP não relacionados
+permaneceram no lugar. O laboratório fonte não foi modificado na promoção.
 
-Antes de nova publicação, revisar cada arquivo e sua origem, validar manifesto,
-índice e árvore, manter recursos privados fora da exportação e conferir o SHA
-remoto após o envio. Publicar fontes e relatórios é uma operação distinta de
-implantar o jogo. Não anunciar um link de jogo ou prontidão de produção antes
-de validar o serviço e obter a autorização correspondente.
+Nenhum servidor de QA próprio ficou em execução. A janela incógnita citada é a
+exceção necessária para preservar o journal ainda não exportado. Reavaliar esse
+estado ao retomar; o armazenamento do navegador pode ter mudado desde este handoff.

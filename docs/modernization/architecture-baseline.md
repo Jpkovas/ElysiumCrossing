@@ -1,3 +1,6 @@
+> Registro de planejamento anterior. A base vigente e a ordem de retomada estão
+> em [continuation.md](../continuation.md), atualizado em 17/10/2026.
+
 # Arquitetura de referência
 
 Auditoria inicial de 12/10, atualizada para esta exportação em 14/10/2026.

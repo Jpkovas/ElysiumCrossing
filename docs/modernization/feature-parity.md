@@ -1,3 +1,6 @@
+> Registro de planejamento anterior. A base vigente e a ordem de retomada estão
+> em [continuation.md](../continuation.md), atualizado em 17/10/2026.
+
 # Paridade funcional
 
 Revisão pública de 14/10/2026. Os estados descrevem a integração local; não

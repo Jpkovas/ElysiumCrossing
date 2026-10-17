@@ -1,3 +1,4 @@
+import { NATIVE_SAVE_LAYOUT as SAVE } from '../shared/native-save-layout.ts';
 import { CHECKPOINT_TOWN_BYTES, PASSPORT_BYTES, NES_SAVE_BYTES, validNES, checkpointPacket, checkpointPayloads, type NativeCheckpoint, type NativeLiveCheckpoint, type CheckpointProviderState, type CheckpointProducer, type CheckpointLineage } from '../shared/contracts.ts';
 import { checkpointRecoveryIntentJSON, type CheckpointRecoveryIntent, type CheckpointRecoveryRequest, type CheckpointRecoveryReceipt } from '../shared/checkpoint-recovery.ts';
 
@@ -127,6 +128,8 @@ export async function captureLiveCheckpoint(capture: LiveCheckpointCapture, file
         ...(producer.repaymentWitness ? { repaymentWitness: true, context: { ...producer.context! } } : {}) };
     }
     if (status === -2) throw new Error('A cópia da cidade foi substituída antes de ficar pronta. Tente novamente.');
+    // A scene change (entering a house, a new resident) cancels the copy before a safe point.
+    if (status === -3) throw new CheckpointDeferredError('A cópia do progresso atual aguarda um momento seguro do jogo. Tente novamente antes de fechar a cidade.');
     if (status !== 0) throw new Error('Não foi possível copiar o progresso atual da cidade. Ele continua na memória desta aba.');
     if (clock() >= deadline) throw new CheckpointDeferredError('A cópia do progresso atual aguarda um momento seguro do jogo. Tente novamente antes de fechar a cidade.');
     await wait(Math.min(poll, Math.max(1, deadline - clock())));
@@ -140,6 +143,8 @@ export type CheckpointCapture = {
   gameInstance: string; producer: CheckpointProducer | null;
   /** Scheduling/preservation marker from the native capture; never an event allegation. */
   repaymentWitness?: true;
+  /** Pre-room entry copy: no gameplay yet, so it is unbound until a later LIVE contains it. */
+  entry?: true;
 };
 export type CheckpointQueue = {
   storedCheckpoint: NativeCheckpoint | null; storedRevision: number;
@@ -180,17 +185,18 @@ function cloneCheckpointCapture(value: CheckpointCapture): CheckpointCapture {
 }
 export function createCheckpointCapture(checkpoint: NativeCheckpoint, context: CheckpointProviderState | null,
   baseline: CheckpointBaseline, nativeToken: number, source: 'live' | 'commit', gameInstance: string, producer: CheckpointProducer | null,
-  repaymentWitness?: true): CheckpointCapture {
+  repaymentWitness?: true, entry?: true): CheckpointCapture {
   if (!isCheckpoint(checkpoint) || (context !== null && !isCheckpointContext(context)) || (context === null && source !== 'commit')
     || !Number.isSafeInteger(nativeToken) || (source === 'live' ? nativeToken <= 0 : nativeToken === 0)
     || !Number.isSafeInteger(baseline.revision) || baseline.revision < 0
     || (baseline.checkpoint !== null && !isCheckpoint(baseline.checkpoint)) || typeof gameInstance !== 'string' || !gameInstance
     || context && context.gameInstance !== gameInstance || producer !== null && !isCheckpointProducer(producer)
-    || source === 'live' && producer === null || repaymentWitness !== undefined && (repaymentWitness !== true || source !== 'live' || checkpoint.passport !== null)) throw new Error('A origem da cópia atual do progresso está incompleta.');
+    || source === 'live' && producer === null || repaymentWitness !== undefined && (repaymentWitness !== true || source !== 'live' || checkpoint.passport !== null)
+    || entry !== undefined && (entry !== true || source !== 'commit' || context !== null || producer === null || checkpoint.passport !== null)) throw new Error('A origem da cópia atual do progresso está incompleta.');
   return Object.freeze({ id: crypto.randomUUID(), checkpoint: cloneCheckpoint(checkpoint), context: context ? Object.freeze({ ...context }) : null,
     baseline: Object.freeze({ revision: baseline.revision, checkpoint: baseline.checkpoint ? cloneCheckpoint(baseline.checkpoint) : null }),
     nativeToken, source, createdAt: Date.now(), gameInstance, producer: producer ? Object.freeze({ ...producer }) : null,
-    ...(repaymentWitness ? { repaymentWitness: true } : {}) });
+    ...(repaymentWitness ? { repaymentWitness: true } : {}), ...(entry ? { entry: true } : {}) });
 }
 /** The preserved queue already survives IDB writes and does not replace user archives. */
 export function pendingRepaymentWitnesses(queue: CheckpointQueue): CheckpointCapture[] {
@@ -314,14 +320,14 @@ export function entryCommitContainedByLive(original: CheckpointCapture, later: C
   // when its exterior actor loads. BE shop_info bit 11 is not gameplay state;
   // every other shop bit and byte still participates in the containment proof.
   const sameEntryByte = (a: number, b: number, offset: number) =>
-    offset === 0x20340 + 0x126 ? ((a ^ b) & ~0x08) === 0 : a === b;
+    offset === SAVE.shop + 0x126 ? ((a ^ b) & ~0x08) === 0 : a === b;
   for (const base of [0x26040, 0x4c040]) {
     for (let offset = 0; offset < 0x26000; offset++) {
       if (!sameEntryByte(entry[base + offset], before[base + offset], offset) && !clock(offset)
         && !sameEntryByte(entry[base + offset], live[base + offset], offset)) return false;
     }
-    if (!sameRegion(entry, live, base + 0x20, 4 * 0x2440)
-      || !sameRegion(entry, live, base + 0x137a8, 80 * 96 * 2)) return false;
+    if (!sameRegion(entry, live, base + 0x20, 4 * SAVE.privateSize)
+      || !sameRegion(entry, live, base + SAVE.foreground, 80 * 96 * 2)) return false;
   }
   for (let offset = 0; offset < entry.length; offset++) {
     if (offset >= 0x26040 && offset < 0x4c040 || offset >= 0x4c040 && offset < 0x72040 || offset >= 0x28 && offset < 0x2c) continue;
@@ -360,7 +366,7 @@ export function metadataOnlyStaleLiveRecovery(original: CheckpointCapture, later
 
 export type PriorBootCheckpoint = { checkpoint: NativeCheckpoint; revision: number };
 export type PriorBootRecoveryResult =
-  | { status: 'durable' | 'merged'; captureId: string; canonical: PriorBootCheckpoint; verifiedCapture: CheckpointCapture }
+  | { status: 'durable' | 'merged' | 'superseded'; captureId: string; canonical: PriorBootCheckpoint; verifiedCapture: CheckpointCapture }
   | { status: 'blocked'; captureId: string; reason: string };
 export type PriorBootRecoveryTransport = {
   /** Authenticated private GET, with response size and digests already verified. */
@@ -376,9 +382,25 @@ export type PriorBootRecoveryTransport = {
  * These wasm32 offsets are proved by tests/gci-fixture.c. The API validates
  * the complete save; here both native copies must name the exact producer.
  */
-export function checkpointNamesProducer(checkpoint: NativeCheckpoint, producer: CheckpointProducer, pairedDeparture = false): boolean {
+/** The immutable historical B can predate creation of its reserved resident.
+ * Its town, format and checksums still need proof before the server receipt. */
+function checkpointNamesTown(checkpoint: NativeCheckpoint, producer: CheckpointProducer, pairedDeparture = false): boolean {
   if (!isCheckpoint(checkpoint) || !isCheckpointProducer(producer) || checkpoint.passport !== null && !pairedDeparture) return false;
   const bytes = new Uint8Array(checkpoint.town), view = new DataView(checkpoint.town);
+  const hex = (offset: number, length: number) => Array.from(bytes.subarray(offset, offset + length), byte => byte.toString(16).padStart(2, '0')).join('');
+  if (String.fromCharCode(...bytes.subarray(0, 6)) !== 'GAFE01' || view.getUint16(0x38) !== 57) return false;
+  for (const base of [0x26040, 0x4c040]) {
+    if (view.getUint32(base) !== SAVE.version || view.getUint32(base + 4) !== 0x47414645
+      || `${view.getUint16(base + SAVE.land + 10)}:${hex(base + SAVE.land, 8)}` !== producer.ownTownIdentity) return false;
+    let sum = 0;
+    for (let offset = base; offset < base + 0x26000; offset += 2) sum = (sum + view.getUint16(offset)) & 0xffff;
+    if (sum !== 0) return false;
+  }
+  return true;
+}
+export function checkpointNamesProducer(checkpoint: NativeCheckpoint, producer: CheckpointProducer, pairedDeparture = false): boolean {
+  if (!checkpointNamesTown(checkpoint, producer, pairedDeparture)) return false;
+  const bytes = new Uint8Array(checkpoint.town);
   const hex = (offset: number, length: number) => Array.from(bytes.subarray(offset, offset + length), byte => byte.toString(16).padStart(2, '0')).join('');
   if (checkpoint.passport !== null) {
     // Original BE mCD_foreigner_c: full resident PID and complete word sum.
@@ -390,16 +412,11 @@ export function checkpointNamesProducer(checkpoint: NativeCheckpoint, producer: 
     if (sum !== 0 || passport[32 + 0x1086] !== 1 || pid !== producer.pid ||
       `${passportView.getUint16(32 + 0x12)}:${pid.slice(16, 32)}` !== producer.ownTownIdentity) return false;
   }
-  if (String.fromCharCode(...bytes.subarray(0, 6)) !== 'GAFE01' || view.getUint16(0x38) !== 57) return false;
   let pairedResident = -1;
   for (const base of [0x26040, 0x4c040]) {
-    if (view.getUint32(base) !== 6 || view.getUint32(base + 4) !== 0x47414645
-      || `${view.getUint16(base + 0x9120 + 10)}:${hex(base + 0x9120, 8)}` !== producer.ownTownIdentity) return false;
-    let found = false, sum = 0;
-    for (let offset = base; offset < base + 0x26000; offset += 2) sum = (sum + view.getUint16(offset)) & 0xffff;
-    if (sum !== 0) return false;
+    let found = false;
     for (let index = 0; index < 4; index++) {
-      const resident = base + 0x20 + index * 0x2440;
+      const resident = base + 0x20 + index * SAVE.privateSize;
       if (bytes[resident + 0x1086] === (checkpoint.passport === null ? 1 : 0) && hex(resident, 20) === producer.pid) {
         if (checkpoint.passport !== null) {
           if (found || pairedResident >= 0 && pairedResident !== index) return false;
@@ -420,18 +437,25 @@ async function checkpointDigest(checkpoint: NativeCheckpoint): Promise<string> {
 /**
  * Finishes an original owned Save & Quit after its WASM instance has gone, or
  * confirms an already durable exact departure pair without publishing it.
+ * A pre-room entry copy is confirmed and superseded, never published.
  * This operation has no native methods: it never ACKs an old token, changes
  * RAM, retags the captured context, or imports a journal into a new game.
  */
 export async function recoverPriorBootCommit(capture: CheckpointCapture,
-  owner: { userId: string; currentGameInstance: string; ownTownIdentity: string },
+  owner: { userId: string; ownTownId: string; currentGameInstance: string; ownTownIdentity: string },
   transport: PriorBootRecoveryTransport): Promise<PriorBootRecoveryResult> {
   const blocked = (reason: string): PriorBootRecoveryResult => ({ status: 'blocked', captureId: capture.id, reason });
+  // A Card A commit saved while the world was changing town has no world
+  // origin. It claims only its own RAM baseline and no applied world event;
+  // the server's three-way commit merge and native publication ledger decide.
+  const origin: CheckpointProviderState | null = capture.context ?? (capture.entry || !validStoredCapture(capture) ? null
+    : { gameInstance: capture.gameInstance, ramBaselineRevision: capture.baseline.revision, currentOwnRevision: capture.baseline.revision,
+      activeWorldTownId: owner.ownTownId, appliedSequence: 0 });
   if (!validStoredCapture(capture) || capture.source !== 'commit' || capture.nativeToken <= 0
     || capture.gameInstance === owner.currentGameInstance || !owner.currentGameInstance
-    || !capture.context || !capture.producer
-    || capture.context.activeWorldTownId !== owner.userId || capture.producer.ownTownIdentity !== owner.ownTownIdentity
-    || capture.baseline.revision < 1 || capture.baseline.revision !== capture.context.ramBaselineRevision
+    || !(origin || capture.entry) || !capture.producer
+    || origin && origin.activeWorldTownId !== owner.ownTownId || capture.producer.ownTownIdentity !== owner.ownTownIdentity
+    || capture.baseline.revision < 1 || origin && capture.baseline.revision !== origin.ramBaselineRevision
     || !checkpointNamesProducer(capture.checkpoint, capture.producer, true)) {
     return blocked('A cópia original não comprova a cidade, o morador e a origem desta recuperação. Ela foi preservada.');
   }
@@ -445,18 +469,22 @@ export async function recoverPriorBootCommit(capture: CheckpointCapture,
     if (!unchanged()) return blocked('Outra partida começou durante a verificação. A recuperação foi preservada.');
     const current = downloadedCurrent && isCheckpoint(downloadedCurrent.checkpoint)
       ? { revision: downloadedCurrent.revision, checkpoint: cloneCheckpoint(downloadedCurrent.checkpoint) } : null;
-    if (!current || !Number.isSafeInteger(current.revision) || current.revision < original.context!.currentOwnRevision
+    if (!current || !Number.isSafeInteger(current.revision) || current.revision < (origin?.currentOwnRevision ?? original.baseline.revision)
       || current.revision < original.baseline.revision
       || !checkpointNamesProducer(current.checkpoint, original.producer!, original.checkpoint.passport !== null)) return blocked('A cidade atual do servidor não confirma a origem desta cópia. Ela foi preservada.');
     const downloadedBaseline = await transport.download(original.baseline.revision);
     if (!unchanged()) return blocked('Outra partida começou durante a verificação. A recuperação foi preservada.');
     const baseline = downloadedBaseline && isCheckpoint(downloadedBaseline.checkpoint)
       ? { revision: downloadedBaseline.revision, checkpoint: cloneCheckpoint(downloadedBaseline.checkpoint) } : null;
-    if (!baseline || baseline.revision !== original.baseline.revision || !checkpointNamesProducer(baseline.checkpoint, original.producer!, original.checkpoint.passport !== null)
+    if (!baseline || baseline.revision !== original.baseline.revision || !checkpointNamesTown(baseline.checkpoint, original.producer!, original.checkpoint.passport !== null)
+      || !checkpointNamesProducer(baseline.checkpoint, original.producer!, original.checkpoint.passport !== null) && (!original.baseline.checkpoint || original.checkpoint.passport !== null)
       || original.baseline.checkpoint && !sameCheckpoint(baseline.checkpoint, original.baseline.checkpoint)) {
       return blocked('A revisão histórica não corresponde à origem da cópia local. Ela foi preservada.');
     }
     if (sameCheckpoint(original.checkpoint, current.checkpoint)) return { status: 'durable', captureId: original.id, canonical: current, verifiedCapture: cloneCheckpointCapture(original) };
+    // An entry copy has no gameplay and no publication origin. The verified
+    // canonical town re-enters the same way; the copy is kept, never published.
+    if (original.entry) return { status: 'superseded', captureId: original.id, canonical: current, verifiedCapture: cloneCheckpointCapture(original) };
     // A past departure cannot be replayed over a later town or passport. Only
     // the authenticated exact pair above can retire its old journal origin.
     if (original.checkpoint.passport !== null) return blocked('O passaporte original não corresponde à viagem confirmada no servidor. A cópia foi preservada.');
@@ -464,7 +492,7 @@ export async function recoverPriorBootCommit(capture: CheckpointCapture,
     // server's publication ledger. Resource commits may still merge atomically.
     const baselineSHA256=await checkpointDigest(baseline.checkpoint),checkpointSHA256=await checkpointDigest(original.checkpoint);
     const intent:CheckpointRecoveryIntent={id:original.id,source:'commit',gameInstance:original.gameInstance,nativeToken:original.nativeToken,
-      producer:original.producer!,context:original.context!,baselineRevision:original.baseline.revision,baselineSHA256,checkpointSHA256};
+      producer:original.producer!,context:origin!,baselineRevision:original.baseline.revision,baselineSHA256,checkpointSHA256};
     const intentJSON=checkpointRecoveryIntentJSON(intent);
     const intentHash=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(intentJSON));
     const intentSHA256=Array.from(new Uint8Array(intentHash),byte=>byte.toString(16).padStart(2,'0')).join('');
@@ -472,9 +500,9 @@ export async function recoverPriorBootCommit(capture: CheckpointCapture,
     const receipt=await transport.recover({intent,expectedOwnRevision:current.revision},cloneCheckpoint(original.checkpoint));
     if(!unchanged()||receipt.captureId!==original.id||receipt.intentSHA256!==intentSHA256||receipt.baselineRevision!==original.baseline.revision||
       receipt.baselineSHA256!==baselineSHA256||receipt.submittedSHA256!==checkpointSHA256||!Number.isSafeInteger(receipt.revision)||!Number.isSafeInteger(receipt.previousOwnRevision)||
-      receipt.previousOwnRevision<original.context!.currentOwnRevision||receipt.previousOwnRevision>current.revision||
+      receipt.previousOwnRevision<origin!.currentOwnRevision||receipt.previousOwnRevision>current.revision||
       receipt.revision<receipt.previousOwnRevision||receipt.revision>receipt.previousOwnRevision+1||
-      !Number.isSafeInteger(receipt.worldSequence)||receipt.worldSequence<original.context!.appliedSequence||! /^[a-f0-9]{64}$/.test(receipt.checkpointSHA256))return blocked('O recibo não confirma a recuperação original. A cópia foi preservada.');
+      !Number.isSafeInteger(receipt.worldSequence)||receipt.worldSequence<origin!.appliedSequence||! /^[a-f0-9]{64}$/.test(receipt.checkpointSHA256))return blocked('O recibo não confirma a recuperação original. A cópia foi preservada.');
     const canonical=await transport.download(receipt.revision);
     if(!unchanged()||!canonical||canonical.revision!==receipt.revision||!checkpointNamesProducer(canonical.checkpoint,original.producer!)||
       await checkpointDigest(canonical.checkpoint)!==receipt.checkpointSHA256)return blocked('A revisão recuperada não foi conferida por inteiro. A cópia foi preservada.');
@@ -500,7 +528,7 @@ export type PriorBootLiveRecoveryResult =
 
 function sameStoredCapture(a: CheckpointCapture, b: CheckpointCapture): boolean {
   return a.id === b.id && a.source === b.source && a.gameInstance === b.gameInstance && a.nativeToken === b.nativeToken
-    && a.repaymentWitness === b.repaymentWitness
+    && a.repaymentWitness === b.repaymentWitness && a.entry === b.entry
     && a.createdAt === b.createdAt && (a.context === null ? b.context === null : sameCheckpointContext(a.context, b.context))
     && a.producer?.pid === b.producer?.pid && a.producer?.ownTownIdentity === b.producer?.ownTownIdentity
     && sameCheckpoint(a.checkpoint, b.checkpoint) && a.baseline.revision === b.baseline.revision
@@ -509,14 +537,14 @@ function sameStoredCapture(a: CheckpointCapture, b: CheckpointCapture): boolean 
 
 /** Recovers an exact old live origin by server receipt, without touching native RAM or its old token. */
 export async function recoverPriorBootLive(capture: CheckpointCapture,
-  owner: { userId: string; currentGameInstance: string; ownTownIdentity: string },
+  owner: { userId: string; ownTownId: string; currentGameInstance: string; ownTownIdentity: string },
   transport: PriorBootLiveRecoveryTransport, factory: IDBFactory = indexedDB): Promise<PriorBootLiveRecoveryResult> {
   const captureId = capture.id;
   const blocked = (reason: string): PriorBootLiveRecoveryResult => ({ status: 'blocked', captureId, reason });
   if (!validStoredCapture(capture) || capture.source !== 'live' || !capture.context || !capture.producer
     || capture.gameInstance === owner.currentGameInstance || !owner.currentGameInstance
     || !Number.isSafeInteger(capture.createdAt) || capture.createdAt < 0
-    || capture.context.activeWorldTownId !== owner.userId || capture.producer.ownTownIdentity !== owner.ownTownIdentity
+    || capture.context.activeWorldTownId !== owner.ownTownId || capture.producer.ownTownIdentity !== owner.ownTownIdentity
     || capture.baseline.revision < 1 || capture.baseline.revision !== capture.context.ramBaselineRevision
     || !checkpointNamesProducer(capture.checkpoint, capture.producer)) {
     return blocked('A cópia ao vivo não comprova a cidade, o morador e a origem desta recuperação. Ela foi preservada.');
@@ -544,7 +572,8 @@ export async function recoverPriorBootLive(capture: CheckpointCapture,
     const baseline = downloadedBaseline && isCheckpoint(downloadedBaseline.checkpoint)
       ? { revision: downloadedBaseline.revision, checkpoint: cloneCheckpoint(downloadedBaseline.checkpoint) } : null;
     if (!unchanged()) return blocked('A origem da cópia mudou durante a verificação histórica. Ela foi preservada.');
-    if (!baseline || baseline.revision !== original.baseline.revision || !checkpointNamesProducer(baseline.checkpoint, original.producer!)
+    if (!baseline || baseline.revision !== original.baseline.revision || !checkpointNamesTown(baseline.checkpoint, original.producer!)
+      || !checkpointNamesProducer(baseline.checkpoint, original.producer!) && !original.baseline.checkpoint
       || original.baseline.checkpoint && !sameCheckpoint(original.baseline.checkpoint, baseline.checkpoint)) {
       return blocked('A revisão histórica não corresponde à origem da cópia local. Ela foi preservada.');
     }
@@ -643,6 +672,7 @@ function validStoredCapture(value: unknown): value is CheckpointCapture {
     && Number.isSafeInteger(capture.nativeToken) && (capture.source === 'live' ? capture.nativeToken > 0 : capture.nativeToken !== 0)
     && (capture.source === 'live' || capture.source === 'commit')
     && (capture.repaymentWitness === undefined || capture.repaymentWitness === true && capture.source === 'live' && capture.checkpoint.passport === null)
+    && (capture.entry === undefined || capture.entry === true && capture.source === 'commit' && capture.context === null && capture.checkpoint.passport === null)
     && typeof capture.gameInstance === 'string' && !!capture.gameInstance && (!capture.context || capture.context.gameInstance === capture.gameInstance)
     && Number.isSafeInteger(capture.createdAt) && capture.createdAt >= 0
     && (capture.producer === null && capture.source === 'commit' || isCheckpointProducer(capture.producer))

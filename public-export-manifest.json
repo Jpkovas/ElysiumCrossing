@@ -1,232 +1,284 @@
 {
   "schema": 1,
-  "export": "public-build-h-2026-10-15",
-  "scope": "Reviewed own application snapshot, operational tools and sanitized continuation documentation; no proprietary game distribution",
-  "snapshotCandidate": "294bcc8",
-  "nativeIntegrationCandidate": "9038499072698e635f5c",
-  "historicalExteriorEvidenceCandidate": "6d79af919605cb14f133",
-  "historicalMultiplayerEvidenceCandidate": "63b36dc74874f0244e99",
-  "upstream": {
-    "repository": "https://github.com/turtlekiosk/slider",
-    "commit": "cfecc8d4019c7182133b444a671d3b62b42bee44",
-    "copiedFiles": 0
+  "export": "deluxe-principal-2026-10-17",
+  "scope": "Reviewed authored application subset and sanitized continuation; full Native and private resources excluded",
+  "promotionAuthorized": true,
+  "qualification": "principal development baseline; documented pending work; no deployment",
+  "privateCanonicalCommit": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+  "priorPrivateCanonical": "c0e91198b9b4299f38ea4e5507c884f4f44cb124",
+  "components": {
+    "native": 33,
+    "web": 35,
+    "backend": 24,
+    "projector": 10,
+    "residentTransfer": 29
   },
+  "upstream": {
+    "slider": "cfecc8d4019c7182133b444a671d3b62b42bee44",
+    "deluxe": "92b0a638ce9e686b3303b4d0ec985a1a99a7f962",
+    "copiedNativeFiles": 0
+  },
+  "authoredSourceFiles": 28,
   "files": [
     {
       "path": ".claude/hooks/session-start.sh",
       "bytes": 772,
       "sha256": "aef75667e316bfe673c879c49e45dfac5f54a105b0521ba937d8c648e6228d8f",
+      "mode": "100755",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "cloud-session-environment-2026-10-15"
+        "createdFor": "deluxe-principal-2026-10-17"
       }
     },
     {
       "path": ".claude/settings.json",
       "bytes": 225,
       "sha256": "ef056e55192969b7dfa2e7286657886425112eb7c8de4a55ea55f0ffa5ce7e06",
+      "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "cloud-session-environment-2026-10-15"
+        "createdFor": "deluxe-principal-2026-10-17"
       }
     },
     {
       "path": ".gitignore",
       "bytes": 170,
       "sha256": "856af1def24bdf6bfa1a0e5dd6f3999ada141b4392188b049093445066468dbb",
+      "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-progress-2026-10-13"
+        "createdFor": "deluxe-principal-2026-10-17"
       }
     },
     {
       "path": "README.md",
-      "bytes": 5434,
-      "sha256": "a4667c42427ccb8a51bf0d3700b3ad9ea34a81623bba754da4a65f0b23966519",
+      "bytes": 3871,
+      "sha256": "04763c931223f8a60060788ce6656dca44dec6cf703311f364bc3157a70c8ec9",
+      "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-build-h-2026-10-15"
+        "createdFor": "deluxe-principal-2026-10-17"
       }
     },
     {
       "path": "docs/continuation.md",
-      "bytes": 8250,
-      "sha256": "32ff04e88199687037716708ba2a8a51e7b4aeb885a07397aa0a9d8eda728e77",
+      "bytes": 4920,
+      "sha256": "a330c17895a31a63ae6822cf4b8c897d6ffb96d433cbeaedee77883ead0078f2",
+      "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-build-h-2026-10-15"
+        "createdFor": "deluxe-principal-2026-10-17"
       }
     },
     {
       "path": "docs/milestones/2026-10-13-exterior-slice.md",
       "bytes": 3890,
       "sha256": "1bd0046f643329238a1742c41babad7ffa33f5e9b43c092a6058db6274333b7a",
+      "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-progress-2026-10-13"
+        "createdFor": "deluxe-principal-2026-10-17"
       }
     },
     {
       "path": "docs/milestones/2026-10-14-current-state.md",
       "bytes": 7871,
       "sha256": "682bf9744f03af306cdbf49877c964e08ca94a956be6d7ffb9d1cbf8fde51cb9",
+      "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-current-state-2026-10-14"
+        "createdFor": "deluxe-principal-2026-10-17"
       }
     },
     {
       "path": "docs/milestones/2026-10-14-native-ui.md",
       "bytes": 5408,
       "sha256": "ef9d305d6241cf26114c57e6e52c52783cfc1dcb23452a49bc05f0906fc3db59",
+      "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-native-ui-source-progress-2026-10-14"
+        "createdFor": "deluxe-principal-2026-10-17"
       }
     },
     {
       "path": "docs/milestones/2026-10-15-build-h.md",
       "bytes": 4515,
       "sha256": "9ed18259ad0e31d2a7534096af4c38c22ed5107ea2307d14de6ab7c9eb49ba22",
+      "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-build-h-2026-10-15"
+        "createdFor": "deluxe-principal-2026-10-17"
       }
     },
     {
       "path": "docs/milestones/2026-10-15-lote-c.md",
       "bytes": 3608,
       "sha256": "4e5a0dfb8b7ac8618b946424e56036ad1a4041c81d073c02ebb6f2051b56f984",
+      "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-current-state-2026-10-15"
+        "createdFor": "deluxe-principal-2026-10-17"
+      }
+    },
+    {
+      "path": "docs/milestones/2026-10-17-deluxe.md",
+      "bytes": 4805,
+      "sha256": "5951c7dc754be7fa39b160173374e716281794aaa2a9f5f8650f72cc18cdc7e6",
+      "mode": "100644",
+      "origin": {
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "deluxe-principal-2026-10-17"
       }
     },
     {
       "path": "docs/modernization/architecture-baseline.md",
-      "bytes": 5101,
-      "sha256": "48b45853543c787af51160e2665827b5ccdd0a125d7cc59ec85a47a025c955a2",
+      "bytes": 5253,
+      "sha256": "56e1902546d1b6453e488cbbc566a3a541d57a3686b7b17796fe189032f81f9a",
+      "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-current-state-2026-10-14"
+        "createdFor": "deluxe-principal-2026-10-17"
       }
     },
     {
       "path": "docs/modernization/feature-parity.md",
-      "bytes": 3364,
-      "sha256": "46064e5cf610a84c2cc188556a29bb53a2c574e2f2b824688f88877d6d6942b6",
+      "bytes": 3516,
+      "sha256": "3425c41e369265f04509928514edfb32aba4909ea0438ed8d935125aa0750a1a",
+      "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-current-state-2026-10-14"
+        "createdFor": "deluxe-principal-2026-10-17"
       }
     },
     {
       "path": "docs/modernization/implementation-roadmap.md",
-      "bytes": 3924,
-      "sha256": "0614109d56fe016fbcafffb711f0c550dcb3dd65c4c0484bd49998f859a3bdeb",
+      "bytes": 4076,
+      "sha256": "c02d13d83e11cf806f8c4e3ed66a79b45b24f1358e8073ed4ca3727600531bc9",
+      "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-current-state-2026-10-14"
+        "createdFor": "deluxe-principal-2026-10-17"
       }
     },
     {
       "path": "docs/modernization/plan-v1.md",
-      "bytes": 2947,
-      "sha256": "54b3199eb96d7dbc357b425f5bf8e1b183654cedb9ba8228a19eb2f8d4a587ed",
+      "bytes": 3099,
+      "sha256": "ede8a2fbdcfcf604d5ff8eaaa1e6008b76f53eab70307ee59752c6aeff90b4c2",
+      "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-progress-2026-10-13"
+        "createdFor": "deluxe-principal-2026-10-17"
       }
     },
     {
       "path": "docs/modernization/research/reference-catalog.md",
       "bytes": 3235,
       "sha256": "8a97c1ecb6d6ea921b3839ff23abafcfebcd250593a4ba56950d116f02624a35",
+      "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-progress-2026-10-13"
+        "createdFor": "deluxe-principal-2026-10-17"
       }
     },
     {
       "path": "docs/modernization/risk-register.md",
-      "bytes": 2749,
-      "sha256": "1f81f0973dec042b79710086f74304f2abca799b044e2cc5796b260e1773b350",
+      "bytes": 2901,
+      "sha256": "a063948f9be4e8fcdc9352786e781b38120e4b0c9bb5a99f54f9a0db632cd7d5",
+      "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-current-state-2026-10-14"
+        "createdFor": "deluxe-principal-2026-10-17"
       }
     },
     {
       "path": "docs/public-source-scope.md",
-      "bytes": 5655,
-      "sha256": "2dd469532f49211fbcf7ba44d9014ff6d0ed1854999759612e1318e1da7a3755",
+      "bytes": 2928,
+      "sha256": "34d6617017d83a0cbb8887d9566ee538327256558ac2078c44c9b4115284349d",
+      "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-current-state-2026-10-14"
+        "createdFor": "deluxe-principal-2026-10-17"
       }
     },
     {
       "path": "docs/verification.md",
-      "bytes": 1566,
-      "sha256": "df96084e2b837bcb716d282d224762067d1660495035736830f43afa1dd44b0d",
+      "bytes": 2325,
+      "sha256": "8b8a6c7cd61d6e88ff856e8e670f51afc24c30717d8e79e11d1a61d7729f52d2",
+      "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-build-h-2026-10-15"
+        "createdFor": "deluxe-principal-2026-10-17"
       }
     },
     {
       "path": "package-lock.json",
       "bytes": 16757,
       "sha256": "cd5cd353b92eddc2a63d5b2633bd6bafbc67d76141aca93519dbaa7bfbd1228a",
+      "mode": "100644",
       "origin": {
-        "kind": "dependency-metadata",
-        "source": "subset of the existing npm lock; no third-party source files",
-        "registry": "https://registry.npmjs.org/"
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "deluxe-principal-2026-10-17"
       }
     },
     {
       "path": "package.json",
-      "bytes": 460,
-      "sha256": "bed893d37c171a15d9f89c6f016e0ca04195a4ca0bc01bf54cad2bd8bdf886e4",
+      "bytes": 489,
+      "sha256": "6f6bcbdb0173c126936bc268efc548388b96d3f7f2ab4100fc9f51549c7a3401",
+      "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-progress-2026-10-13"
+        "createdFor": "deluxe-principal-2026-10-17"
       }
     },
     {
       "path": "shared/checkpoint-recovery.ts",
       "bytes": 1747,
       "sha256": "644294032e474f1e4fa0dcb5a96bf5895b3a18bb6fb1480170397d99cd475b60",
+      "mode": "100644",
       "origin": {
         "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
         "relativeSource": "shared/checkpoint-recovery.ts",
-        "frozenWebCandidate": "circular-ui-icons-only-20261014",
         "sourceSHA256": "644294032e474f1e4fa0dcb5a96bf5895b3a18bb6fb1480170397d99cd475b60",
         "exportMode": "byte-identical"
       }
     },
     {
       "path": "shared/contracts.ts",
-      "bytes": 20025,
-      "sha256": "f552932796b5432ffd252a04713a74019e8ca63cd91c12dd03d986e391e824ad",
+      "bytes": 21080,
+      "sha256": "e0ee119732fcaf9774f92a5fef8de2fdeb336a27614ded6ec8ac5d8d10c84bed",
+      "mode": "100644",
       "origin": {
         "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
         "relativeSource": "shared/contracts.ts",
-        "sourceTree": "294bcc8",
-        "nativeIntegrationCandidate": "9038499072698e635f5c",
-        "exportMode": "byte-identical",
-        "sourceSHA256": "f552932796b5432ffd252a04713a74019e8ca63cd91c12dd03d986e391e824ad"
+        "sourceSHA256": "e0ee119732fcaf9774f92a5fef8de2fdeb336a27614ded6ec8ac5d8d10c84bed",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
+      "path": "shared/crafting-recipes.json",
+      "bytes": 759,
+      "sha256": "a8030f9ff68102c768687217313f84da181a963b93efaef472f7a799c8fb1681",
+      "mode": "100644",
+      "origin": {
+        "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "relativeSource": "shared/crafting-recipes.json",
+        "sourceSHA256": "a8030f9ff68102c768687217313f84da181a963b93efaef472f7a799c8fb1681",
+        "exportMode": "byte-identical"
       }
     },
     {
       "path": "shared/crafting.ts",
-      "bytes": 551,
-      "sha256": "1fb8c3e0a6c7761da191b1c5aecdedb11024896d7a00b51515372442af4152ac",
+      "bytes": 1798,
+      "sha256": "a90bf6b4a9c5456e2345e910cc54598ccc9882a2430ff80ba13878bbaeaed4b2",
+      "mode": "100644",
       "origin": {
         "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
         "relativeSource": "shared/crafting.ts",
-        "frozenWebCandidate": "circular-ui-icons-only-20261014",
-        "sourceSHA256": "1fb8c3e0a6c7761da191b1c5aecdedb11024896d7a00b51515372442af4152ac",
+        "sourceSHA256": "a90bf6b4a9c5456e2345e910cc54598ccc9882a2430ff80ba13878bbaeaed4b2",
         "exportMode": "byte-identical"
       }
     },
@@ -234,10 +286,11 @@
       "path": "shared/fishing.ts",
       "bytes": 2369,
       "sha256": "2dace8de9f17bb0100f8e1a23cd5e88e20b171b0fa9b133302764c4ba778d9df",
+      "mode": "100644",
       "origin": {
         "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
         "relativeSource": "shared/fishing.ts",
-        "frozenWebCandidate": "circular-ui-icons-only-20261014",
         "sourceSHA256": "2dace8de9f17bb0100f8e1a23cd5e88e20b171b0fa9b133302764c4ba778d9df",
         "exportMode": "byte-identical"
       }
@@ -246,35 +299,142 @@
       "path": "shared/fruit-stack.ts",
       "bytes": 3951,
       "sha256": "7b4cb224fb26a14dcf640f9d668ab57cb5b87bb90a71c7c382b6cdcbbe4817ba",
+      "mode": "100644",
       "origin": {
         "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
         "relativeSource": "shared/fruit-stack.ts",
-        "frozenWebCandidate": "circular-ui-icons-only-20261014",
         "sourceSHA256": "7b4cb224fb26a14dcf640f9d668ab57cb5b87bb90a71c7c382b6cdcbbe4817ba",
         "exportMode": "byte-identical"
       }
     },
     {
       "path": "shared/item-icons.ts",
-      "bytes": 894,
-      "sha256": "0edc1b34dc5efbfaefa1ec3754306619693cc713d8cffbbab9bbe992421f9753",
+      "bytes": 1200,
+      "sha256": "d5986fc5fda1f67c6592233fe3c0879ff5d21f5317f7f5b3c38c56625c03b163",
+      "mode": "100644",
       "origin": {
         "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
         "relativeSource": "shared/item-icons.ts",
-        "frozenWebCandidate": "circular-ui-icons-only-20261014",
-        "sourceSHA256": "0edc1b34dc5efbfaefa1ec3754306619693cc713d8cffbbab9bbe992421f9753",
+        "sourceSHA256": "d5986fc5fda1f67c6592233fe3c0879ff5d21f5317f7f5b3c38c56625c03b163",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
+      "path": "shared/material-definitions.ts",
+      "bytes": 244,
+      "sha256": "0af88bc3f8ca6e8f35e70b76dbc4df0a6e9b41a25f02c7e3b0ce76e0cd5af4f2",
+      "mode": "100644",
+      "origin": {
+        "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "relativeSource": "shared/material-definitions.ts",
+        "sourceSHA256": "0af88bc3f8ca6e8f35e70b76dbc4df0a6e9b41a25f02c7e3b0ce76e0cd5af4f2",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
+      "path": "shared/material-units.ts",
+      "bytes": 2616,
+      "sha256": "cd0cf49d6ff3c639c59bfa1cebd9d024a0fc3ee8ce6bb6ef6e70566486678aac",
+      "mode": "100644",
+      "origin": {
+        "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "relativeSource": "shared/material-units.ts",
+        "sourceSHA256": "cd0cf49d6ff3c639c59bfa1cebd9d024a0fc3ee8ce6bb6ef6e70566486678aac",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
+      "path": "shared/native-save-layout.ts",
+      "bytes": 267,
+      "sha256": "d166117f496aa27f51a9a9846acc35335bd6fe45c621e27bf204dcf5c8861f5b",
+      "mode": "100644",
+      "origin": {
+        "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "relativeSource": "shared/native-save-layout.ts",
+        "sourceSHA256": "d166117f496aa27f51a9a9846acc35335bd6fe45c621e27bf204dcf5c8861f5b",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
+      "path": "shared/portrait.ts",
+      "bytes": 5829,
+      "sha256": "e8228f9cfb1e9dfa12df716979dc9435ea292cb89216af61fca5dde3048eb890",
+      "mode": "100644",
+      "origin": {
+        "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "relativeSource": "shared/portrait.ts",
+        "sourceSHA256": "e8228f9cfb1e9dfa12df716979dc9435ea292cb89216af61fca5dde3048eb890",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
+      "path": "shared/ranking.ts",
+      "bytes": 1346,
+      "sha256": "4706bce548bf4b21b4f8130aabf2da6b64883d7ec43a6726c53c0ac5084b2520",
+      "mode": "100644",
+      "origin": {
+        "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "relativeSource": "shared/ranking.ts",
+        "sourceSHA256": "4706bce548bf4b21b4f8130aabf2da6b64883d7ec43a6726c53c0ac5084b2520",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
+      "path": "shared/residence.ts",
+      "bytes": 1749,
+      "sha256": "be1ccfaae9f8ea6d66cc57f6935f66ff48a0e197077855b88bd361be3101ff93",
+      "mode": "100644",
+      "origin": {
+        "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "relativeSource": "shared/residence.ts",
+        "sourceSHA256": "be1ccfaae9f8ea6d66cc57f6935f66ff48a0e197077855b88bd361be3101ff93",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
+      "path": "shared/social.ts",
+      "bytes": 654,
+      "sha256": "c562157fcc5c5a40beeb8e736aa9a0ee0b3d6ac2256f6eed8380e974eb76bddd",
+      "mode": "100644",
+      "origin": {
+        "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "relativeSource": "shared/social.ts",
+        "sourceSHA256": "c562157fcc5c5a40beeb8e736aa9a0ee0b3d6ac2256f6eed8380e974eb76bddd",
         "exportMode": "byte-identical"
       }
     },
     {
       "path": "shared/world.ts",
-      "bytes": 2377,
-      "sha256": "e48cb22cbecee2b5bfe5421e9451406da001777622317bd5c28de78c79c46696",
+      "bytes": 2583,
+      "sha256": "08f2e4ceab405f07a90c82de13fe293e4dab03e8fc89666f692c7ff92e6b6d4d",
+      "mode": "100644",
       "origin": {
         "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
         "relativeSource": "shared/world.ts",
-        "frozenWebCandidate": "circular-ui-icons-only-20261014",
-        "sourceSHA256": "e48cb22cbecee2b5bfe5421e9451406da001777622317bd5c28de78c79c46696",
+        "sourceSHA256": "08f2e4ceab405f07a90c82de13fe293e4dab03e8fc89666f692c7ff92e6b6d4d",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
+      "path": "tests/fishing-client.test.ts",
+      "bytes": 40723,
+      "sha256": "23100846c70bdaddce1a5bd15736f0f42d159aa7607b162db2f2f422d2e7bca0",
+      "mode": "100644",
+      "origin": {
+        "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "relativeSource": "tests/fishing-client.test.ts",
+        "sourceSHA256": "23100846c70bdaddce1a5bd15736f0f42d159aa7607b162db2f2f422d2e7bca0",
         "exportMode": "byte-identical"
       }
     },
@@ -282,10 +442,11 @@
       "path": "tests/haptics.test.ts",
       "bytes": 9952,
       "sha256": "07893c8a3a2b4c96aaccc080573c09ba32ab23dcf5e891dce28333998c1dd9d5",
+      "mode": "100644",
       "origin": {
         "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
         "relativeSource": "tests/haptics.test.ts",
-        "frozenWebCandidate": "circular-ui-icons-only-20261014",
         "sourceSHA256": "07893c8a3a2b4c96aaccc080573c09ba32ab23dcf5e891dce28333998c1dd9d5",
         "exportMode": "byte-identical"
       }
@@ -294,10 +455,11 @@
       "path": "tests/server-clock.test.ts",
       "bytes": 1143,
       "sha256": "52b31a6fee1734a55201ae44abd27d35fe2a9c4fc77e0174f39be44bb7fc42a0",
+      "mode": "100644",
       "origin": {
         "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
         "relativeSource": "tests/server-clock.test.ts",
-        "frozenWebCandidate": "circular-ui-icons-only-20261014",
         "sourceSHA256": "52b31a6fee1734a55201ae44abd27d35fe2a9c4fc77e0174f39be44bb7fc42a0",
         "exportMode": "byte-identical"
       }
@@ -306,87 +468,113 @@
       "path": "tools/release/README.md",
       "bytes": 3239,
       "sha256": "573f85d923c25e25db9bea124d3f11958ee7f2bf22b5c65e1952fac86fb7799c",
+      "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-current-state-2026-10-14"
+        "createdFor": "deluxe-principal-2026-10-17"
       }
     },
     {
       "path": "tools/release/prepare.mjs",
       "bytes": 11615,
       "sha256": "397abf41aff31072649e27ea1fa6b721ff29d6de25d24e69590be4161bddf3f3",
+      "mode": "100644",
       "origin": {
-        "kind": "project-operational-tool",
-        "sourceUnit": "friends-release-kit-providers",
-        "pathWithinUnit": "after/prepare.mjs",
-        "sourceSHA256": "397abf41aff31072649e27ea1fa6b721ff29d6de25d24e69590be4161bddf3f3",
-        "exportMode": "byte-identical"
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "deluxe-principal-2026-10-17"
       }
     },
     {
       "path": "tools/release/store-snapshot.mjs",
       "bytes": 10791,
       "sha256": "1d4ba63a8f6f6e8bae114fa7aea3d5650072df010c84dd2d13d765c78b58d645",
+      "mode": "100644",
       "origin": {
-        "kind": "project-operational-tool",
-        "sourceUnit": "friends-release-backup-restore",
-        "pathWithinUnit": "store-snapshot.mjs",
-        "sourceSHA256": "1d4ba63a8f6f6e8bae114fa7aea3d5650072df010c84dd2d13d765c78b58d645",
-        "exportMode": "byte-identical"
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "deluxe-principal-2026-10-17"
       }
     },
     {
       "path": "tools/verify-public-export.mjs",
-      "bytes": 2641,
-      "sha256": "fdc581ffa3c5adbb712a995c73d56a55693f9e1e1b07d032d4e2b07da1dd6a27",
+      "bytes": 4580,
+      "sha256": "311ca7f70bb16be1f07ace3d474e9b4ec0331bdcafd192cc6f06c1500588feaa",
+      "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-progress-2026-10-13"
+        "createdFor": "deluxe-principal-2026-10-17"
       }
     },
     {
       "path": "tsconfig.json",
       "bytes": 473,
       "sha256": "17418ec335bbf9949d49b5e07b4f3c06e50b6d79f41893e30c7a68ee461689b5",
+      "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "public-progress-2026-10-13"
+        "createdFor": "deluxe-principal-2026-10-17"
       }
     },
     {
       "path": "web/checkpoint.ts",
-      "bytes": 58584,
-      "sha256": "545b9f8316e576d0e036eec6ea48d643357b7120bb77c2348a2a9b77e06fa13b",
+      "bytes": 61391,
+      "sha256": "1a4466a464722bdca04e9af6dc3117aa6a60b7d54895a72175f0c47561036642",
+      "mode": "100644",
       "origin": {
         "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
         "relativeSource": "web/checkpoint.ts",
-        "sourceTree": "294bcc8",
-        "nativeIntegrationCandidate": "9038499072698e635f5c",
-        "exportMode": "byte-identical",
-        "sourceSHA256": "545b9f8316e576d0e036eec6ea48d643357b7120bb77c2348a2a9b77e06fa13b"
+        "sourceSHA256": "1a4466a464722bdca04e9af6dc3117aa6a60b7d54895a72175f0c47561036642",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
+      "path": "web/crafting-contract.ts",
+      "bytes": 280,
+      "sha256": "f1a0009a69a7c453481da328457091c9aa282fe2e1250e8052c279681e91278e",
+      "mode": "100644",
+      "origin": {
+        "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "relativeSource": "web/crafting-contract.ts",
+        "sourceSHA256": "f1a0009a69a7c453481da328457091c9aa282fe2e1250e8052c279681e91278e",
+        "exportMode": "byte-identical"
+      }
+    },
+    {
+      "path": "web/fishing-client.ts",
+      "bytes": 21170,
+      "sha256": "953cc3f295ac7e88f3a8f4bff6ffab1d966b44338c865f5aa8f7996d3d7f7ef9",
+      "mode": "100644",
+      "origin": {
+        "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "relativeSource": "web/fishing-client.ts",
+        "sourceSHA256": "953cc3f295ac7e88f3a8f4bff6ffab1d966b44338c865f5aa8f7996d3d7f7ef9",
+        "exportMode": "byte-identical"
       }
     },
     {
       "path": "web/graphics-settings.ts",
       "bytes": 4836,
       "sha256": "2b2535b45fbcaf1648b67eb66563fe507756f711270e8068213d0a2f7be5e247",
+      "mode": "100644",
       "origin": {
         "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
         "relativeSource": "web/graphics-settings.ts",
-        "sourceTree": "294bcc8",
-        "nativeIntegrationCandidate": "9038499072698e635f5c",
-        "exportMode": "byte-identical",
-        "sourceSHA256": "2b2535b45fbcaf1648b67eb66563fe507756f711270e8068213d0a2f7be5e247"
+        "sourceSHA256": "2b2535b45fbcaf1648b67eb66563fe507756f711270e8068213d0a2f7be5e247",
+        "exportMode": "byte-identical"
       }
     },
     {
       "path": "web/haptics.ts",
       "bytes": 8856,
       "sha256": "04b0524383b0303f012205bef5707cba62ae487419f7c3b0fa469839cd1b74c9",
+      "mode": "100644",
       "origin": {
         "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
         "relativeSource": "web/haptics.ts",
-        "frozenWebCandidate": "circular-ui-icons-only-20261014",
         "sourceSHA256": "04b0524383b0303f012205bef5707cba62ae487419f7c3b0fa469839cd1b74c9",
         "exportMode": "byte-identical"
       }
@@ -395,10 +583,11 @@
       "path": "web/hd-textures.ts",
       "bytes": 5651,
       "sha256": "4df5530be2a38986d856bb6e0d1430f5a7d1d2c75fe38bfadaed8753d950923d",
+      "mode": "100644",
       "origin": {
         "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
         "relativeSource": "web/hd-textures.ts",
-        "frozenWebCandidate": "circular-ui-icons-only-20261014",
         "sourceSHA256": "4df5530be2a38986d856bb6e0d1430f5a7d1d2c75fe38bfadaed8753d950923d",
         "exportMode": "byte-identical"
       }
@@ -407,79 +596,59 @@
       "path": "web/option-rows.ts",
       "bytes": 1387,
       "sha256": "975f95b885a16263483e86ac8d7008439a82482d8847d86bb83587a92f1ae582",
+      "mode": "100644",
       "origin": {
         "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
         "relativeSource": "web/option-rows.ts",
-        "sourceTree": "294bcc8",
-        "nativeIntegrationCandidate": "9038499072698e635f5c",
-        "exportMode": "byte-identical",
-        "sourceSHA256": "975f95b885a16263483e86ac8d7008439a82482d8847d86bb83587a92f1ae582"
+        "sourceSHA256": "975f95b885a16263483e86ac8d7008439a82482d8847d86bb83587a92f1ae582",
+        "exportMode": "byte-identical"
       }
     },
     {
       "path": "web/private-assets.ts",
-      "bytes": 13372,
-      "sha256": "43c2cd2917bbf1306ab6a7fd213e86c6a781f3a3ec9716f4b7b8ffed28d12dff",
+      "bytes": 12989,
+      "sha256": "a90ee4dbe4d0e9be65c67c6d6e9534f2808d66356ed625322c4097da7859d045",
+      "mode": "100644",
       "origin": {
         "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
         "relativeSource": "web/private-assets.ts",
-        "sourceTree": "294bcc8",
-        "nativeIntegrationCandidate": "9038499072698e635f5c",
-        "exportMode": "byte-identical",
-        "sourceSHA256": "43c2cd2917bbf1306ab6a7fd213e86c6a781f3a3ec9716f4b7b8ffed28d12dff"
+        "sourceSHA256": "a90ee4dbe4d0e9be65c67c6d6e9534f2808d66356ed625322c4097da7859d045",
+        "exportMode": "byte-identical"
       }
     },
     {
       "path": "web/server-clock.ts",
       "bytes": 699,
       "sha256": "f3bfd62549daab906545cdf46690e024141cc81baa1db16832bc1ee3ce4b7809",
+      "mode": "100644",
       "origin": {
         "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
         "relativeSource": "web/server-clock.ts",
-        "frozenWebCandidate": "circular-ui-icons-only-20261014",
         "sourceSHA256": "f3bfd62549daab906545cdf46690e024141cc81baa1db16832bc1ee3ce4b7809",
         "exportMode": "byte-identical"
       }
     },
     {
       "path": "web/world-client.ts",
-      "bytes": 48348,
-      "sha256": "82540d5d45ade021900939e8560623d630e7f6d3d58f5996b312aa7e71f3a327",
+      "bytes": 54619,
+      "sha256": "ddcd555bdc6ef4f3495436589b009ec1989cb2ada2d403148b096c85a3703b37",
+      "mode": "100644",
       "origin": {
         "kind": "project-source",
+        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
         "relativeSource": "web/world-client.ts",
-        "sourceTree": "294bcc8",
-        "nativeIntegrationCandidate": "9038499072698e635f5c",
-        "exportMode": "byte-identical",
-        "sourceSHA256": "82540d5d45ade021900939e8560623d630e7f6d3d58f5996b312aa7e71f3a327"
+        "sourceSHA256": "ddcd555bdc6ef4f3495436589b009ec1989cb2ada2d403148b096c85a3703b37",
+        "exportMode": "byte-identical"
       }
     }
   ],
-  "exclusions": [
-    "native/client checkout and assets",
-    "dump and generated game data",
-    "saves and observed payloads",
-    "certificates, sessions, credentials and private environment",
-    "vendored third-party code",
-    "server/data and native-world-layout",
-    "network/recovery harnesses",
-    "extracted UI font tables, private hand manifests and all UI atlases",
-    "visual UI consumers whose private dependencies are not exported",
-    "complete private handoff, environment/team registry and transfer pins",
-    "private operational test inputs, backups and generated deployment configuration"
-  ],
-  "limits": [
-    "Full Native/backend integration remains private pending per-file provenance review; this tree cannot start or build the whole game",
-    "Manifest hashes do not substitute authorship/license review",
-    "Gameplay evidence is described by candidate, without private captures, payloads or fixtures",
-    "Final icons-only wheel visual is accepted in portrait, landscape and desktop; later reported UI and multiplayer defects remain open",
-    "Literal current snapshot still includes the rejected three-apple crafting prototype; wood/iron replacements are not integrated",
-    "Operational tools require the matching private backend/package/providers; syntax verification is not runtime or deployment qualification",
-    "Candidate b75becf integrates shadows, pattern-editor repairs, remote avatar pose, exterior Put away and the basic graphics default; fish catch with credit and several of these flows in game remain unverified",
-    "Materials (wood/iron), recipe notebook and the final barrel recipe are not part of candidate b75becf"
-  ],
-  "previousSnapshotCandidate": {
-    "web": "circular-ui-icons-only-20261014",
-    "native": "fc29e6f82c26c626563d"
+  "tests": {
+    "public": 57,
+    "privateFocal": 61,
+    "privateUIOnly": 4,
+    "skipped": 0
   }
 }

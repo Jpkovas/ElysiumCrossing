@@ -1,3 +1,6 @@
+> Registro de planejamento anterior. A base vigente e a ordem de retomada estão
+> em [continuation.md](../continuation.md), atualizado em 17/10/2026.
+
 # Escopo ativo da modernização
 
 Síntese do plano técnico incorporado em 12/10/2026. A missão é modernizar

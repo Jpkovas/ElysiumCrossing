@@ -1,0 +1,5 @@
+[
+  {"id":"nh:barrel","name":"Barril","sheet":9600,"sheetName":"Receita: barril","price":500,"wood":5,"iron":2,"output":{"item":4696,"name":"Barril","quantity":1},"source":"https://nookipedia.com/wiki/Item:Barrel_(New_Horizons)"},
+  {"id":"nh:garden-bench","name":"Banco de madeira","sheet":9601,"sheetName":"Receita: banco","price":500,"wood":12,"iron":4,"output":{"item":4892,"name":"Banco oriental","quantity":1},"source":"https://nookipedia.com/wiki/Item:Garden_bench_(New_Horizons)"},
+  {"id":"nh:wooden-low-table","name":"Mesa de madeira","sheet":9602,"sheetName":"Receita: mesa","price":500,"wood":10,"iron":0,"output":{"item":5020,"name":"Mesa baixa cabana","quantity":1},"source":"https://nookipedia.com/wiki/Item:Wooden_low_table_(New_Horizons)"}
+]

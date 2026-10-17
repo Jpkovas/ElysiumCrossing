@@ -1,3 +1,5 @@
+import type {RecipeId} from './crafting.ts';
+import type {Residence,MovePlan,NativeMoveState} from './residence.ts';
 /** The single browser / API / room / C-bridge contract. WhatsApp is deferred. */
 import type { ActorCommit, ActorSnapshot, WorldCommit, WorldOperation, WorldSnapshot } from './world';
 import type { FishingSnapshot, FishingCast, FishingReceipt, NativeFishingRequest } from './fishing';
@@ -12,7 +14,7 @@ export function isEmote(value: unknown): value is Emote { return typeof value ==
 export const SAVE_LIMIT = 4 * 1024 * 1024;
 /** Fixed original GAFE01 town GCI and the original BE mCD_foreigner_c body. */
 export const CHECKPOINT_TOWN_BYTES = 467008;
-export const PASSPORT_BYTES = 11808;
+export const PASSPORT_BYTES = 11904;
 export const NES_SAVE_BYTES = 6592;
 export const NES_HEADER_BYTES = 64;
 export const NES_RESIDENT_BYTES = 1632;
@@ -88,12 +90,15 @@ export type CheckpointProviderState = {
   appliedSequence: number;
   currentOwnRevision: number;
 };
-export type User = { id: string; name: string; phone: string; townName: string };
-export type Town = { id: string; ownerName: string; name: string; revision: number; online: boolean; hasSave: boolean; landId?: number; identity?: string };
+export type User = { id: string; name: string; phone: string; townName: string; residence: Residence; pendingMove:MovePlan|null };
+export type Town = { id: string; ownerName: string; name: string; revision: number; online: boolean; hasSave: boolean; residents: {userId:string;name:string;portrait?:string}[]; landId?: number; identity?: string; portrait?: string; portraitUserId?: string };
 export type Session = { user: User; serverTime: number };
 export type SaveVersion = { revision: number; sha256: string; size: number; createdAt: number };
-/** Visible avatar pose only: animation layers, frame, loop and the drawable tool in hand (-1 none). Grants nothing. */
-export type Position = { x: number; y: number; z: number; rotation: number; animation: number; animation1: number; partTable: number; frame: number; speed: number; loop: boolean; item: number; rootMotionFlags: 0 | 2 | 4 | 6; scene: number; character: number; town?: number; townIdentity?: string; visitor?: boolean };
+/** Visible avatar pose only. Appearance and the drawable tool in hand (-1 none) grant no inventory or world authority. */
+export type Position = { x: number; y: number; z: number; rotation: number; animation: number; animation1: number; partTable: number; frame: number; speed: number; loop: boolean; item: number; rootMotionFlags: 0 | 2 | 4 | 6; scene: number; character: number;
+  /** cloth 0..255: design is empty; cloth 256..263: design is exactly 544 bytes encoded as 1088 hex characters. */
+  cloth: number; skinTone: number; faceFlags: number; design: string;
+  town?: number; townIdentity?: string; visitor?: boolean };
 export type Ghost = Position & { id: string; name: string; emote: Emote | '' };
 /** Revision of the town's last server-confirmed GCI; no save bytes travel through the room. */
 export type TownSnapshot = { players: Ghost[]; revision: number };
@@ -131,7 +136,7 @@ export type UIRasterBudget = { cssWidth: number; cssHeight: number; pixelWidth: 
 export type GraphicsState = { ready: boolean; settings: GraphicsSettings; raster: UIRasterBudget | null; resolutionError: string | null; hdError: string | null; hd: HDTextureStats | null };
 export type HDTextureManifest = { version: string; source: { title: string; url: string }; files: Record<string, { size: number; sha256: string }> };
 export type ControlMode = 'touch' | 'joystick';
-export type GameBootstrap = { ownTownId: string; targetTownId: string; ownRevision: number; nativeTownId: number; residentName: string; serverTime: number; ownSave: ArrayBuffer | null; targetSave: ArrayBuffer | null; passport: ArrayBuffer | null; nes: ArrayBuffer | null; graphics: GraphicsSettings; controlMode: ControlMode };
+export type GameBootstrap = { ownTownId: string; targetTownId: string; ownRevision: number; nativeTownId: number; residentName: string; resident: Pick<Residence,'pid'|'playerSlot'|'arriving'>; serverTime: number; ownSave: ArrayBuffer | null; targetSave: ArrayBuffer | null; passport: ArrayBuffer | null; nes: ArrayBuffer | null; graphics: GraphicsSettings; controlMode: ControlMode };
 export const NES_BUTTONS = ['up', 'down', 'left', 'right', 'a', 'b', 'select', 'start', 'turboA', 'turboB'] as const;
 export type NESButton = typeof NES_BUTTONS[number];
 export type TouchInput = { kind: 'stick'; x: number; y: number; run: boolean } | { kind: 'pointer'; phase: 'start' | 'move' | 'end' | 'cancel'; id: number; x: number; y: number } | { kind: 'nes-button'; button: NESButton; pressed: boolean };
@@ -150,6 +155,8 @@ export type TouchUI = {
   calendarEvents?: number;
   addressPages?: boolean;
   inventorySelection?: boolean;
+  /** Settled Native pocket portrait, normalized to the canvas. */
+  portrait?: { x: number; y: number; w: number; h: number };
   /** Current native pockets only; no client-owned tool registry. */
   tools?: { equipped: number; equippedLabel: string; storeSlot: number | null; items: { slot: number; item: number; label: string }[] };
   toolPending?: boolean;
@@ -196,15 +203,22 @@ export interface NativeGame {
   worldComplete(operationId: string, receipt?: { sequence: number; ownRevision: number }): void;
   /** Starts a native admission; no network or inventory mutation. */
   worldCraftMenu(): boolean;
-  worldCraftRequest(kind: 'learn_recipe' | 'craft_recipe'): number;
+  worldCraftRequest(recipeId: RecipeId): number;
   worldCraftCancel(intent: number): boolean;
-  worldCrafting(): { ready: boolean; apples: number };
+  worldCrafting(): { ready: boolean; wood: number; iron: number };
   worldRequest(): WorldOperation | null;
   worldAdmission(): WorldAdmission | null;
   worldResumeAdmission(): 0 | 1 | 2 | 3;
   worldOwnCheckpoint(checkpointToken: number, revision: number, checkpoint: NativeCheckpoint): Promise<boolean>;
   /** 1 rebases the current canonical baseline; 2 only records an exact older candidate's ACK. */
   worldRevision(revision: number, checkpointToken: number, canonicalMatches: boolean): 0 | 1 | 2;
+  moveArm(plan:MovePlan):boolean;
+  /** Retire only an ARMED reservation before the station/save owns it. */
+  moveDisarm(id:string):boolean;
+  moveState():NativeMoveState|null;
+  moveConfirm(id:string,proceed:boolean):boolean;
+  /** Called only after the server's durable, idempotent transfer receipt. */
+  moveAck(id:string,checkpointToken:number,sourceRevision:number):boolean;
   fishingBind(identity: WorldIdentity & { townId: string }): void;
   fishingEnabled(enabled: boolean): void;
   fishingSnapshot(snapshot: FishingSnapshot): void;
@@ -237,6 +251,7 @@ export interface NativeGame {
   choose(index: number): void;
   uiInsets(insets: NativeUIInsets): void;
   uiSnapshot(): TouchUI;
+  portrait(): Promise<Blob | null>;
   /** m_banti.c: the clock alpha drawn this frame, 0 when banti_draw skips it. */
   uiClockAlpha(): number;
   configureGraphics(settings: GraphicsSettings): Promise<GraphicsState>;

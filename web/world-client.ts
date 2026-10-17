@@ -1,8 +1,11 @@
-import { BARREL_RECIPE } from '../shared/crafting';
+import {decodeMaterial} from '../shared/material-units.ts';
+import type {CraftingView} from './crafting-contract.ts';
+import { CRAFTING_RECIPES, craftingRecipe, type RecipeId } from '../shared/crafting';
 import { WORLD_HEIGHT, WORLD_WIDTH, WORLD_FURNITURE_ITEM, WORLD_FURNITURE_LIMIT, type ActorCommit, type ActorSnapshot, type WorldCommit, type WorldFurniture, type WorldOperation, type WorldSnapshot } from '../shared/world';
 import type { CheckpointProviderState, NativeCheckpoint, NativeGame, WorldIdentity } from '../shared/contracts';
 import { isCheckpoint } from './checkpoint';
 import type { FishingOperation } from '../shared/fishing';
+import type { CheckpointContext } from '../shared/world';
 
 export interface FishingWorldPort {
   beforeCommit(operationId: string, actor: ActorCommit, world: WorldCommit): Promise<number | null>;
@@ -16,7 +19,8 @@ export interface PlantingWorldPort {
 }
 type Intention = WorldOperation | FishingOperation;
 const isCrafting = (value: Intention): value is Extract<WorldOperation, { kind: 'learn_recipe' | 'craft_recipe' }> => value.kind === 'learn_recipe' || value.kind === 'craft_recipe';
-const isFishing = (value: Intention): value is FishingOperation => value.kind !== 'shake_tree' && value.kind !== 'pickup' && value.kind !== 'plant_fruit' && value.kind !== 'place_furniture' && value.kind !== 'remove_furniture' && !isCrafting(value);
+const isInventoryOperation = (value:Intention) => isCrafting(value)||value.kind==='gather_material';
+const isFishing = (value: Intention): value is FishingOperation => value.kind !== 'water_flowers' && value.kind !== 'shake_tree' && value.kind !== 'pickup' && value.kind !== 'drop_material' && value.kind !== 'plant_fruit' && value.kind !== 'place_furniture' && value.kind !== 'remove_furniture' && !isInventoryOperation(value);
 
 /** Native implementations acknowledge application only after their main-loop safepoint. */
 export type WorldNative = Pick<NativeGame, 'lifecycle' | 'checkpointLineage' | 'worldIdentity' | 'checkpointContinuation' | 'worldEnabled' | 'worldBind' | 'worldSnapshot' | 'worldCommit' | 'worldComplete' | 'worldRequest' | 'worldRevision' | 'worldOwnCheckpoint' | 'worldAdmission' | 'worldResumeAdmission' | 'worldCraftRequest' | 'worldCraftCancel' | 'worldCrafting'>;
@@ -31,6 +35,8 @@ type WorldClientOptions = {
   townId: string;
   ownTownId: string;
   native: WorldNative;
+  /** Exact world prefix from the authenticated, hash-checked imported checkpoint. */
+  importContext?: CheckpointContext | null;
   gameInstance(): string;
   activeTownId(): string;
   baselineRevision(): number;
@@ -47,7 +53,7 @@ export const errorMessage = (error: unknown, fallback: string): string => object
 const target = (value: unknown): boolean => object(value) && integer(value.x, WORLD_WIDTH - 1) && integer(value.z, WORLD_HEIGHT - 1);
 function validEntities(value: unknown): boolean {
   return Array.isArray(value) && value.length <= WORLD_WIDTH * WORLD_HEIGHT && value.every(entity => object(entity)
-    && typeof entity.id === 'string' && entity.id.length > 0 && entity.id.length <= 200 && entity.kind === 'fruit' && integer(entity.item, 0xffff) && target(entity));
+    && typeof entity.id === 'string' && entity.id.length > 0 && entity.id.length <= 200 && integer(entity.item,0xffff)&&target(entity)&&(entity.kind==='fruit'||entity.kind==='material'&&decodeMaterial(entity.item)?.quantity===entity.quantity));
 }
 export function validFurniture(value: unknown, version: number): value is WorldFurniture[] {
   if (!Array.isArray(value) || value.length > WORLD_FURNITURE_LIMIT) return false;
@@ -73,27 +79,28 @@ export function sameFurniture(left: WorldFurniture[], right: WorldFurniture[]): 
 function validActor(value: unknown): value is ActorSnapshot {
   return object(value) && typeof value.pid === 'string' && /^[a-f0-9]{40}$/.test(value.pid) && integer(value.ownRevision)
     && Array.isArray(value.pockets) && value.pockets.length === 15 && value.pockets.every(item => integer(item, 0xffff))
-    && Array.isArray(value.learnedRecipes) && value.learnedRecipes.length <= 1 && value.learnedRecipes.every(id => id === BARREL_RECIPE.id)
+    && Array.isArray(value.learnedRecipes) && value.learnedRecipes.length <= CRAFTING_RECIPES.length && new Set(value.learnedRecipes).size===value.learnedRecipes.length && value.learnedRecipes.every(id => !!craftingRecipe(id))
     && integer(value.conditions, 0xffffffff) && integer(value.wallet, 0xffffffff);
 }
+export function validWatered(value:unknown):boolean{return Array.isArray(value)&&value.length<=WORLD_WIDTH*WORLD_HEIGHT&&value.every(target)&&new Set(value.map(p=>`${p.x},${p.z}`)).size===value.length;}
 function validSnapshot(value: unknown, townId: string): value is WorldSnapshot {
   return object(value) && value.townId === townId && integer(value.version) && integer(value.sequence)
     && Array.isArray(value.foreground) && value.foreground.length === WORLD_WIDTH * WORLD_HEIGHT
-    && value.foreground.every(item => integer(item, 0xffff)) && validEntities(value.entities) && validFurniture(value.furniture, value.version);
+    && value.foreground.every(item => integer(item, 0xffff)) && validEntities(value.entities) && validFurniture(value.furniture, value.version) && validWatered(value.watered);
 }
 function validCommit(value: unknown, townId: string): value is WorldCommit {
   return object(value) && (value.kind === 'world' || value.kind === 'fishing' || value.kind === 'crafting') && value.townId === townId && typeof value.operationId === 'string' && value.operationId.length <= 200
     && integer(value.version) && integer(value.sequence) && Array.isArray(value.tiles) && value.tiles.length <= WORLD_WIDTH * WORLD_HEIGHT
     && (value.kind === 'world' || value.tiles.length === 0)
     && value.tiles.every(tile => object(tile) && target(tile) && integer(tile.before, 0xffff) && integer(tile.after, 0xffff)) && validEntities(value.entities)
-    && validFurniture(value.furniture, value.version);
+    && validFurniture(value.furniture, value.version) && validWatered(value.watered);
 }
 function validOperation(value: unknown): value is WorldOperation {
   return object(value) && typeof value.id === 'string' && /^[\w-]{8,96}$/u.test(value.id)
     && integer(value.expectedWorldVersion) && value.expectedWorldVersion > 0 && integer(value.expectedOwnRevision) && value.expectedOwnRevision > 0 && integer(value.appliedSequence)
-    && (value.kind === 'shake_tree' || value.kind === 'pickup' || value.kind === 'plant_fruit' && integer(value.pocketSlot, 14)
+    && (value.kind === 'water_flowers' || value.kind === 'shake_tree' || value.kind === 'pickup' || value.kind === 'gather_material' || (value.kind === 'plant_fruit'||value.kind==='drop_material') && integer(value.pocketSlot, 14)
       || value.kind === 'place_furniture' && integer(value.pocketSlot, 14) && integer(value.rotation, 3)
-      || (value.kind === 'learn_recipe' || value.kind === 'craft_recipe') && value.recipeId === BARREL_RECIPE.id
+      || (value.kind === 'craft_recipe' || value.kind === 'learn_recipe' && integer(value.pocketSlot,14)) && !!craftingRecipe(value.recipeId)
       || value.kind === 'remove_furniture' && typeof value.objectId === 'string' && /^[\w-]{8,96}$/u.test(value.objectId)) && target(value.target);
 }
 
@@ -108,15 +115,15 @@ export class WorldClient {
     if (!waiter.operationId) this.options.native.worldCraftCancel(waiter.intent);
     waiter.reject(new Error(message));
   }
-  craftingState(): { learned: boolean; apples: number; ready: boolean } {
+  craftingState(): CraftingView {
     const state = this.options.native.worldCrafting();
-    return { learned: !!this.actorState?.learnedRecipes.includes(BARREL_RECIPE.id), apples: state.apples,
+    return { learnedRecipes: this.actorState?.learnedRecipes ?? [], wood: state.wood, iron: state.iron,
       ready: this.options.townId === this.options.ownTownId && this.isReady() && !this.intention && !this.craftWaiter && state.ready };
   }
-  craftRecipe(kind: 'learn_recipe' | 'craft_recipe', recipeId: typeof BARREL_RECIPE.id): Promise<void> {
-    if ((kind !== 'learn_recipe' && kind !== 'craft_recipe') || recipeId !== BARREL_RECIPE.id || !this.craftingState().ready) return Promise.reject(new Error('Espere a conexão e volte ao campo da sua vila.'));
-    if (kind === 'craft_recipe' && !this.actorState?.learnedRecipes.includes(recipeId)) return Promise.reject(new Error('Aprenda a receita antes de criar.'));
-    const intent = this.options.native.worldCraftRequest(kind);
+  craftRecipe(recipeId: RecipeId): Promise<void> {
+    if (!craftingRecipe(recipeId) || !this.craftingState().ready) return Promise.reject(new Error('Espere a conexão e volte ao campo da sua vila.'));
+    if (!this.actorState?.learnedRecipes.includes(recipeId)) return Promise.reject(new Error('Aprenda a receita antes de criar.'));
+    const intent = this.options.native.worldCraftRequest(recipeId);
     if (!Number.isSafeInteger(intent) || intent <= 0) return Promise.reject(new Error('O morador ainda não está pronto para criar.'));
     return new Promise<void>((resolve, reject) => { this.craftWaiter = { intent, operationId: null, resolve, reject }; this.tick(); });
   }
@@ -130,6 +137,7 @@ export class WorldClient {
   private ready = false;
   private version = 0;
   private sequence = 0;
+  private importedOwnSequence = 0;
   private furniture: WorldFurniture[] = [];
   private ownRevision = 0;
   private deliveries: Delivery[] = [];
@@ -147,7 +155,16 @@ export class WorldClient {
   private work: Promise<void> | null = null;
   private awaitingCheckpoint: { context: CheckpointProviderState; revision: number; token: number; canonicalMatches: boolean } | null = null;
 
-  constructor(private readonly options: WorldClientOptions) { this.ownRevision = options.ownRevision(); }
+  constructor(private readonly options: WorldClientOptions) {
+    this.ownRevision = options.ownRevision();
+    const seed = options.importContext;
+    if (seed) {
+      if (seed.worldTownId !== options.ownTownId || seed.baselineRevision !== options.baselineRevision()
+        || !integer(seed.appliedSequence)) throw new Error('O contexto importado não corresponde à cópia da sua vila.');
+      this.importedOwnSequence = seed.appliedSequence;
+      if (options.townId === options.ownTownId) this.sequence = seed.appliedSequence;
+    }
+  }
 
   private nativeIdentity(): WorldIdentity | null {
     return this.options.native.worldIdentity() ?? this.options.native.checkpointContinuation();
@@ -159,7 +176,8 @@ export class WorldClient {
     if (liveIdentity && liveIdentity.visitor !== (activeTownId !== this.options.ownTownId)) return null;
     if (liveIdentity && this.identity && (liveIdentity.pid !== this.identity.pid || liveIdentity.townIdentity !== this.identity.townIdentity)) return null;
     return { gameInstance: this.options.gameInstance(), ramBaselineRevision: this.options.baselineRevision(), activeWorldTownId: activeTownId,
-      appliedSequence: activeTownId === this.options.townId ? this.sequence : 0, currentOwnRevision: Math.max(this.ownRevision, this.options.ownRevision()) };
+      appliedSequence: activeTownId === this.options.townId ? this.sequence : activeTownId === this.options.ownTownId ? this.importedOwnSequence : 0,
+      currentOwnRevision: Math.max(this.ownRevision, this.options.ownRevision()) };
   }
   isReady(): boolean { return this.isGameplayReady() && !this.deliveries.length; }
   /** A verified live binding can keep moving while a directed canonical pair arrives.
@@ -321,10 +339,11 @@ export class WorldClient {
     }
     this.intention = { id: value.id, expectedWorldVersion: value.expectedWorldVersion, expectedOwnRevision: value.expectedOwnRevision,
       appliedSequence: value.appliedSequence, target: { x: value.target.x, z: value.target.z },
-      ...(value.kind === 'plant_fruit' ? { kind: value.kind, pocketSlot: value.pocketSlot }
+      ...((value.kind === 'plant_fruit'||value.kind==='drop_material') ? { kind: value.kind, pocketSlot: value.pocketSlot }
         : value.kind === 'place_furniture' ? { kind: value.kind, pocketSlot: value.pocketSlot, rotation: value.rotation }
         : value.kind === 'remove_furniture' ? { kind: value.kind, objectId: value.objectId }
-        : isCrafting(value) ? { kind: value.kind, recipeId: value.recipeId } : { kind: value.kind }) };
+        : value.kind==='learn_recipe' ? {kind:value.kind,recipeId:value.recipeId,pocketSlot:value.pocketSlot}
+        : value.kind==='craft_recipe' ? {kind:value.kind,recipeId:value.recipeId} : { kind: value.kind }) };
     if (isCrafting(value) && this.craftWaiter) this.craftWaiter.operationId = value.id;
     this.options.native.worldEnabled(false);
     this.sendIntention();
@@ -371,6 +390,57 @@ export class WorldClient {
     if (!integer(revision) || revision < this.ownRevision) return;
     this.ownRevision = revision;
     this.changed();
+  }
+
+  /** A retained cast keeps its immutable B. A newer canonical Own must be
+   * merged through that same token before LAND/REEL can use current versions. */
+  async reconcileFishingCheckpoint(token: number,
+    load: (revision: number) => Promise<{ checkpoint: NativeCheckpoint; revision: number }>,
+    applied: (checkpoint: NativeCheckpoint, revision: number) => void): Promise<boolean> {
+    const native = this.options.native as WorldNative & Pick<NativeGame, 'fishingState' | 'fishingRequest'>;
+    const context = this.context(), identity = this.nativeIdentity(), versions = this.versions();
+    const cast = native.fishingState(), request = native.fishingRequest(), lineage = native.checkpointLineage(token);
+    if (!this.isReady() || this.intention || this.work || this.reconcilingOwn || !context || !identity
+      || !integer(token) || token < 1 || !cast || cast.checkpointToken !== token || cast.gameInstance !== identity.gameInstance
+      || cast.phase < 1 || cast.phase > 4 || cast.result || cast.pending
+      || request && (![2, 5].includes(request.kind) || request.gameInstance !== identity.gameInstance || request.castId !== cast.castId)
+      || !lineage?.acknowledged || lineage.pid !== identity.pid || lineage.gameInstance !== identity.gameInstance
+      || lineage.currentGameInstance !== identity.gameInstance || lineage.reconciledInstance !== identity.gameInstance
+      || lineage.acceptedRevision < 1 || lineage.acceptedRevision > versions.expectedOwnRevision) return false;
+    const epoch = this.epoch;
+    const unchanged = () => this.epoch === epoch && this.isReady() && !this.intention && !this.work
+      && JSON.stringify(this.context()) === JSON.stringify(context) && JSON.stringify(this.versions()) === JSON.stringify(versions)
+      && JSON.stringify(this.nativeIdentity()) === JSON.stringify(identity)
+      && JSON.stringify(native.fishingRequest()) === JSON.stringify(request)
+      && native.fishingState()?.castId === cast.castId && native.fishingState()?.checkpointToken === token
+      && native.fishingState()?.gameInstance === identity.gameInstance
+      && !native.fishingState()?.result && !native.fishingState()?.pending
+      && (native.fishingState()?.phase ?? 0) >= 1 && (native.fishingState()?.phase ?? 0) <= 4;
+    const canonical = await load(versions.expectedOwnRevision);
+    if (!unchanged() || canonical.revision !== versions.expectedOwnRevision || !isCheckpoint(canonical.checkpoint)) return false;
+    const before = native.checkpointLineage(token);
+    if (!before?.acknowledged || before.pid !== lineage.pid || before.ownTownIdentity !== lineage.ownTownIdentity
+      || before.acceptedRevision !== lineage.acceptedRevision || before.gameInstance !== identity.gameInstance
+      || before.currentGameInstance !== identity.gameInstance || before.reconciledInstance !== identity.gameInstance) return false;
+    this.reconcilingOwn = true;
+    try {
+      const merged = await native.worldOwnCheckpoint(token, canonical.revision, canonical.checkpoint);
+      this.reconcilingOwn = false;
+      const proof = native.checkpointLineage(token);
+      if (!merged || !proof?.acknowledged || proof.pid !== lineage.pid
+        || proof.ownTownIdentity !== lineage.ownTownIdentity || proof.acceptedRevision !== lineage.acceptedRevision
+        || proof.gameInstance !== identity.gameInstance || proof.currentGameInstance !== identity.gameInstance
+        || proof.reconciledInstance !== identity.gameInstance || proof.reconciledRevision < canonical.revision
+        || this.options.gameInstance() !== context.gameInstance
+        || JSON.stringify(this.nativeIdentity()) !== JSON.stringify(identity)) return false;
+      // Record real RAM proof even if a peer advanced the room during Own IO.
+      // CAS/stored canonical may already be newer; that copy must not regress.
+      const stable = unchanged();
+      if (canonical.revision >= this.versions().expectedOwnRevision) applied(canonical.checkpoint, canonical.revision);
+      if (this.options.baselineRevision() < canonical.revision) this.options.onBaselineRevision(canonical.revision);
+      this.changed();
+      return stable;
+    } finally { this.reconcilingOwn = false; this.pump(); }
   }
 
   async acknowledgeCheckpoint(physicalCommit: boolean, context: CheckpointProviderState, revision: number, canonicalMatches: boolean, capturedToken: number,
@@ -580,7 +650,7 @@ export class WorldClient {
     }
     if (this.recovering && !this.deliveries.some(delivery => delivery.kind === 'snapshot')) return;
     const own = this.intention?.id === value.operationId;
-    if (own && value.kind !== (isFishing(this.intention!) ? 'fishing' : isCrafting(this.intention!) ? 'crafting' : 'world')) { this.invalidDelivery(); return; }
+    if (own && value.kind !== (isFishing(this.intention!) ? 'fishing' : isInventoryOperation(this.intention!) ? 'crafting' : 'world')) { this.invalidDelivery(); return; }
     if (value.sequence <= this.sequence && !own) return;
     if (this.deliveries.some(delivery => delivery.kind === 'commit' && delivery.world.operationId === value.operationId)) return;
     this.deliveries.push({ kind: 'commit', world: structuredClone(value), actor: null, own });
@@ -602,11 +672,15 @@ export class WorldClient {
       }
       delivery.actor = structuredClone(value); this.pump(); return;
     }
-    const actorIncrement = intention.kind === 'shake_tree' && this.options.townId !== this.options.ownTownId ? 0 : 1;
-    if (delivery.world.kind !== (isCrafting(intention) ? 'crafting' : 'world') || delivery.world.sequence !== intention.appliedSequence + 1 || delivery.world.version !== intention.expectedWorldVersion + 1
+    const actorIncrement = (intention.kind === 'shake_tree'||intention.kind==='water_flowers') && this.options.townId !== this.options.ownTownId ? 0 : 1;
+    if (delivery.world.kind !== (isInventoryOperation(intention) ? 'crafting' : 'world') || delivery.world.sequence !== intention.appliedSequence + 1 || delivery.world.version !== intention.expectedWorldVersion + 1
       || value.ownRevision !== intention.expectedOwnRevision + actorIncrement
-      || (isCrafting(intention)
-        ? delivery.world.tiles.length !== 0 || !sameFurniture(delivery.world.furniture, this.furniture) || !value.learnedRecipes.includes(BARREL_RECIPE.id)
+      || (intention.kind==='water_flowers'
+        ? delivery.world.tiles.length!==0 || !delivery.world.watered.some(p=>p.x===intention.target.x&&p.z===intention.target.z)||!sameFurniture(delivery.world.furniture,this.furniture)
+        : intention.kind==='gather_material'
+        ? delivery.world.tiles.length!==0 || !sameFurniture(delivery.world.furniture,this.furniture)
+        : isCrafting(intention)
+        ? delivery.world.tiles.length !== 0 || !sameFurniture(delivery.world.furniture, this.furniture) || !value.learnedRecipes.includes(intention.recipeId)
         : intention.kind === 'place_furniture'
         ? !delivery.world.furniture.some(item => item.id === intention.id && item.x === intention.target.x && item.z === intention.target.z && item.rotation === intention.rotation)
         : intention.kind === 'remove_furniture'
@@ -654,7 +728,7 @@ export class WorldClient {
       if (delivery.kind === 'commit' && delivery.world.sequence > this.sequence + 1) { this.requestSnapshot(); return; }
       if (delivery.kind === 'commit' && (delivery.world.kind === 'fishing' || delivery.world.kind === 'crafting'
         ? !sameFurniture(delivery.world.furniture, this.furniture)
-        : delivery.world.tiles.length === 0 && sameFurniture(delivery.world.furniture, this.furniture))) { this.invalidDelivery(); return; }
+        : delivery.world.tiles.length === 0 && sameFurniture(delivery.world.furniture, this.furniture) && delivery.world.watered.length===0)) { this.invalidDelivery(); return; }
       const liveIdentity = this.nativeIdentity();
       if (!liveIdentity || liveIdentity.visitor !== (this.options.townId !== this.options.ownTownId) || this.options.activeTownId() !== this.options.townId
         || this.identity && (liveIdentity.pid !== this.identity.pid || liveIdentity.townIdentity !== this.identity.townIdentity)) {

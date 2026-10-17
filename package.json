@@ -7,7 +7,7 @@
     "node": ">=24.0.0"
   },
   "scripts": {
-    "test": "node --import tsx --test tests/haptics.test.ts tests/server-clock.test.ts",
+    "test": "node --import tsx --test tests/fishing-client.test.ts tests/haptics.test.ts tests/server-clock.test.ts",
     "typecheck": "tsc --noEmit",
     "verify:export": "node tools/verify-public-export.mjs"
   },

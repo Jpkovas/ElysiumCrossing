@@ -1,9 +1,9 @@
-# Escopo público — rodada 20, 19/10/2026
+# Escopo público — auditoria de 19/10/2026
 
-São 32 fontes próprias e seus contratos/testes, além de ferramentas operacionais
+São 33 fontes próprias e seus contratos/testes, além de ferramentas operacionais
 próprias já publicadas e documentação sanitizada. O manifesto registra origem,
 modo Git, tamanho e SHA-256 por arquivo. Cada fonte é cópia byte a byte da
-candidata privada `dfac0208f86f51288d5981acdd854a4547b376bb`.
+candidata privada indicada em `privateCanonicalCommit` no manifesto.
 
 | Família | Conteúdo |
 | --- | --- |
@@ -11,7 +11,7 @@ candidata privada `dfac0208f86f51288d5981acdd854a4547b376bb`.
 | Crafting | 12 receitas com fontes, cinco materiais e consumo de pilhas |
 | Clientes | WorldClient, FishingClient, checkpoint/journal, cache privado e texturas HD |
 | Preferências | Gráficos, som, linhas de opções, relógio monotônico e haptics |
-| Testes | 43 casos de pesca/continuidade, 12 de haptics e 2 de relógio |
+| Testes | 44 casos de pesca/continuidade, 12 de haptics e 4 de relógio |
 | Ferramentas | Verificação do export e helpers próprios de snapshot/preparação já revisados |
 
 O grafo de imports fecha para typecheck. O adaptador de som contém somente

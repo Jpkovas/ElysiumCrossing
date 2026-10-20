@@ -3,6 +3,7 @@ import type { NativeGame, NativeCheckpoint, WorldIdentity } from '../shared/cont
 import type { FishingOperation, FishingOperationResult, FishingSnapshot, FishingCast, FishingPendingOrigin } from '../shared/fishing';
 import { WorldClient, errorMessage, type WorldSocket, type FishingWorldPort } from './world-client';
 import { isCheckpoint } from './checkpoint';
+import { ServerClock } from './server-clock';
 
 const object = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value);
 const integer = (value: unknown, max = Number.MAX_SAFE_INTEGER): value is number => Number.isSafeInteger(value) && (value as number) >= 0 && (value as number) <= max;
@@ -28,7 +29,7 @@ function validSnapshot(value: unknown, townId: string, identity: WorldIdentity):
       : object(origin) && value.cast.townId === origin.townId && value.cast.townIdentity === origin.townIdentity
         && value.cast.phase === 'caught' && value.cast.pending && !value.cast.credited);
   return value.townId === townId && value.townIdentity === identity.townIdentity && validOrigin && validOwnedCast
-    && integer(value.sequence) && integer(value.version) && integer(value.serverTime)
+    && integer(value.sequence) && integer(value.version) && integer(value.serverTime) && value.serverTime >= 946684800000
     && Array.isArray(value.entities) && value.entities.length <= 2 && value.entities.every(entity => object(entity)
       && point(entity) && uuid(entity.id) && integer(entity.generation) && entity.generation > 0 && integer(entity.fishType, 44)
       && integer(entity.angle, 65535) && integer(entity.expiresAt) && (entity.reservation === null || object(entity.reservation)
@@ -55,7 +56,7 @@ export class FishingClient implements FishingWorldPort {
   private resumeIntent = 0;
   private resolutionOrigin: FishingPendingOrigin | null = null;
   private appliedSignature = '';
-  private snapshotAt = 0;
+  private readonly clock = new ServerClock();
   private continuing: Promise<void> | null = null;
   private continueRetryAt = 0;
   constructor(private readonly options: Options) { options.world.attachFishing(this); }
@@ -69,7 +70,7 @@ export class FishingClient implements FishingWorldPort {
       // fresh snapshot on the next world binding and during its regular tick.
       if (!identity) return;
       if (!validSnapshot(value, this.options.townId(), identity)) return this.invalid();
-      if (!this.snapshot || value.sequence >= this.snapshot.sequence) { this.snapshot = structuredClone(value); this.snapshotAt = performance.now(); }
+      if (!this.snapshot || value.sequence >= this.snapshot.sequence) { this.snapshot = structuredClone(value); this.clock.sync(value.serverTime); }
       this.tick();
     }));
     this.unsubscribe.push(socket.onMessage<unknown>('fishing_receipt', value => {
@@ -135,7 +136,7 @@ export class FishingClient implements FishingWorldPort {
     const versions = this.options.world.versions();
     const request = this.options.native.fishingRequest();
     if (this.snapshot && this.snapshot.sequence <= versions.appliedSequence) {
-      const serverTime = this.snapshot.serverTime + Math.max(0, performance.now() - this.snapshotAt);
+      const serverTime = this.clock.now();
       const projected = structuredClone(this.snapshot);
       const liveCast = projected.cast;
       if (liveCast && !['caught', 'released', 'escaped'].includes(liveCast.phase) && liveCast.landedAt !== null) {
@@ -255,7 +256,7 @@ export class FishingClient implements FishingWorldPort {
       if (cast.townId !== this.options.townId()) this.options.native.fishingResolvePendingTerminal(cast.id, operationId, result.world.sequence, result.actor.ownRevision);
       else this.options.native.fishingTerminal(cast.id, result.actor.ownRevision);
     }
-    this.pending = null; this.resolutionOrigin = null; this.receipts.delete(operationId); this.snapshot = result.fishing; this.snapshotAt = performance.now();
+    this.pending = null; this.resolutionOrigin = null; this.receipts.delete(operationId); this.snapshot = result.fishing; this.clock.sync(result.fishing.serverTime);
     this.tick();
   }
   reject(operationId: string): void {

@@ -1,6 +1,7 @@
 import { DEFAULT_GRAPHICS, type GraphicsSettings, type GraphicsState, type NativeGame } from '../shared/contracts';
 import { pulseHaptic } from './haptics';
 import { optionRow } from './option-rows';
+import { SOFTWARE_RENDERER_NOTE } from './graphics-capability';
 
 const storageKey = 'elysium.graphics';
 
@@ -62,14 +63,14 @@ export function createGraphicsPanel(getNative: () => NativeGame | null, playerId
   }
   function render(state: GraphicsState): void {
     const muted = !!getNative()?.selectedSoundMuted();
-    const key = JSON.stringify([state.ready, state.settings, state.resolutionError, state.hdError, storageError || soundStorageError, muted]);
+    const key = JSON.stringify([state.ready, state.settings, state.resolutionError, state.hdError, state.softwareRenderer, storageError || soundStorageError, muted]);
     if (key !== settingsKey) {
       settingsKey = key;
       radios.forEach(radio => { radio.checked = Number(radio.value) === state.settings.resolution; });
       hdInputs.forEach(input => { input.checked = (input.value === 'on') === state.settings.hdTextures; });
       soundInputs.forEach(input => { input.checked = (input.value === 'off') === muted; });
       const errors = [state.resolutionError, state.hdError].filter(Boolean);
-      status.textContent = [...errors, storageError || soundStorageError ? 'Aplicado nesta aba. O navegador não permitiu guardar a preferência neste aparelho.' : ''].filter(Boolean).join(' ');
+      status.textContent = [...errors, state.softwareRenderer ? SOFTWARE_RENDERER_NOTE : '', storageError || soundStorageError ? 'Aplicado nesta aba. O navegador não permitiu guardar a preferência neste aparelho.' : ''].filter(Boolean).join(' ');
       status.classList.toggle('error', errors.length > 0 || storageError || soundStorageError);
     }
   }

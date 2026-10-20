@@ -514,3 +514,35 @@ test('before Native FLOAT/confirmed LAND a newer revision never starts proactive
   assert.equal(f.lastOperation().id, land.id); assert.equal(f.lastOperation().kind, 'land');
   assert.deepEqual(f.errors, []);
 });
+
+test('jitter in a periodic fishing snapshot cannot rewind a projected bite into a Native-rejected phase', async t => {
+  const epoch = 1791505098000;
+  let elapsed = 0;
+  t.mock.method(performance, 'now', () => elapsed);
+  t.mock.method(Date, 'now', () => epoch);
+  const f = fixture(); await f.initialize();
+  const cast: FishingCast = { id: randomUUID(), actorId: 'owner', pid, townId: 'home', townIdentity: identity.townIdentity,
+    fishId: randomUUID(), generation: 1, fishType: 0, phase: 'approaching', bobber: { x: 1, y: 20, z: 2 },
+    touches: [], biteAt: epoch + 1000, biteUntil: epoch + 1600, createdAt: epoch, rodType: 0, landedAt: epoch, pending: false, credited: false };
+  const phases = { waiting: 1, approaching: 2, touch: 3, bite: 4, caught: 5, released: 6, escaped: 7 } as const;
+  const apply = f.native.fishingCast;
+  let phase = 0;
+  // ec_fishing_cast_apply rejects regressing phases; the real bridge throws on 0.
+  f.native.fishingCast = (value: FishingCast, sequence: number, serverTime: number) => {
+    if (phases[value.phase] < phase) throw new Error('O jogo não aplicou a fase confirmada da pesca.');
+    phase = phases[value.phase]; apply(value, sequence, serverTime);
+  };
+  f.native.fishingCast(cast, 0, epoch);
+  const snapshot: FishingSnapshot = { townId: 'home', townIdentity: identity.townIdentity, sequence: 0, version: 1,
+    serverTime: epoch, entities: [], cast, pendingOrigin: null };
+  f.emit('fishing_snapshot', snapshot);
+  elapsed = 1200; f.fishing.tick();
+  assert.equal(phase, phases.bite);
+  elapsed = 1400;
+  assert.doesNotThrow(() => f.emit('fishing_snapshot', { ...snapshot, serverTime: epoch + 800 }),
+    'a snapshot generated after the first one but delayed in transit cannot rewind the already projected bite');
+  assert.equal(phase, phases.bite);
+  elapsed = 1800; f.fishing.tick();
+  assert.equal(phase, phases.escaped, 'the original server deadline remains effective; no catch credit or grace window is manufactured');
+  assert.equal(f.started.length, 0); assert.equal(f.confirmed.length, 0);
+});

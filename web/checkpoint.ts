@@ -535,14 +535,31 @@ function sameStoredCapture(a: CheckpointCapture, b: CheckpointCapture): boolean 
     && (a.baseline.checkpoint === null ? b.baseline.checkpoint === null : sameCheckpoint(a.baseline.checkpoint, b.baseline.checkpoint));
 }
 
+type LiveRecoveryOwner = { userId: string; ownTownId: string; currentGameInstance: string; ownTownIdentity: string };
+
 /** Recovers an exact old live origin by server receipt, without touching native RAM or its old token. */
 export async function recoverPriorBootLive(capture: CheckpointCapture,
   owner: { userId: string; ownTownId: string; currentGameInstance: string; ownTownIdentity: string },
   transport: PriorBootLiveRecoveryTransport, factory: IDBFactory = indexedDB): Promise<PriorBootLiveRecoveryResult> {
+  if (capture.gameInstance === owner.currentGameInstance) return { status: 'blocked', captureId: capture.id,
+    reason: 'A cópia pertence à partida atual. Ela foi preservada.' };
+  return recoverLiveOrigin(capture, owner, transport, factory);
+}
+
+/** Explicit current-session retry preserves its exact origin. Native reconciliation remains the caller's duty. */
+export async function recoverCurrentBootLive(capture: CheckpointCapture, owner: LiveRecoveryOwner,
+  transport: PriorBootLiveRecoveryTransport, factory: IDBFactory = indexedDB): Promise<PriorBootLiveRecoveryResult> {
+  if (capture.gameInstance !== owner.currentGameInstance || capture.repaymentWitness || capture.checkpoint.passport !== null)
+    return { status: 'blocked', captureId: capture.id, reason: 'A cópia não pertence à recuperação ao vivo desta partida. Ela foi preservada.' };
+  return recoverLiveOrigin(capture, owner, transport, factory);
+}
+
+async function recoverLiveOrigin(capture: CheckpointCapture, owner: LiveRecoveryOwner,
+  transport: PriorBootLiveRecoveryTransport, factory: IDBFactory): Promise<PriorBootLiveRecoveryResult> {
   const captureId = capture.id;
   const blocked = (reason: string): PriorBootLiveRecoveryResult => ({ status: 'blocked', captureId, reason });
   if (!validStoredCapture(capture) || capture.source !== 'live' || !capture.context || !capture.producer
-    || capture.gameInstance === owner.currentGameInstance || !owner.currentGameInstance
+    || !owner.currentGameInstance
     || !Number.isSafeInteger(capture.createdAt) || capture.createdAt < 0
     || capture.context.activeWorldTownId !== owner.ownTownId || capture.producer.ownTownIdentity !== owner.ownTownIdentity
     || capture.baseline.revision < 1 || capture.baseline.revision !== capture.context.ramBaselineRevision

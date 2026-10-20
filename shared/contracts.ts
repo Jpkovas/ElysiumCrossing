@@ -154,7 +154,7 @@ export type HDTextureStats = {
 };
 /** Accepted Native raster dimensions; ephemeral and independent of display DPR. */
 export type UIRasterBudget = { cssWidth: number; cssHeight: number; pixelWidth: number; pixelHeight: number; factor: 1 | 2 | 3 };
-export type GraphicsState = { ready: boolean; settings: GraphicsSettings; raster: UIRasterBudget | null; resolutionError: string | null; hdError: string | null; hd: HDTextureStats | null };
+export type GraphicsState = { ready: boolean; settings: GraphicsSettings; raster: UIRasterBudget | null; resolutionError: string | null; hdError: string | null; hd: HDTextureStats | null; /** True only when the driver explicitly identifies software rasterization. */ softwareRenderer: boolean };
 export type HDTextureManifest = { version: string; source: { title: string; url: string }; files: Record<string, { size: number; sha256: string }> };
 export type ControlMode = 'touch' | 'joystick';
 export type GameBootstrap = { ownTownId: string; targetTownId: string; ownRevision: number; nativeTownId: number; residentName: string; resident: Pick<Residence,'pid'|'playerSlot'|'arriving'>; serverTime: number; ownSave: ArrayBuffer | null; targetSave: ArrayBuffer | null; passport: ArrayBuffer | null; nes: ArrayBuffer | null; graphics: GraphicsSettings; controlMode: ControlMode; soundMuted: boolean };

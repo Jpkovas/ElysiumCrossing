@@ -1,3 +1,4 @@
+import { menuSound } from './menu-sound.ts';
 /** One native options row: a raster label and its values as lavender circles
  * (radio inputs kept for focus, keyboard and screen readers; hud-surface paints them). */
 export function optionRow<T extends string>(label: string, name: string, values: readonly (readonly [T, string])[],
@@ -9,7 +10,8 @@ export function optionRow<T extends string>(label: string, name: string, values:
     const choice = document.createElement('label'); choice.dataset.raster = 'choice'; choice.dataset.rasterText = text;
     const input = document.createElement('input'); input.type = 'radio'; input.name = name; input.value = value; input.className = 'raster-input';
     const caption = document.createElement('span'); caption.textContent = text;
-    input.addEventListener('change', () => { if (input.checked) onChoose(value); });
+    // After the choice, so turning the sound off stays silent and turning it on is heard.
+    input.addEventListener('change', () => { if (input.checked) { onChoose(value); menuSound('cursor'); } });
     choice.append(input, caption); choices.append(choice);
     return input;
   });

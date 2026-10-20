@@ -1,4 +1,4 @@
-import { ORIGINAL_ITEM_ICON_IDS } from '../shared/item-icons.ts';
+import { POCKET_ICON_KEY } from '../shared/item-icons.ts';
 export type AssetDigest = { size: number; sha256: string };
 export const PRIVATE_ASSET_BUDGETS = { core: 64 * 1024 * 1024, hd: 96 * 1024 * 1024 } as const;
 export const PRIVATE_ASSET_DATABASE = 'elysium-private-assets';
@@ -7,7 +7,7 @@ export type AssetAccess = { prefix: '/game' | '/presentation/assets'; gate: '/ap
 export type PrivateAssetState = { budgetBytes: number; bytes: number; hits: number; downloads: number; evicted: number; storageError: string | null };
 type Metadata = { key: string; size: number; used: number };
 const corePaths = new Set(['/index.js', '/index.wasm', '/index.data', '/nipplejs.min.js', '/rom.ciso', '/mods/forest_1st.arc', '/mods/forest_2nd.arc', '/mods/item-names.bin']);
-const itemIconPaths = new Set(ORIGINAL_ITEM_ICON_IDS.map(id => `/item-icons/${id}.png`));
+const itemIconPath = (path: string) => /^\/item-icons\/[a-z0-9]{2,8}\.png$/.test(path) && POCKET_ICON_KEY.test(path.slice(12, -4));
 const uiFontPaths = new Set(['/ui-font/atlas-sd.png', '/ui-font/atlas-hd.png']);
 const uiHandPaths = new Set(['/ui-hand/atlas-1.png', '/ui-hand/atlas-2.png', '/ui-hand/atlas-3.png']);
 const uiIconPaths = new Set(['/ui-icons/atlas-sd.png', '/ui-icons/atlas-hd.png']);
@@ -190,7 +190,7 @@ export class PrivateAssets {
           relative = `/textures/${version}/${name}`;
       } catch { /* Malformed percent escapes fail the same whitelist below. */ }
     }
-    if (!(this.group === 'core' ? corePaths.has(relative) || this.access.prefix === '/game' && (itemIconPaths.has(relative) || uiFontPaths.has(relative) || uiHandPaths.has(relative) || uiIconPaths.has(relative)) : hdPath.test(relative))
+    if (!(this.group === 'core' ? corePaths.has(relative) || this.access.prefix === '/game' && (itemIconPath(relative) || uiFontPaths.has(relative) || uiHandPaths.has(relative) || uiIconPaths.has(relative)) : hdPath.test(relative))
       || !Number.isSafeInteger(expected?.size) || expected.size < 1 || expected.size > this.info.budgetBytes
       || !/^[a-f0-9]{64}$/.test(expected.sha256)) throw new Error('Arquivo do jogo não permitido.');
     await this.session(signal);

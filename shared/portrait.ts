@@ -3,6 +3,13 @@ export const PORTRAIT_SIDE = 192;
 export const PORTRAIT_FRAMES = 32;
 export const PORTRAIT_FPS = 15;
 export const PORTRAIT_LIMIT = 2 * 1024 * 1024;
+/** Still poses Native renders after the loop, in this order; one frame each. */
+export const PORTRAIT_POSES = ['celebrate', 'fishing', 'net', 'shovel'] as const;
+export type PortraitPose = typeof PORTRAIT_POSES[number];
+/** Native renders the loop and then each pose; this is the full pixel run. */
+export const PORTRAIT_SHOTS = PORTRAIT_FRAMES + PORTRAIT_POSES.length;
+export type PortraitCapture = { portrait: Blob; poses: Record<PortraitPose, Blob> };
+export const isPortraitPose = (value: unknown): value is PortraitPose => PORTRAIT_POSES.includes(value as PortraitPose);
 const signature = new Uint8Array([137,80,78,71,13,10,26,10]);
 const table = Uint32Array.from({length:256},(_,n)=>{for(let k=0;k<8;k++)n=n&1?0xedb88320^(n>>>1):n>>>1;return n>>>0;});
 export function portraitCRC(bytes: Uint8Array): number {
@@ -53,6 +60,14 @@ export function inspectPortrait(bytes: Uint8Array): {header:Uint8Array;frames:Ui
     if(!data.length||frames.length>=PORTRAIT_FRAMES)throw Error('portrait_data');frames.push(portraitConcat(data));
   }
   if(frames.length!==PORTRAIT_FRAMES)throw Error('portrait_count');return {header:list[0]!.data,frames};
+}
+/** A still pose: the same RGBA header and one zlib stream, without animation chunks. */
+export function inspectPose(bytes: Uint8Array): Uint8Array<ArrayBuffer> {
+  const list=chunks(bytes);
+  if(list.some(chunk=>['acTL','fcTL','fdAT'].includes(chunk.type)))throw Error('pose_animation');
+  const data=list.filter(chunk=>chunk.type==='IDAT').map(chunk=>chunk.data);
+  if(!data.length||data.some(part=>!part.length))throw Error('pose_data');
+  return portraitConcat(data);
 }
 /** Canvas handles PNG compression; this code only assembles the standard APNG container. */
 export function animatePortrait(pngFrames: readonly Uint8Array[]): Uint8Array<ArrayBuffer> {

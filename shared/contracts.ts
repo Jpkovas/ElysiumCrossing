@@ -1,4 +1,8 @@
 import type {RecipeId} from './crafting.ts';
+import type {PortraitCapture,PortraitPose} from './portrait.ts';
+import type {MaterialKey} from './material-definitions.ts';
+/** Pocket units per material, in shared MATERIALS order on the Native bridge. */
+export type MaterialCounts = Record<MaterialKey, number>;
 import type {Residence,MovePlan,NativeMoveState} from './residence.ts';
 /** The single browser / API / room / C-bridge contract. WhatsApp is deferred. */
 import type { ActorCommit, ActorSnapshot, WorldCommit, WorldOperation, WorldSnapshot } from './world';
@@ -78,6 +82,14 @@ export type GameConnectionState = 'offline' | 'recovering' | 'ready';
 export type GameLifecycle = 'boot' | 'playing' | 'exited';
 export type NativeLiveCheckpoint = { checkpoint: NativeCheckpoint; token: number; producer: CheckpointProducer; repaymentWitness?: true; context?: CheckpointProviderState };
 export type WorldIdentity = { pid: string; townIdentity: string; gameInstance: number; visitor: boolean };
+/** One pocket or storage slot of the Deluxe personal storage (Private_c.storage_item). */
+export type StorageSlot = { index: number; item: number; storable: boolean; label: string };
+export type StorageView = { pockets: StorageSlot[]; storage: StorageSlot[] };
+export type StorageCell = { side: 'pockets' | 'storage'; index: number };
+/** A destination cell; without an index, the first free cell of that side. */
+export type StorageTarget = { side: StorageCell['side']; index?: number };
+/** Deluxe town ordinance: 0 none, 1 early birds, 2 night owls, 3 bell boom, 4 beautiful town. */
+export type OrdinanceView = { law: 0 | 1 | 2 | 3 | 4; wallet: number; cost: number };
 export type WorldAdmission = Pick<WorldOperation, 'kind' | 'target'> & { intent: number; gameInstance: number };
 export type PlantingAdmission = { intent: number; gameInstance: number; kind: 'plant_fruit'; pocketSlot: number; target: { x: number; z: number } };
 export type NativeFishingState = { castId: string; phase: number; fishType: number; pending: boolean; result: boolean;
@@ -90,7 +102,11 @@ export type CheckpointProviderState = {
   appliedSequence: number;
   currentOwnRevision: number;
 };
-export type User = { id: string; name: string; phone: string; townName: string; residence: Residence; pendingMove:MovePlan|null };
+/** POST /api/play/town-name {name}: Rover's answer before the train's name confirmation. */
+export type TownNameCheck = { available: boolean };
+/** The newer of two towns with the same name (accents and case ignored) is asked to rename; only the owner can. */
+export type TownRename = { olderTown: string; owner: boolean };
+export type User = { id: string; name: string; phone: string; townName: string; residence: Residence; pendingMove:MovePlan|null; townRename: TownRename | null };
 export type Town = { id: string; ownerName: string; name: string; revision: number; online: boolean; hasSave: boolean; residents: {userId:string;name:string;portrait?:string}[]; landId?: number; identity?: string; portrait?: string; portraitUserId?: string };
 export type Session = { user: User; serverTime: number };
 export type SaveVersion = { revision: number; sha256: string; size: number; createdAt: number };
@@ -110,12 +126,17 @@ export type NativeEventKind = typeof NATIVE_EVENT_KINDS[number];
 export function isNativeEventKind(value: unknown): value is NativeEventKind {
   return typeof value === 'string' && (NATIVE_EVENT_KINDS as readonly string[]).includes(value);
 }
-export type NativeEventReceipt = { id: string; sequence: number; kind: NativeEventKind; townId: string; pid: string | null;
+/** `achievement` receipts carry `details.achievement` (shared/achievements.ts); their feed kind is `achievement:<id>`. */
+export type NativeEventReceipt = { id: string; sequence: number; kind: NativeEventKind | 'achievement'; townId: string; pid: string | null;
   details: Record<string, number | string | boolean>; createdAt: number;
   source: { kind: 'checkpoint'; previousRevision: number; revision: number } |
     { kind: 'fishing'; operationId: string; castId: string; revision: number } |
-    { kind: 'world'; operationId: string; revision: number } };
-export type Activity = { id: string; userName: string; townName: string; kind: string; description: string; createdAt: number };
+    { kind: 'world'; operationId: string; revision: number } |
+    { kind: 'platform'; operation: 'friendship' | 'playtime' | 'ranking' } };
+/** `portrait` is the version of the resident's still in the kind's pose (shared/activity-themes.ts), or of the
+ * animated portrait when that pose was never captured (then `portraitPose` is absent). */
+export type Activity = { id: string; userId: string; userName: string; townName: string; kind: string; description: string; createdAt: number;
+  portrait?: string; portraitPose?: PortraitPose };
 export type RoomTicket = { token: string; townId: string; userId: string; expiresAt: number; serverTime: number };
 /** Server-internal live grant; never exposed in browser snapshots. */
 export type RoomAuthorization = { userId: string; sessionDigest: string; leaseDigest: string };
@@ -136,13 +157,13 @@ export type UIRasterBudget = { cssWidth: number; cssHeight: number; pixelWidth: 
 export type GraphicsState = { ready: boolean; settings: GraphicsSettings; raster: UIRasterBudget | null; resolutionError: string | null; hdError: string | null; hd: HDTextureStats | null };
 export type HDTextureManifest = { version: string; source: { title: string; url: string }; files: Record<string, { size: number; sha256: string }> };
 export type ControlMode = 'touch' | 'joystick';
-export type GameBootstrap = { ownTownId: string; targetTownId: string; ownRevision: number; nativeTownId: number; residentName: string; resident: Pick<Residence,'pid'|'playerSlot'|'arriving'>; serverTime: number; ownSave: ArrayBuffer | null; targetSave: ArrayBuffer | null; passport: ArrayBuffer | null; nes: ArrayBuffer | null; graphics: GraphicsSettings; controlMode: ControlMode };
+export type GameBootstrap = { ownTownId: string; targetTownId: string; ownRevision: number; nativeTownId: number; residentName: string; resident: Pick<Residence,'pid'|'playerSlot'|'arriving'>; serverTime: number; ownSave: ArrayBuffer | null; targetSave: ArrayBuffer | null; passport: ArrayBuffer | null; nes: ArrayBuffer | null; graphics: GraphicsSettings; controlMode: ControlMode; soundMuted: boolean };
 export const NES_BUTTONS = ['up', 'down', 'left', 'right', 'a', 'b', 'select', 'start', 'turboA', 'turboB'] as const;
 export type NESButton = typeof NES_BUTTONS[number];
 export type TouchInput = { kind: 'stick'; x: number; y: number; run: boolean } | { kind: 'pointer'; phase: 'start' | 'move' | 'end' | 'cancel'; id: number; x: number; y: number } | { kind: 'nes-button'; button: NESButton; pressed: boolean };
-export type TouchAction = 'primary' | 'map' | 'pocket' | 'back' | 'text' | 'arrange' | 'putAway' | 'light' | 'cameraLeft' | 'cameraRight' | 'cameraNear' | 'cameraFar' | 'musicPlay' | 'musicReset' | 'musicUp' | 'musicDown' | 'calendarPrevious' | 'calendarNext' | 'mark' | 'addressPrevious' | 'addressNext' | 'editorHeader' | 'editorAfterRecipient' | 'editorBody' | 'editorSignature' | 'designEyedropper';
+export type TouchAction = 'primary' | 'map' | 'pocket' | 'back' | 'text' | 'arrange' | 'putAway' | 'light' | 'cameraLeft' | 'cameraRight' | 'cameraNear' | 'cameraFar' | 'calendarPrevious' | 'calendarNext' | 'mark' | 'editorHeader' | 'editorAfterRecipient' | 'editorBody' | 'editorSignature' | 'designEyedropper';
 /** Menu HUD corner in canvas-local CSS pixels; (-1, -1) means no occupied corner. */
-export type NativeUIInsets = { dialogueBottom: number; dialogueSafeBottom: number; clockTop: number; clockRight: number; reducedMotion: boolean; menuHudLeft: number; menuHudTop: number; safeLeft: number };
+export type NativeUIInsets = { dialogueBottom: number; dialogueSafeBottom: number; clockTop: number; clockRight: number; reducedMotion: boolean; menuHudLeft: number; menuHudTop: number; safeLeft: number; keyboard: boolean };
 export type TouchUI = {
   ready: boolean; busy: boolean;
   mode: 'boot' | 'world' | 'dialogue' | 'menu' | 'map' | 'editor' | 'design' | 'nes' | 'melody';
@@ -151,12 +172,8 @@ export type TouchUI = {
   canMap: boolean; canPocket: boolean; canBack: boolean;
   canArrange: boolean; arranging: boolean; canPutAway: boolean; furnitureContext: boolean; canMove: boolean; canRun: boolean;
   roomControls?: { lightOn: boolean; lightAvailable: boolean; canLight: boolean; camera: number };
-  melody?: number;
   calendarEvents?: number;
-  addressPages?: boolean;
   inventorySelection?: boolean;
-  /** Settled Native pocket portrait, normalized to the canvas. */
-  portrait?: { x: number; y: number; w: number; h: number };
   /** Current native pockets only; no client-owned tool registry. */
   tools?: { equipped: number; equippedLabel: string; storeSlot: number | null; items: { slot: number; item: number; label: string }[] };
   toolPending?: boolean;
@@ -170,7 +187,7 @@ export type TouchUI = {
   choices?: { index: number; text: string; selected: boolean }[];
   actionAt?: { x: number; y: number };
   editor?: { text: string; prompt: string; maxLength: number; multiline: boolean; error?: string;
-    letterField?: 'header' | 'afterRecipient' | 'body' | 'signature'; canEditAfterRecipient?: boolean };
+    letterField?: 'header' | 'afterRecipient' | 'body' | 'signature'; canEditAfterRecipient?: boolean; line?: boolean };
 };
 /** Browser interface implemented by the native game runtime. */
 export interface NativeGame {
@@ -204,8 +221,10 @@ export interface NativeGame {
   /** Starts a native admission; no network or inventory mutation. */
   worldCraftMenu(): boolean;
   worldCraftRequest(recipeId: RecipeId): number;
+  /** Miles shop sheet into the first free pocket; the server checks the balance. */
+  worldRedeemRequest(recipeId: RecipeId): number;
   worldCraftCancel(intent: number): boolean;
-  worldCrafting(): { ready: boolean; wood: number; iron: number };
+  worldCrafting(): { ready: boolean; materials: MaterialCounts };
   worldRequest(): WorldOperation | null;
   worldAdmission(): WorldAdmission | null;
   worldResumeAdmission(): 0 | 1 | 2 | 3;
@@ -250,14 +269,49 @@ export interface NativeGame {
   equipTool(slot: number, item: number): boolean;
   choose(index: number): void;
   uiInsets(insets: NativeUIInsets): void;
+  /** CSS distance from the page bottom to the notice draft's row when no keyboard is up. */
+  noticeRowInset(): number;
+  /** The same distance for the diary's Salvar/Limpar row. */
+  diaryRowInset(): number;
+  /** With a keyboard: the notice draft's sheet [left, top, width, height] and note [left, top, right, bottom] in page CSS. */
+  noticeSheet(): number[];
+  /** A one-line name's Limpar|OK row on its paper: [left, distance from the bottom, width] in page CSS. */
+  lineRow(): number[];
   uiSnapshot(): TouchUI;
-  portrait(): Promise<Blob | null>;
+  /** Native player control (world, ready, not busy), also while the connection gate hides the HUD. */
+  playerControl(): boolean;
+  /** The owner's empty drawers opened the personal storage; consumed once. */
+  storageMenu(): boolean;
+  /** Pockets and storage while the storage furniture is open, otherwise null. */
+  storage(): StorageView | null;
+  /** Moves one item to a cell (an occupied cell swaps back); false when it does not fit or cannot be stored. */
+  storageMove(from: StorageCell, to: StorageTarget): boolean;
+  /** Ends the storage session so the furniture closes. */
+  storageClose(): void;
+  /** The item's original 32x32 pocket icon as RGBA bytes, or null for no item. */
+  itemIcon(item: number): Uint8Array | null;
+  /** Z in the post office asked for the ordinance panel; consumed once. */
+  ordinanceMenu(): boolean;
+  /** The town's ordinance while a resident is in the post office, otherwise null. */
+  ordinance(): OrdinanceView | null;
+  /** Enacts (paying the cost) or repeals; false when it cannot be paid or the context ended. */
+  ordinanceSet(law: OrdinanceView['law']): boolean;
+  /** Deluxe: one request after the closed-store sign at night. */
+  nookWakeMenu(): boolean;
+  /** Knocks and wakes Tom Nook; the store opens for this visit. */
+  nookWake(): boolean;
+  portrait(): Promise<PortraitCapture | null>;
   /** m_banti.c: the clock alpha drawn this frame, 0 when banti_draw skips it. */
   uiClockAlpha(): number;
   configureGraphics(settings: GraphicsSettings): Promise<GraphicsState>;
   graphicsState(): GraphicsState;
   controlMode(mode: ControlMode): void;
   selectedControlMode(): ControlMode;
+  /** Silences the game's output; the native audio keeps running underneath. */
+  soundMuted(muted: boolean): void;
+  selectedSoundMuted(): boolean;
+  /** Plays an original system SE (audio_defs.h id) through the game mixer. */
+  menuSound(id: number): void;
 }
 
 /* HTTP endpoints (all private except signup, login and health; JSON errors {error, code}):
@@ -274,6 +328,8 @@ export interface NativeGame {
  * POST /api/rooms/ticket {townId} -> RoomTicket
  * GET /api/play/events?after=<sequence> -> {receipts: NativeEventReceipt[]} (max 100)
  * GET /api/activity -> {activity: Activity[]}
+ * GET /api/goals -> GoalsView (own resident; derived from confirmed receipts)
+ * POST /api/goals/claim {goalId, tier} -> GoalsView (claims the next reached tier; repeat is a replay)
  * GET /game/* -> authenticated compiled port + local disc (never publicly cached)
  * Colyseus joinOrCreate('town', {token, townId}); messages: position(Position), chat({text}),
  * emote({emote}), snapshot(TownSnapshot), chat({id,name,text}), error({code,message}).
@@ -281,6 +337,7 @@ export interface NativeGame {
  * C bridge exports ec_position_json, ec_set_ghost(slot,x,y,z,rot,anim,anim1,partTable,frame,speed,loop,item,rootMotionFlags,scene,char,nameUtf8,emoteId),
  * ec_remove_ghost(slot), ec_set_server_time(seconds), ec_set_visitor(bool).
  * ec_set_new_town_id(id) receives the server reservation before new-town creation.
+ * window.ElysiumTownNameCheck(name) asks POST /api/play/town-name; ec_town_name_verdict(available) answers Rover.
  * callMain(['--direct-start', residentName]) enters through original native title
  * readiness/selection routines; an ambiguous resident still requires native choice.
  * Browser global window.ElysiumNativeEvent(json) and Module.onElysiumSave(detail)

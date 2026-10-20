@@ -1,0 +1,7 @@
+[
+  {"key": "wood", "name": "Madeira", "base": 9536, "source": "tree"},
+  {"key": "iron", "name": "Ferro", "base": 9568, "source": "rock"},
+  {"key": "branch", "name": "Galho", "base": 9632, "source": "shake"},
+  {"key": "stone", "name": "Pedra", "base": 9664, "source": "rock"},
+  {"key": "clay", "name": "Argila", "base": 9696, "source": "rock"}
+]

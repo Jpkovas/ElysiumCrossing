@@ -1,16 +1,16 @@
 {
   "schema": 1,
-  "export": "deluxe-principal-2026-10-17",
+  "export": "integrada-rodada20-2026-10-19",
   "scope": "Reviewed authored application subset and sanitized continuation; full Native and private resources excluded",
   "promotionAuthorized": true,
-  "qualification": "principal development baseline; documented pending work; no deployment",
-  "privateCanonicalCommit": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+  "qualification": "curated source snapshot of round 20 candidate; full gameplay QA pending; no game deployment",
+  "privateCanonicalCommit": "dfac0208f86f51288d5981acdd854a4547b376bb",
   "priorPrivateCanonical": "c0e91198b9b4299f38ea4e5507c884f4f44cb124",
   "components": {
-    "native": 33,
-    "web": 35,
-    "backend": 24,
-    "projector": 10,
+    "native": 79,
+    "web": 100,
+    "backend": 54,
+    "projector": 11,
     "residentTransfer": 29
   },
   "upstream": {
@@ -18,7 +18,7 @@
     "deluxe": "92b0a638ce9e686b3303b4d0ec985a1a99a7f962",
     "copiedNativeFiles": 0
   },
-  "authoredSourceFiles": 28,
+  "authoredSourceFiles": 32,
   "files": [
     {
       "path": ".claude/hooks/session-start.sh",
@@ -52,22 +52,22 @@
     },
     {
       "path": "README.md",
-      "bytes": 3871,
-      "sha256": "04763c931223f8a60060788ce6656dca44dec6cf703311f364bc3157a70c8ec9",
+      "bytes": 3404,
+      "sha256": "761a15657f0d13db37a29fcc0cbdc4f7f984247b70f25f23fb8076386b34f5ca",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "deluxe-principal-2026-10-17"
+        "createdFor": "integrada-rodada20-2026-10-19"
       }
     },
     {
       "path": "docs/continuation.md",
-      "bytes": 4920,
-      "sha256": "a330c17895a31a63ae6822cf4b8c897d6ffb96d433cbeaedee77883ead0078f2",
+      "bytes": 2527,
+      "sha256": "b66df884548c3d939ee57a7ce60246a084bba9bcd6ac1353ba029cc309be2f33",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "deluxe-principal-2026-10-17"
+        "createdFor": "integrada-rodada20-2026-10-19"
       }
     },
     {
@@ -131,6 +131,16 @@
       }
     },
     {
+      "path": "docs/milestones/2026-10-19-integracao.md",
+      "mode": "100644",
+      "origin": {
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "integrada-rodada20-2026-10-19"
+      },
+      "bytes": 1531,
+      "sha256": "7dc65406c7479e91c21f38ba428e0082afe36f8c5ee33e20a20c455c86f157e4"
+    },
+    {
       "path": "docs/modernization/architecture-baseline.md",
       "bytes": 5253,
       "sha256": "56e1902546d1b6453e488cbbc566a3a541d57a3686b7b17796fe189032f81f9a",
@@ -192,22 +202,22 @@
     },
     {
       "path": "docs/public-source-scope.md",
-      "bytes": 2928,
-      "sha256": "34d6617017d83a0cbb8887d9566ee538327256558ac2078c44c9b4115284349d",
+      "bytes": 2666,
+      "sha256": "182759e76590f70243c633bdcc290b95bd30eb0ec86f5dbba6daaef2bc2f8944",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "deluxe-principal-2026-10-17"
+        "createdFor": "integrada-rodada20-2026-10-19"
       }
     },
     {
       "path": "docs/verification.md",
-      "bytes": 2325,
-      "sha256": "8b8a6c7cd61d6e88ff856e8e670f51afc24c30717d8e79e11d1a61d7729f52d2",
+      "bytes": 1916,
+      "sha256": "30a0eb573d5f91614a62a48f4aa573eb142ff9859840300755698e2818c7bc5d",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "deluxe-principal-2026-10-17"
+        "createdFor": "integrada-rodada20-2026-10-19"
       }
     },
     {
@@ -237,48 +247,61 @@
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "shared/checkpoint-recovery.ts",
         "sourceSHA256": "644294032e474f1e4fa0dcb5a96bf5895b3a18bb6fb1480170397d99cd475b60",
         "exportMode": "byte-identical"
       }
     },
     {
-      "path": "shared/contracts.ts",
-      "bytes": 21080,
-      "sha256": "e0ee119732fcaf9774f92a5fef8de2fdeb336a27614ded6ec8ac5d8d10c84bed",
+      "path": "shared/competition.ts",
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
+        "relativeSource": "shared/competition.ts",
+        "sourceSHA256": "fd9b47330c26c63c9c7cc81c38c2f7e50a371f2a88d5c07f8dcd703ebb7575c4",
+        "exportMode": "byte-identical"
+      },
+      "bytes": 3117,
+      "sha256": "fd9b47330c26c63c9c7cc81c38c2f7e50a371f2a88d5c07f8dcd703ebb7575c4"
+    },
+    {
+      "path": "shared/contracts.ts",
+      "bytes": 25147,
+      "sha256": "de7805b01e9650a5c4d4398de7ddd0cb24417cbc9ed26b5d0ceca66736696d1b",
+      "mode": "100644",
+      "origin": {
+        "kind": "project-source",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "shared/contracts.ts",
-        "sourceSHA256": "e0ee119732fcaf9774f92a5fef8de2fdeb336a27614ded6ec8ac5d8d10c84bed",
+        "sourceSHA256": "de7805b01e9650a5c4d4398de7ddd0cb24417cbc9ed26b5d0ceca66736696d1b",
         "exportMode": "byte-identical"
       }
     },
     {
       "path": "shared/crafting-recipes.json",
-      "bytes": 759,
-      "sha256": "a8030f9ff68102c768687217313f84da181a963b93efaef472f7a799c8fb1681",
+      "bytes": 3798,
+      "sha256": "496becdb4308086a2f8950b819275a469a993f85af996c1b5e43ec280772b293",
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "shared/crafting-recipes.json",
-        "sourceSHA256": "a8030f9ff68102c768687217313f84da181a963b93efaef472f7a799c8fb1681",
+        "sourceSHA256": "496becdb4308086a2f8950b819275a469a993f85af996c1b5e43ec280772b293",
         "exportMode": "byte-identical"
       }
     },
     {
       "path": "shared/crafting.ts",
-      "bytes": 1798,
-      "sha256": "a90bf6b4a9c5456e2345e910cc54598ccc9882a2430ff80ba13878bbaeaed4b2",
+      "bytes": 1879,
+      "sha256": "fc54bb58976e17df7363b5fb7819bad49de26dcba5d16a781d3a5259b45b4fd3",
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "shared/crafting.ts",
-        "sourceSHA256": "a90bf6b4a9c5456e2345e910cc54598ccc9882a2430ff80ba13878bbaeaed4b2",
+        "sourceSHA256": "fc54bb58976e17df7363b5fb7819bad49de26dcba5d16a781d3a5259b45b4fd3",
         "exportMode": "byte-identical"
       }
     },
@@ -289,7 +312,7 @@
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "shared/fishing.ts",
         "sourceSHA256": "2dace8de9f17bb0100f8e1a23cd5e88e20b171b0fa9b133302764c4ba778d9df",
         "exportMode": "byte-identical"
@@ -302,7 +325,7 @@
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "shared/fruit-stack.ts",
         "sourceSHA256": "7b4cb224fb26a14dcf640f9d668ab57cb5b87bb90a71c7c382b6cdcbbe4817ba",
         "exportMode": "byte-identical"
@@ -310,42 +333,68 @@
     },
     {
       "path": "shared/item-icons.ts",
-      "bytes": 1200,
-      "sha256": "d5986fc5fda1f67c6592233fe3c0879ff5d21f5317f7f5b3c38c56625c03b163",
+      "bytes": 2884,
+      "sha256": "da6e92b666af7fd288f3be6791903518ea3fb6c5548082cd4d604d4bc791e4f5",
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "shared/item-icons.ts",
-        "sourceSHA256": "d5986fc5fda1f67c6592233fe3c0879ff5d21f5317f7f5b3c38c56625c03b163",
+        "sourceSHA256": "da6e92b666af7fd288f3be6791903518ea3fb6c5548082cd4d604d4bc791e4f5",
         "exportMode": "byte-identical"
       }
     },
     {
-      "path": "shared/material-definitions.ts",
-      "bytes": 244,
-      "sha256": "0af88bc3f8ca6e8f35e70b76dbc4df0a6e9b41a25f02c7e3b0ce76e0cd5af4f2",
+      "path": "shared/material-definitions.json",
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
+        "relativeSource": "shared/material-definitions.json",
+        "sourceSHA256": "40065c5458bacbc16b27caa0d6e539cabd081f61c79c5777218a7ebf1ebd43a8",
+        "exportMode": "byte-identical"
+      },
+      "bytes": 350,
+      "sha256": "40065c5458bacbc16b27caa0d6e539cabd081f61c79c5777218a7ebf1ebd43a8"
+    },
+    {
+      "path": "shared/material-definitions.ts",
+      "bytes": 819,
+      "sha256": "b0b47cfc10ceaf64dd74d4653f7df138cf2f451ee8407dd8c281a675b3bfb2a3",
+      "mode": "100644",
+      "origin": {
+        "kind": "project-source",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "shared/material-definitions.ts",
-        "sourceSHA256": "0af88bc3f8ca6e8f35e70b76dbc4df0a6e9b41a25f02c7e3b0ce76e0cd5af4f2",
+        "sourceSHA256": "b0b47cfc10ceaf64dd74d4653f7df138cf2f451ee8407dd8c281a675b3bfb2a3",
         "exportMode": "byte-identical"
       }
     },
     {
       "path": "shared/material-units.ts",
-      "bytes": 2616,
-      "sha256": "cd0cf49d6ff3c639c59bfa1cebd9d024a0fc3ee8ce6bb6ef6e70566486678aac",
+      "bytes": 2849,
+      "sha256": "bd8a5f533318a638049f3a8f7dc965db2ecdd76235949ed22d8d5d0afc761fab",
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "shared/material-units.ts",
-        "sourceSHA256": "cd0cf49d6ff3c639c59bfa1cebd9d024a0fc3ee8ce6bb6ef6e70566486678aac",
+        "sourceSHA256": "bd8a5f533318a638049f3a8f7dc965db2ecdd76235949ed22d8d5d0afc761fab",
         "exportMode": "byte-identical"
       }
+    },
+    {
+      "path": "shared/menu-sound.ts",
+      "mode": "100644",
+      "origin": {
+        "kind": "project-source",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
+        "relativeSource": "shared/menu-sound.ts",
+        "sourceSHA256": "7ab2eb35afe14d2c5c0e8abef55243a6e1b7aac84c11c39b276d6051035ed780",
+        "exportMode": "byte-identical"
+      },
+      "bytes": 265,
+      "sha256": "7ab2eb35afe14d2c5c0e8abef55243a6e1b7aac84c11c39b276d6051035ed780"
     },
     {
       "path": "shared/native-save-layout.ts",
@@ -354,7 +403,7 @@
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "shared/native-save-layout.ts",
         "sourceSHA256": "d166117f496aa27f51a9a9846acc35335bd6fe45c621e27bf204dcf5c8861f5b",
         "exportMode": "byte-identical"
@@ -362,40 +411,40 @@
     },
     {
       "path": "shared/portrait.ts",
-      "bytes": 5829,
-      "sha256": "e8228f9cfb1e9dfa12df716979dc9435ea292cb89216af61fca5dde3048eb890",
+      "bytes": 6880,
+      "sha256": "b01ed017ed2155ec09e5ed8a628c59c5cf32572b4d55b2fbc8d4a0ecb7ad08cc",
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "shared/portrait.ts",
-        "sourceSHA256": "e8228f9cfb1e9dfa12df716979dc9435ea292cb89216af61fca5dde3048eb890",
+        "sourceSHA256": "b01ed017ed2155ec09e5ed8a628c59c5cf32572b4d55b2fbc8d4a0ecb7ad08cc",
         "exportMode": "byte-identical"
       }
     },
     {
       "path": "shared/ranking.ts",
-      "bytes": 1346,
-      "sha256": "4706bce548bf4b21b4f8130aabf2da6b64883d7ec43a6726c53c0ac5084b2520",
+      "bytes": 1861,
+      "sha256": "1d6cfd83e1c557a305969edae601042574a98101f7858bae3abba11d2c799c82",
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "shared/ranking.ts",
-        "sourceSHA256": "4706bce548bf4b21b4f8130aabf2da6b64883d7ec43a6726c53c0ac5084b2520",
+        "sourceSHA256": "1d6cfd83e1c557a305969edae601042574a98101f7858bae3abba11d2c799c82",
         "exportMode": "byte-identical"
       }
     },
     {
       "path": "shared/residence.ts",
-      "bytes": 1749,
-      "sha256": "be1ccfaae9f8ea6d66cc57f6935f66ff48a0e197077855b88bd361be3101ff93",
+      "bytes": 2252,
+      "sha256": "cc477f494e376666f78d383a0c57a7ea09306b158c416cf3df7a8288c4ebe307",
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "shared/residence.ts",
-        "sourceSHA256": "be1ccfaae9f8ea6d66cc57f6935f66ff48a0e197077855b88bd361be3101ff93",
+        "sourceSHA256": "cc477f494e376666f78d383a0c57a7ea09306b158c416cf3df7a8288c4ebe307",
         "exportMode": "byte-identical"
       }
     },
@@ -406,7 +455,7 @@
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "shared/social.ts",
         "sourceSHA256": "c562157fcc5c5a40beeb8e736aa9a0ee0b3d6ac2256f6eed8380e974eb76bddd",
         "exportMode": "byte-identical"
@@ -414,14 +463,14 @@
     },
     {
       "path": "shared/world.ts",
-      "bytes": 2583,
-      "sha256": "08f2e4ceab405f07a90c82de13fe293e4dab03e8fc89666f692c7ff92e6b6d4d",
+      "bytes": 2726,
+      "sha256": "0fe4ec5438de83d2837d1a1010cb8fa0bf299d3512dc6b9a045943ea002fdba9",
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "shared/world.ts",
-        "sourceSHA256": "08f2e4ceab405f07a90c82de13fe293e4dab03e8fc89666f692c7ff92e6b6d4d",
+        "sourceSHA256": "0fe4ec5438de83d2837d1a1010cb8fa0bf299d3512dc6b9a045943ea002fdba9",
         "exportMode": "byte-identical"
       }
     },
@@ -432,7 +481,7 @@
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "tests/fishing-client.test.ts",
         "sourceSHA256": "23100846c70bdaddce1a5bd15736f0f42d159aa7607b162db2f2f422d2e7bca0",
         "exportMode": "byte-identical"
@@ -445,7 +494,7 @@
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "tests/haptics.test.ts",
         "sourceSHA256": "07893c8a3a2b4c96aaccc080573c09ba32ab23dcf5e891dce28333998c1dd9d5",
         "exportMode": "byte-identical"
@@ -458,7 +507,7 @@
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "tests/server-clock.test.ts",
         "sourceSHA256": "52b31a6fee1734a55201ae44abd27d35fe2a9c4fc77e0174f39be44bb7fc42a0",
         "exportMode": "byte-identical"
@@ -521,7 +570,7 @@
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "web/checkpoint.ts",
         "sourceSHA256": "1a4466a464722bdca04e9af6dc3117aa6a60b7d54895a72175f0c47561036642",
         "exportMode": "byte-identical"
@@ -529,14 +578,14 @@
     },
     {
       "path": "web/crafting-contract.ts",
-      "bytes": 280,
-      "sha256": "f1a0009a69a7c453481da328457091c9aa282fe2e1250e8052c279681e91278e",
+      "bytes": 341,
+      "sha256": "7721a82b37aaee16e919d3a64b7f4958dc04bdebf3704fd5d8df1056a15c151c",
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "web/crafting-contract.ts",
-        "sourceSHA256": "f1a0009a69a7c453481da328457091c9aa282fe2e1250e8052c279681e91278e",
+        "sourceSHA256": "7721a82b37aaee16e919d3a64b7f4958dc04bdebf3704fd5d8df1056a15c151c",
         "exportMode": "byte-identical"
       }
     },
@@ -547,7 +596,7 @@
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "web/fishing-client.ts",
         "sourceSHA256": "953cc3f295ac7e88f3a8f4bff6ffab1d966b44338c865f5aa8f7996d3d7f7ef9",
         "exportMode": "byte-identical"
@@ -555,14 +604,14 @@
     },
     {
       "path": "web/graphics-settings.ts",
-      "bytes": 4836,
-      "sha256": "2b2535b45fbcaf1648b67eb66563fe507756f711270e8068213d0a2f7be5e247",
+      "bytes": 6492,
+      "sha256": "4a51cfa22ed708b0b7ef0c1cc83369b304d8c386682c0b76b656a65087cf9d23",
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "web/graphics-settings.ts",
-        "sourceSHA256": "2b2535b45fbcaf1648b67eb66563fe507756f711270e8068213d0a2f7be5e247",
+        "sourceSHA256": "4a51cfa22ed708b0b7ef0c1cc83369b304d8c386682c0b76b656a65087cf9d23",
         "exportMode": "byte-identical"
       }
     },
@@ -573,7 +622,7 @@
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "web/haptics.ts",
         "sourceSHA256": "04b0524383b0303f012205bef5707cba62ae487419f7c3b0fa469839cd1b74c9",
         "exportMode": "byte-identical"
@@ -586,35 +635,48 @@
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "web/hd-textures.ts",
         "sourceSHA256": "4df5530be2a38986d856bb6e0d1430f5a7d1d2c75fe38bfadaed8753d950923d",
         "exportMode": "byte-identical"
       }
     },
     {
-      "path": "web/option-rows.ts",
-      "bytes": 1387,
-      "sha256": "975f95b885a16263483e86ac8d7008439a82482d8847d86bb83587a92f1ae582",
+      "path": "web/menu-sound.ts",
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
+        "relativeSource": "web/menu-sound.ts",
+        "sourceSHA256": "1cf51f87453d53ecb672186e551c47d38975afe508bf53dcc7539238a9790ad3",
+        "exportMode": "byte-identical"
+      },
+      "bytes": 3625,
+      "sha256": "1cf51f87453d53ecb672186e551c47d38975afe508bf53dcc7539238a9790ad3"
+    },
+    {
+      "path": "web/option-rows.ts",
+      "bytes": 1548,
+      "sha256": "4bacc78013aa500adcc8e075db24b1f5f4df5e2af23fbb0e6b73a0fa65552071",
+      "mode": "100644",
+      "origin": {
+        "kind": "project-source",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "web/option-rows.ts",
-        "sourceSHA256": "975f95b885a16263483e86ac8d7008439a82482d8847d86bb83587a92f1ae582",
+        "sourceSHA256": "4bacc78013aa500adcc8e075db24b1f5f4df5e2af23fbb0e6b73a0fa65552071",
         "exportMode": "byte-identical"
       }
     },
     {
       "path": "web/private-assets.ts",
-      "bytes": 12989,
-      "sha256": "a90ee4dbe4d0e9be65c67c6d6e9534f2808d66356ed625322c4097da7859d045",
+      "bytes": 13019,
+      "sha256": "e691ec0faceb6d03aae9f212a5b6b64cb0bb7e28224e077f3c43f13a68cdc61c",
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "web/private-assets.ts",
-        "sourceSHA256": "a90ee4dbe4d0e9be65c67c6d6e9534f2808d66356ed625322c4097da7859d045",
+        "sourceSHA256": "e691ec0faceb6d03aae9f212a5b6b64cb0bb7e28224e077f3c43f13a68cdc61c",
         "exportMode": "byte-identical"
       }
     },
@@ -625,7 +687,7 @@
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "web/server-clock.ts",
         "sourceSHA256": "f3bfd62549daab906545cdf46690e024141cc81baa1db16832bc1ee3ce4b7809",
         "exportMode": "byte-identical"
@@ -633,14 +695,14 @@
     },
     {
       "path": "web/world-client.ts",
-      "bytes": 54619,
-      "sha256": "ddcd555bdc6ef4f3495436589b009ec1989cb2ada2d403148b096c85a3703b37",
+      "bytes": 56295,
+      "sha256": "8402ba9bb8ff724b81bc072f06f0eccba3c79d4a8e611b42ab0093c200cc534d",
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bb1406ff0c936c06918548a520f8f570dfb422e6",
+        "sourceTree": "dfac0208f86f51288d5981acdd854a4547b376bb",
         "relativeSource": "web/world-client.ts",
-        "sourceSHA256": "ddcd555bdc6ef4f3495436589b009ec1989cb2ada2d403148b096c85a3703b37",
+        "sourceSHA256": "8402ba9bb8ff724b81bc072f06f0eccba3c79d4a8e611b42ab0093c200cc534d",
         "exportMode": "byte-identical"
       }
     }

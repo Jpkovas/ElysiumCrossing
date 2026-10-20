@@ -18,12 +18,12 @@ export interface PlantingWorldPort {
   reject(operationId: string): void;
 }
 type Intention = WorldOperation | FishingOperation;
-const isCrafting = (value: Intention): value is Extract<WorldOperation, { kind: 'learn_recipe' | 'craft_recipe' }> => value.kind === 'learn_recipe' || value.kind === 'craft_recipe';
+const isCrafting = (value: Intention): value is Extract<WorldOperation, { kind: 'learn_recipe' | 'craft_recipe' | 'redeem_miles' }> => value.kind === 'learn_recipe' || value.kind === 'craft_recipe' || value.kind === 'redeem_miles';
 const isInventoryOperation = (value:Intention) => isCrafting(value)||value.kind==='gather_material';
-const isFishing = (value: Intention): value is FishingOperation => value.kind !== 'water_flowers' && value.kind !== 'shake_tree' && value.kind !== 'pickup' && value.kind !== 'drop_material' && value.kind !== 'plant_fruit' && value.kind !== 'place_furniture' && value.kind !== 'remove_furniture' && !isInventoryOperation(value);
+const isFishing = (value: Intention): value is FishingOperation => value.kind !== 'water_flowers' && value.kind !== 'shake_tree' && value.kind !== 'pickup' && value.kind !== 'drop_material' && value.kind !== 'bury_pitfall' && value.kind !== 'plant_fruit' && value.kind !== 'place_furniture' && value.kind !== 'remove_furniture' && !isInventoryOperation(value);
 
 /** Native implementations acknowledge application only after their main-loop safepoint. */
-export type WorldNative = Pick<NativeGame, 'lifecycle' | 'checkpointLineage' | 'worldIdentity' | 'checkpointContinuation' | 'worldEnabled' | 'worldBind' | 'worldSnapshot' | 'worldCommit' | 'worldComplete' | 'worldRequest' | 'worldRevision' | 'worldOwnCheckpoint' | 'worldAdmission' | 'worldResumeAdmission' | 'worldCraftRequest' | 'worldCraftCancel' | 'worldCrafting'>;
+export type WorldNative = Pick<NativeGame, 'lifecycle' | 'checkpointLineage' | 'worldIdentity' | 'checkpointContinuation' | 'worldEnabled' | 'worldBind' | 'worldSnapshot' | 'worldCommit' | 'worldComplete' | 'worldRequest' | 'worldRevision' | 'worldOwnCheckpoint' | 'worldAdmission' | 'worldResumeAdmission' | 'worldCraftRequest' | 'worldRedeemRequest' | 'worldCraftCancel' | 'worldCrafting'>;
 export interface WorldSocket {
   send(type: string, payload: unknown): void;
   onMessage<T>(type: string, callback: (payload: T) => void): () => void;
@@ -45,6 +45,8 @@ type WorldClientOptions = {
   onBaselineRevision(revision: number): void;
   onChange?(context: CheckpointProviderState | null, ready: boolean, requestFreshCapture: boolean): void;
   onError(message: string, code: string): void;
+  /** A Native capture or its PUT/GET is in flight: a resource receipt would publish over its own revision. */
+  saving?(): boolean;
 };
 const integer = (value: unknown, maximum = Number.MAX_SAFE_INTEGER): value is number => Number.isSafeInteger(value) && (value as number) >= 0 && (value as number) <= maximum;
 const object = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value);
@@ -98,9 +100,9 @@ function validCommit(value: unknown, townId: string): value is WorldCommit {
 function validOperation(value: unknown): value is WorldOperation {
   return object(value) && typeof value.id === 'string' && /^[\w-]{8,96}$/u.test(value.id)
     && integer(value.expectedWorldVersion) && value.expectedWorldVersion > 0 && integer(value.expectedOwnRevision) && value.expectedOwnRevision > 0 && integer(value.appliedSequence)
-    && (value.kind === 'water_flowers' || value.kind === 'shake_tree' || value.kind === 'pickup' || value.kind === 'gather_material' || (value.kind === 'plant_fruit'||value.kind==='drop_material') && integer(value.pocketSlot, 14)
+    && (value.kind === 'water_flowers' || value.kind === 'shake_tree' || value.kind === 'pickup' || value.kind === 'gather_material' || (value.kind === 'plant_fruit'||value.kind==='drop_material'||value.kind==='bury_pitfall') && integer(value.pocketSlot, 14)
       || value.kind === 'place_furniture' && integer(value.pocketSlot, 14) && integer(value.rotation, 3)
-      || (value.kind === 'craft_recipe' || value.kind === 'learn_recipe' && integer(value.pocketSlot,14)) && !!craftingRecipe(value.recipeId)
+      || (value.kind === 'craft_recipe' || value.kind === 'redeem_miles' || value.kind === 'learn_recipe' && integer(value.pocketSlot,14)) && !!craftingRecipe(value.recipeId)
       || value.kind === 'remove_furniture' && typeof value.objectId === 'string' && /^[\w-]{8,96}$/u.test(value.objectId)) && target(value.target);
 }
 
@@ -117,7 +119,7 @@ export class WorldClient {
   }
   craftingState(): CraftingView {
     const state = this.options.native.worldCrafting();
-    return { learnedRecipes: this.actorState?.learnedRecipes ?? [], wood: state.wood, iron: state.iron,
+    return { learnedRecipes: this.actorState?.learnedRecipes ?? [], materials: state.materials,
       ready: this.options.townId === this.options.ownTownId && this.isReady() && !this.intention && !this.craftWaiter && state.ready };
   }
   craftRecipe(recipeId: RecipeId): Promise<void> {
@@ -125,6 +127,14 @@ export class WorldClient {
     if (!this.actorState?.learnedRecipes.includes(recipeId)) return Promise.reject(new Error('Aprenda a receita antes de criar.'));
     const intent = this.options.native.worldCraftRequest(recipeId);
     if (!Number.isSafeInteger(intent) || intent <= 0) return Promise.reject(new Error('O morador ainda não está pronto para criar.'));
+    return new Promise<void>((resolve, reject) => { this.craftWaiter = { intent, operationId: null, resolve, reject }; this.tick(); });
+  }
+  /** Miles shop: the server spends the balance and the sheet arrives through the same durable receipt. */
+  redeemMiles(recipeId: RecipeId): Promise<void> {
+    if (!craftingRecipe(recipeId) || !this.craftingState().ready) return Promise.reject(new Error('Espere a conexão e volte ao campo da sua vila.'));
+    if (this.actorState?.learnedRecipes.includes(recipeId)) return Promise.reject(new Error('Você já conhece esta receita.'));
+    const intent = this.options.native.worldRedeemRequest(recipeId);
+    if (!Number.isSafeInteger(intent) || intent <= 0) return Promise.reject(new Error('Abra espaço nos bolsos para receber a folha.'));
     return new Promise<void>((resolve, reject) => { this.craftWaiter = { intent, operationId: null, resolve, reject }; this.tick(); });
   }
   private socket: WorldSocket | null = null;
@@ -320,6 +330,13 @@ export class WorldClient {
         return;
       }
     }
+    if (this.options.saving?.()) {
+      this.options.native.worldComplete(value.id);
+      if (isCrafting(value)) this.failCraft('Espere o progresso ser guardado para criar.');
+      if (value.kind === 'plant_fruit') this.planting?.reject(value.id);
+      this.options.onError('Seu progresso está sendo guardado. Tente de novo em um instante.', 'world_saving');
+      return;
+    }
     if (!this.isReady() || !this.socket || this.intention) {
       this.options.native.worldComplete(value.id);
       if (isCrafting(value)) this.failCraft('Espere a confirmação da interação anterior.');
@@ -339,17 +356,18 @@ export class WorldClient {
     }
     this.intention = { id: value.id, expectedWorldVersion: value.expectedWorldVersion, expectedOwnRevision: value.expectedOwnRevision,
       appliedSequence: value.appliedSequence, target: { x: value.target.x, z: value.target.z },
-      ...((value.kind === 'plant_fruit'||value.kind==='drop_material') ? { kind: value.kind, pocketSlot: value.pocketSlot }
+      ...((value.kind === 'plant_fruit'||value.kind==='drop_material'||value.kind==='bury_pitfall') ? { kind: value.kind, pocketSlot: value.pocketSlot }
         : value.kind === 'place_furniture' ? { kind: value.kind, pocketSlot: value.pocketSlot, rotation: value.rotation }
         : value.kind === 'remove_furniture' ? { kind: value.kind, objectId: value.objectId }
         : value.kind==='learn_recipe' ? {kind:value.kind,recipeId:value.recipeId,pocketSlot:value.pocketSlot}
-        : value.kind==='craft_recipe' ? {kind:value.kind,recipeId:value.recipeId} : { kind: value.kind }) };
+        : value.kind==='craft_recipe'||value.kind==='redeem_miles' ? {kind:value.kind,recipeId:value.recipeId} : { kind: value.kind }) };
     if (isCrafting(value) && this.craftWaiter) this.craftWaiter.operationId = value.id;
     this.options.native.worldEnabled(false);
     this.sendIntention();
   }
   fishingOperation(value: FishingOperation): boolean {
-    if (!this.fishing || !this.isReady() || !this.socket || this.intention) return false;
+    // Like !isReady(), false keeps the admitted request for the next tick after the save.
+    if (!this.fishing || !this.isReady() || !this.socket || this.intention || this.options.saving?.()) return false;
     if (value.expectedWorldVersion !== this.version || value.appliedSequence !== this.sequence
       || value.expectedOwnRevision !== Math.max(this.ownRevision, this.options.ownRevision())) return false;
     this.intention = structuredClone(value);
@@ -680,7 +698,7 @@ export class WorldClient {
         : intention.kind==='gather_material'
         ? delivery.world.tiles.length!==0 || !sameFurniture(delivery.world.furniture,this.furniture)
         : isCrafting(intention)
-        ? delivery.world.tiles.length !== 0 || !sameFurniture(delivery.world.furniture, this.furniture) || !value.learnedRecipes.includes(intention.recipeId)
+        ? delivery.world.tiles.length !== 0 || !sameFurniture(delivery.world.furniture, this.furniture) || value.learnedRecipes.includes(intention.recipeId) === (intention.kind === 'redeem_miles')
         : intention.kind === 'place_furniture'
         ? !delivery.world.furniture.some(item => item.id === intention.id && item.x === intention.target.x && item.z === intention.target.z && item.rotation === intention.rotation)
         : intention.kind === 'remove_furniture'

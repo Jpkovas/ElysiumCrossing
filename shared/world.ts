@@ -29,6 +29,8 @@ export type WorldOperation = WorldOperationBase & (
   | { kind: 'plant_fruit'; pocketSlot: number }
   | { kind: 'gather_material' }
   | { kind: 'drop_material'; pocketSlot: number }
+  /** A friend's pitfall seed in another town; the server picks the native buried variant. */
+  | { kind: 'bury_pitfall'; pocketSlot: number }
   | { kind: 'place_furniture'; pocketSlot: number; rotation: QuarterTurn }
   | { kind: 'remove_furniture'; objectId: string }
 );

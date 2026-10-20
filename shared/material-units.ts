@@ -1,7 +1,9 @@
-import { MATERIALS, MATERIAL_RESERVATION } from './material-definitions.ts';
+import { MATERIALS, MATERIAL_BLOCK, MATERIAL_LIMIT, type MaterialKey } from './material-definitions.ts';
 import type { WorldInventory } from './world.ts';
 export type MaterialUnits = { base: number; quantity: number };
-export function materialReserved(item: number): boolean { return Number.isInteger(item) && item >= MATERIAL_RESERVATION[0] && item <= MATERIAL_RESERVATION[1]; }
+/** Each material owns a 32-ID block; the two IDs past the limit stay invalid. */
+export function materialReserved(item: number): boolean { return Number.isInteger(item) && MATERIALS.some(t => item >= t.base && item < t.base + MATERIAL_BLOCK); }
+export function materialBase(key: MaterialKey): number { return MATERIALS.find(t => t.key === key)!.base; }
 export function decodeMaterial(item: number): MaterialUnits | null {
  if (!Number.isInteger(item)) return null;
  const type=MATERIALS.find(t=>item>=t.base&&item<t.base+t.limit);
@@ -25,7 +27,7 @@ export function consumeMaterial(inventory: WorldInventory,base:number,amount:num
 }
 export function creditMaterial(inventory: WorldInventory,base:number): WorldInventory | null {
  if(!validMaterialPockets(inventory)||encodeMaterial(base,1)===null)return null;
- let slot=inventory.pockets.findIndex((item,i)=>{const u=decodeMaterial(item);return ((inventory.conditions>>>(i*2))&3)===0&&u?.base===base&&u.quantity<30;});
+ let slot=inventory.pockets.findIndex((item,i)=>{const u=decodeMaterial(item);return ((inventory.conditions>>>(i*2))&3)===0&&u?.base===base&&u.quantity<MATERIAL_LIMIT;});
  if(slot<0)slot=inventory.pockets.findIndex((item,i)=>item===0&&((inventory.conditions>>>(i*2))&3)===0);
  if(slot<0)return null;const pockets=[...inventory.pockets];pockets[slot]=encodeMaterial(base,(decodeMaterial(pockets[slot]!)?.quantity??0)+1)!;return {...inventory,pockets};
 }

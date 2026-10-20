@@ -19,14 +19,21 @@ não foram alterados por esta rodada de publicação de código.
 - Ingresso/casas concorrentes, renovação diária, recuperação LIVE explícita
   com recibo+prova Native, reconciliação de cache NPC e diagnóstico gráfico.
 
-A Native84 chegou a quatro clientes saudáveis, três fantasmas por cliente e
-saves aceitos; pausas de 8 e 50 segundos também passaram. Pegar fruta revelou
-P1 em qualificação, com recibos entregues e UI sem completar, preservando
-progresso. A ponte posterior passou testes/replays; a conferência final no
-navegador continuava pendente. Há falha visual em 3x no WebKit sob investigação.
-A candidata final Native85/Web107/backend59/projetor14 foi congelada depois:
-a jornada completa dessa versão e a publicação do jogo não estão aprovadas.
-iPhone físico e áudio percebido continuam pendentes. Consulte a [verificação](../verification.md).
+Na candidata final Native85/Web107/backend59, quatro clientes reentraram e
+publicaram dois saves aceitos cada. A etapa seguinte apresentou **409 stale_save
+por avanço concorrente da revisão canônica**, depois de abrir/fechar o bolso,
+sem nova coleta. Um Reconectar manual recuperou a mesma captura/conta por recibo
+e permitiu novo save aceito e UI pronta. A ponte anterior de pegar fruta foi
+corrigida; esse caso posterior é de CAS, sem violação econômica comprovada.
+
+**Permanece um P1 de experiência: quatro clientes ainda podem pausar e exigir
+Reconectar manual. O multiplayer não está qualificado como estável/automático
+e a publicação em produção não está aprovada.** As pausas de 8 e 50 segundos
+tiveram recuperação na prova anterior Native84.
+
+A falha visual em 3x no WebKit foi reproduzida também na Native84 em comparação
+limpa: é P2 preexistente, sem atribuição à 85; 1x/2x ficaram íntegros no ensaio.
+iPhone físico e áudio percebido continuam pendentes.
 
 ## Publicação e recursos
 

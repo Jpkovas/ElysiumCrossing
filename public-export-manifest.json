@@ -3,7 +3,7 @@
   "export": "auditoria-integrada-2026-10-19-final",
   "scope": "Reviewed authored application subset and sanitized continuation; full Native and private resources excluded",
   "promotionAuthorized": true,
-  "qualification": "reviewed authored source subset; game publication not approved: shared pickup qualification and WebKit 3x visual issue pending; physical iPhone unverified; no deployment",
+  "qualification": "reviewed authored source subset; four-client CAS conflicts still require manual reconnect; production NOT approved; pre-existing WebKit 3x visual issue; physical iPhone unverified; no deployment",
   "privateCanonicalCommit": "7b28d75e81094679d4124897f4e2879889c90429",
   "priorPrivateCanonical": "dfac0208f86f51288d5981acdd854a4547b376bb",
   "components": {
@@ -52,8 +52,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 4676,
-      "sha256": "ae9321f3bc34f243f2f5549093dd44fedba4bcfc872c6366dfe212ff87253f52",
+      "bytes": 4895,
+      "sha256": "f339e37d9d707cb3017b1935539ec7391a7d453772fb88ee24351e3743524858",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
@@ -62,8 +62,8 @@
     },
     {
       "path": "docs/continuation.md",
-      "bytes": 3494,
-      "sha256": "d6070b644c92c1aecc741f23fe143fb71ecbd2331e027d2c95d06c83417a98e2",
+      "bytes": 3713,
+      "sha256": "201896c4b324b7a89cf7b3f4cdfee493cfa8a257846be6067099d51d8f273046",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
@@ -137,8 +137,8 @@
         "kind": "publication-documentation-or-tooling",
         "createdFor": "auditoria-integrada-2026-10-19-final"
       },
-      "bytes": 2555,
-      "sha256": "bedf11eb7ace3b81bda15a3402023c04943e948098931f5cbb1de45303d05eb7"
+      "bytes": 2896,
+      "sha256": "2a82b5cf444e38fa9c9bccc330dd7f3eeb22e492f08dee74eddfe5ca2ca71bec"
     },
     {
       "path": "docs/modernization/architecture-baseline.md",
@@ -212,8 +212,8 @@
     },
     {
       "path": "docs/verification.md",
-      "bytes": 3693,
-      "sha256": "2bb62a001f016569dc779f1022740d1897c032bc88f8d6ca2403992a979a3e29",
+      "bytes": 3912,
+      "sha256": "05cefbd195c6feee7e20f815c094fab31e7ec20762d6340185fffa9df75ae1bb",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",

@@ -45,15 +45,19 @@ provisória de preparar HRA separadamente na entrada foi removida.
 ## QA real e limitações
 
 Na candidata final Native85/Web107/backend59, quatro clientes reentraram e
-publicaram dois saves aceitos cada. A etapa seguinte voltou a apresentar
-**409 de checkpoint em um dos quatro clientes**, depois de abrir/fechar o bolso,
-sem nova ação de coleta. Portanto **os quatro clientes ainda não estão estáveis;
-há um P1 persistente e a publicação em produção não está aprovada**.
+publicaram dois saves aceitos cada. A etapa seguinte apresentou **409 stale_save
+por avanço concorrente da revisão canônica**, depois de abrir/fechar o bolso,
+sem nova coleta. Um Reconectar manual recuperou a mesma captura/conta por recibo
+e permitiu novo save aceito e UI pronta. A ponte anterior de pegar fruta foi
+corrigida; esse caso posterior é de CAS, sem violação econômica comprovada.
 
-A ponte anterior de pegar fruta passou testes e recuperou capturas originais;
-essa correção não encerra o novo conflito observado. As pausas de 8 e 50 segundos
-tiveram recuperação na prova anterior Native84. Há também **falha visual em 3x
-no WebKit sob investigação**; 1x/2x permaneceram íntegros no ensaio delimitado.
+**Permanece um P1 de experiência: quatro clientes ainda podem pausar e exigir
+Reconectar manual. O multiplayer não está qualificado como estável/automático
+e a publicação em produção não está aprovada.** As pausas de 8 e 50 segundos
+tiveram recuperação na prova anterior Native84.
+
+A falha visual em 3x no WebKit foi reproduzida também na Native84 em comparação
+limpa: é P2 preexistente, sem atribuição à 85; 1x/2x ficaram íntegros no ensaio.
 iPhone físico e áudio percebido continuam pendentes.
 
 A publicação destas fontes não alterou produção ou o ambiente publicado de

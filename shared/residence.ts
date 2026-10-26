@@ -25,12 +25,5 @@ export function residenceCode(value: unknown): string | null {
   return /^[A-F0-9]{10}$/.test(code)?code:null;
 }
 
-export type MovePlan={id:string;sourceTownId:string;sourceIdentity:string;sourcePID:string;sourceSlot:number;sourceHouse:number;townId:string;townName:string;playerSlot:number;expiresAt:number};
-export type MoveReceipt={id:string;sourceTownId:string;sourceRevision:number;sourceFinalRevision:number;townId:string;revision:number;pid:string;playerSlot:number;checkpointSHA256:string};
-/** Native station state. A checkpoint ACK alone never commits a move. */
-export type NativeMoveState = {
-  id:string;
-  phase:'armed'|'warning'|'saving'|'checkpoint'|'committed'|'cancelled'|'failed';
-  sourceTownId:string; sourceIdentity:string; pid:string;
-  gameInstance:number; checkpointToken:number; acceptedRevision:number;
-};
+/** A move the destination approved and the resident has not made yet: the lobby offers its train (POST /api/residence/move). */
+export type ApprovedMove = { id: string; townId: string; townName: string };

@@ -3,10 +3,9 @@ import type {PortraitCapture,PortraitPose} from './portrait.ts';
 import type {MaterialKey} from './material-definitions.ts';
 /** Pocket units per material, in shared MATERIALS order on the Native bridge. */
 export type MaterialCounts = Record<MaterialKey, number>;
-import type {Residence,MovePlan,NativeMoveState} from './residence.ts';
+import type {ApprovedMove,Residence} from './residence.ts';
 /** The single browser / API / room / C-bridge contract. WhatsApp is deferred. */
-import type { ActorCommit, ActorSnapshot, WorldCommit, WorldOperation, WorldSnapshot } from './world';
-import type { FishingSnapshot, FishingCast, FishingReceipt, NativeFishingRequest } from './fishing';
+import type { WorldFurniture } from './world';
 export const ROOM_NAME = 'town';
 export const MAX_PLAYERS = 4;
 export const POSITION_RATE_MS = 100;
@@ -80,7 +79,7 @@ export type CheckpointLineage = CheckpointProducer & {
 };
 export type GameConnectionState = 'offline' | 'recovering' | 'ready';
 export type GameLifecycle = 'boot' | 'playing' | 'exited';
-export type NativeLiveCheckpoint = { checkpoint: NativeCheckpoint; token: number; producer: CheckpointProducer; repaymentWitness?: true; context?: CheckpointProviderState };
+export type NativeLiveCheckpoint = { checkpoint: NativeCheckpoint; token: number; producer: CheckpointProducer };
 export type WorldIdentity = { pid: string; townIdentity: string; gameInstance: number; visitor: boolean };
 /** One pocket or storage slot of the Deluxe personal storage (Private_c.storage_item). */
 export type StorageSlot = { index: number; item: number; storable: boolean; label: string };
@@ -90,10 +89,6 @@ export type StorageCell = { side: 'pockets' | 'storage'; index: number };
 export type StorageTarget = { side: StorageCell['side']; index?: number };
 /** Deluxe town ordinance: 0 none, 1 early birds, 2 night owls, 3 bell boom, 4 beautiful town. */
 export type OrdinanceView = { law: 0 | 1 | 2 | 3 | 4; wallet: number; cost: number };
-export type WorldAdmission = Pick<WorldOperation, 'kind' | 'target'> & { intent: number; gameInstance: number };
-export type PlantingAdmission = { intent: number; gameInstance: number; kind: 'plant_fruit'; pocketSlot: number; target: { x: number; z: number } };
-export type NativeFishingState = { castId: string; phase: number; fishType: number; pending: boolean; result: boolean;
-  gameInstance: number; checkpointToken: number };
 /** RAM proof and server CAS are distinct; a capture keeps this entire context unchanged. */
 export type CheckpointProviderState = {
   gameInstance: string;
@@ -106,7 +101,8 @@ export type CheckpointProviderState = {
 export type TownNameCheck = { available: boolean };
 /** The newer of two towns with the same name (accents and case ignored) is asked to rename; only the owner can. */
 export type TownRename = { olderTown: string; owner: boolean };
-export type User = { id: string; name: string; phone: string; townName: string; residence: Residence; pendingMove:MovePlan|null; townRename: TownRename | null };
+/** visiting: the town a traveler's latest card was saved in, while its passport is out. */
+export type User = { id: string; name: string; phone: string; townName: string; residence: Residence; visiting: string | null; pendingMove:ApprovedMove|null; townRename: TownRename | null };
 export type Town = { id: string; ownerName: string; name: string; revision: number; online: boolean; hasSave: boolean; residents: {userId:string;name:string;portrait?:string}[]; landId?: number; identity?: string; portrait?: string; portraitUserId?: string };
 export type Session = { user: User; serverTime: number };
 export type SaveVersion = { revision: number; sha256: string; size: number; createdAt: number };
@@ -116,8 +112,8 @@ export type Position = { x: number; y: number; z: number; rotation: number; anim
   cloth: number; skinTone: number; faceFlags: number; design: string;
   town?: number; townIdentity?: string; visitor?: boolean };
 export type Ghost = Position & { id: string; name: string; emote: Emote | '' };
-/** Revision of the town's last server-confirmed GCI; no save bytes travel through the room. */
-export type TownSnapshot = { players: Ghost[]; revision: number };
+/** Revision of the town's last server-confirmed GCI and the version of its shared units; no save bytes travel through the room. */
+export type TownSnapshot = { players: Ghost[]; revision: number; units: number };
 /** Read-only presentation snapshot; it grants no play lease, room or save-writing capability. */
 export type PresentationBootstrap = { serverTime: number; save: { url: string; size: number; sha256: string } };
 /** Native hooks only request a canonical capture. Their JSON is never a fact. */
@@ -197,6 +193,20 @@ export interface NativeGame {
   /** Server-confirmed transient reaction; zero/empty cancels, never saved. */
   reaction(emote: Emote | ''): void;
   removeGhost(slot: number): void;
+  /** Ghost multiplayer: a big-endian copy of the live save while nothing uses it, or null. */
+  unitsSnapshot(): Uint8Array | null;
+  /** Writes each town unit whose RAM still holds `before`; null while the save is busy. */
+  unitsApply(patches: { ranges: [number, number][]; before: Uint8Array; after: Uint8Array }[]): boolean[] | null;
+  /** The town's locks for this player's gestures (bit 1: taking fruit). */
+  unitsLocks(flags: number): void;
+  /** The barrel request the next units round carries ("place x z rotation" or "remove id"), "" without one. */
+  furnitureAsk(): string;
+  /** The town's barrels from a units answer; null when no town's list is held. */
+  furniture(list: WorldFurniture[] | null): void;
+  /** The town answered the barrel request: a placed barrel leaves the pocket, a taken one enters it. */
+  furnitureDone(accepted: boolean): void;
+  /** RAM holds the town's units: the day's villager moves run once per boot, at the next quiet moment. */
+  unitsSettled(): void;
   serverTime(epochSeconds: number): void;
   /** Copies current RAM at a native safepoint; never substitutes a physical Card A read. */
   checkpoint(): Promise<NativeLiveCheckpoint | null>;
@@ -213,53 +223,17 @@ export interface NativeGame {
   worldIdentity(): WorldIdentity | null;
   /** Frozen city bound to the actual NES GAME; does not grant world actions. */
   checkpointContinuation(): WorldIdentity | null;
-  worldEnabled(enabled: boolean): void;
-  worldBind(binding: WorldIdentity & { townId: string; version: number; sequence: number; ownRevision: number }): void;
-  worldSnapshot(world: WorldSnapshot, actor: ActorSnapshot): Promise<void>;
-  worldCommit(world: WorldCommit, actor: ActorCommit | null): Promise<void>;
-  worldComplete(operationId: string, receipt?: { sequence: number; ownRevision: number }): void;
-  /** Starts a native admission; no network or inventory mutation. */
-  worldCraftMenu(): boolean;
-  worldCraftRequest(recipeId: RecipeId): number;
-  /** Miles shop sheet into the first free pocket; the server checks the balance. */
-  worldRedeemRequest(recipeId: RecipeId): number;
-  worldCraftCancel(intent: number): boolean;
-  worldCrafting(): { ready: boolean; materials: MaterialCounts };
-  worldRequest(): WorldOperation | null;
-  worldAdmission(): WorldAdmission | null;
-  worldResumeAdmission(): 0 | 1 | 2 | 3;
-  worldOwnCheckpoint(checkpointToken: number, revision: number, checkpoint: NativeCheckpoint): Promise<boolean>;
+  /** Crafting runs in the player's own copy: the notebook the game menu asked for. */
+  craftMenu(): boolean;
+  /** True when the learned recipe's item reached a pocket. */
+  craft(recipeId: RecipeId): boolean;
+  /** Miles shop sheet into the first free pocket; the server already spent the Miles. */
+  redeemSheet(recipeId: RecipeId): boolean;
+  crafting(): { ready: boolean; free: boolean; learnedRecipes: RecipeId[]; materials: MaterialCounts };
+  /** Applies the server's own card to the RAM that produced this checkpoint token. */
+  checkpointOwn(checkpointToken: number, revision: number, checkpoint: NativeCheckpoint): Promise<boolean>;
   /** 1 rebases the current canonical baseline; 2 only records an exact older candidate's ACK. */
-  worldRevision(revision: number, checkpointToken: number, canonicalMatches: boolean): 0 | 1 | 2;
-  moveArm(plan:MovePlan):boolean;
-  /** Retire only an ARMED reservation before the station/save owns it. */
-  moveDisarm(id:string):boolean;
-  moveState():NativeMoveState|null;
-  moveConfirm(id:string,proceed:boolean):boolean;
-  /** Called only after the server's durable, idempotent transfer receipt. */
-  moveAck(id:string,checkpointToken:number,sourceRevision:number):boolean;
-  fishingBind(identity: WorldIdentity & { townId: string }): void;
-  fishingEnabled(enabled: boolean): void;
-  fishingSnapshot(snapshot: FishingSnapshot): void;
-  fishingCast(cast: FishingCast, sequence: number, serverTime: number): void;
-  fishingRequest(): NativeFishingRequest | null;
-  fishingAdmit(request: NativeFishingRequest, versions: { expectedWorldVersion: number; expectedOwnRevision: number; appliedSequence: number }): boolean;
-  fishingState(): NativeFishingState | null;
-  fishingResumeCast(token: number): void;
-  fishingAdmissionValid(): boolean;
-  fishingRestorePending(castId: string, fishType: number): void;
-  fishingTerminal(castId: string, ownRevision: number): void;
-  fishingResolvePendingTerminal(castId: string, operationId: string, sequence: number, ownRevision: number): void;
-  fishingResult(receipt: FishingReceipt, ownRevision: number): void;
-  fishingReject(operationId: string): void;
-  plantingAdmission(): PlantingAdmission | null;
-  plantingAdmissionValid(): boolean;
-  plantingCaptureBind(intent: number, token: number): boolean;
-  plantingResume(intent: number, token: number, ownRevision: number): boolean;
-  plantingReject(intent: number): boolean;
-  plantingVisualStart(intent: number): boolean;
-  /** 0 awaits native proof; 1 awaits the original animation; 2 is fully settled. */
-  plantingReceiptFinish(operationId: string, sequence: number, ownRevision: number): 0 | 1 | 2;
+  checkpointRevision(revision: number, checkpointToken: number, canonicalMatches: boolean): 0 | 1 | 2;
   /** Capture all gameplay inputs; release waits for neutral hardware state. */
   inputModal(held: boolean): void;
   focus(): void;
@@ -269,6 +243,8 @@ export interface NativeGame {
   equipTool(slot: number, item: number): boolean;
   choose(index: number): void;
   uiInsets(insets: NativeUIInsets): void;
+  /** The NES picture's slot in the console skin [left, top, width, height] in canvas CSS px; zero size fits the window. */
+  nesScreen(left: number, top: number, width: number, height: number): void;
   /** CSS distance from the page bottom to the notice draft's row when no keyboard is up. */
   noticeRowInset(): number;
   /** The same distance for the diary's Salvar/Limpar row. */

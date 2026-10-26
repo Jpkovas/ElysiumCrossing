@@ -80,7 +80,7 @@ export type LiveCheckpointCapture = {
   status(token: number): number;
   passportPresent(token: number): number;
   nesPresent(token: number): number;
-  producer(token: number): (CheckpointProducer & { repaymentWitness?: boolean; context?: CheckpointProviderState }) | null;
+  producer(token: number): CheckpointProducer | null;
 };
 export function isCheckpointProducer(value: unknown): value is CheckpointProducer {
   if (!value || typeof value !== 'object') return false;
@@ -120,12 +120,8 @@ export async function captureLiveCheckpoint(capture: LiveCheckpointCapture, file
       if (passport !== 0 && passport !== 1) throw new Error('A cidade e o passaporte atuais não pertencem à mesma cópia.');
       const producer = capture.producer(token);
       if (!isCheckpointProducer(producer)) throw new Error('O jogo não confirmou a identidade da cópia atual.');
-      if (producer.repaymentWitness !== undefined && typeof producer.repaymentWitness !== 'boolean') throw new Error('O jogo não confirmou o marcador da cópia atual.');
-      if (producer.repaymentWitness && passport !== 0) throw new Error('A cópia da quitação não pertence à cidade de origem.');
-      if (producer.repaymentWitness && !isCheckpointContext(producer.context)) throw new Error('O jogo não confirmou a origem da cópia da quitação.');
       return { checkpoint: readPair(files, LIVE_TOWN_FILE, LIVE_PASSPORT_FILE, passport === 1, LIVE_NES_FILE, nes === 1), token,
-        producer: { pid: producer.pid, ownTownIdentity: producer.ownTownIdentity },
-        ...(producer.repaymentWitness ? { repaymentWitness: true, context: { ...producer.context! } } : {}) };
+        producer: { pid: producer.pid, ownTownIdentity: producer.ownTownIdentity } };
     }
     if (status === -2) throw new Error('A cópia da cidade foi substituída antes de ficar pronta. Tente novamente.');
     // A scene change (entering a house, a new resident) cancels the copy before a safe point.
@@ -141,8 +137,6 @@ export type CheckpointCapture = {
   id: string; checkpoint: NativeCheckpoint; context: CheckpointProviderState | null;
   baseline: CheckpointBaseline; nativeToken: number; source: 'live' | 'commit'; createdAt: number;
   gameInstance: string; producer: CheckpointProducer | null;
-  /** Scheduling/preservation marker from the native capture; never an event allegation. */
-  repaymentWitness?: true;
   /** Pre-room entry copy: no gameplay yet, so it is unbound until a later LIVE contains it. */
   entry?: true;
 };
@@ -185,26 +179,20 @@ function cloneCheckpointCapture(value: CheckpointCapture): CheckpointCapture {
 }
 export function createCheckpointCapture(checkpoint: NativeCheckpoint, context: CheckpointProviderState | null,
   baseline: CheckpointBaseline, nativeToken: number, source: 'live' | 'commit', gameInstance: string, producer: CheckpointProducer | null,
-  repaymentWitness?: true, entry?: true): CheckpointCapture {
+  entry?: true): CheckpointCapture {
   if (!isCheckpoint(checkpoint) || (context !== null && !isCheckpointContext(context)) || (context === null && source !== 'commit')
     || !Number.isSafeInteger(nativeToken) || (source === 'live' ? nativeToken <= 0 : nativeToken === 0)
     || !Number.isSafeInteger(baseline.revision) || baseline.revision < 0
     || (baseline.checkpoint !== null && !isCheckpoint(baseline.checkpoint)) || typeof gameInstance !== 'string' || !gameInstance
     || context && context.gameInstance !== gameInstance || producer !== null && !isCheckpointProducer(producer)
-    || source === 'live' && producer === null || repaymentWitness !== undefined && (repaymentWitness !== true || source !== 'live' || checkpoint.passport !== null)
+    || source === 'live' && producer === null
     || entry !== undefined && (entry !== true || source !== 'commit' || context !== null || producer === null || checkpoint.passport !== null)) throw new Error('A origem da cópia atual do progresso está incompleta.');
   return Object.freeze({ id: crypto.randomUUID(), checkpoint: cloneCheckpoint(checkpoint), context: context ? Object.freeze({ ...context }) : null,
     baseline: Object.freeze({ revision: baseline.revision, checkpoint: baseline.checkpoint ? cloneCheckpoint(baseline.checkpoint) : null }),
     nativeToken, source, createdAt: Date.now(), gameInstance, producer: producer ? Object.freeze({ ...producer }) : null,
-    ...(repaymentWitness ? { repaymentWitness: true } : {}), ...(entry ? { entry: true } : {}) });
-}
-/** The preserved queue already survives IDB writes and does not replace user archives. */
-export function pendingRepaymentWitnesses(queue: CheckpointQueue): CheckpointCapture[] {
-  const gameInstance = queue.latestCapture?.gameInstance ?? queue.pendingCapture?.gameInstance;
-  return queue.recoveryCaptures.filter(capture => capture.repaymentWitness === true && capture.gameInstance === gameInstance);
+    ...(entry ? { entry: true } : {}) });
 }
 export function queueCheckpoint(queue: CheckpointQueue, capture: CheckpointCapture): void {
-  if (capture.repaymentWitness && !queue.recoveryCaptures.some(value => value.id === capture.id)) queue.recoveryCaptures.push(capture);
   const previous = queue.latestCapture;
   if (previous?.source === 'commit' && previous.id !== capture.id) {
     if (queue.unboundCommit && queue.unboundCommit.id !== previous.id
@@ -229,7 +217,9 @@ export function settledJournalCapture(queue: CheckpointQueue): string | null {
   if (queue.latestCapture) return sameCheckpoint(queue.latestCapture.checkpoint, queue.storedCheckpoint) ? queue.latestCapture.id : null;
   return queue.unboundCommit?.id ?? null;
 }
-/** Call only after an ACK and native reconciliation of this later live pair. */
+/** Call only after the page reconciled this later live pair: the server stored its exact bytes
+ * (ghost multiplayer: RAM needs no rebase, so Native records no reconciled revision) or Native applied
+ * the server's copy. Native still proves the same boot, producer and accepted revision. */
 export function settleSupersededCommit(queue: CheckpointQueue, capture: CheckpointCapture, lineage: CheckpointLineage | null, revision: number): boolean {
   const original = queue.unboundCommit;
   if (original && capture.source === 'live' && capture.gameInstance === original.gameInstance
@@ -238,19 +228,17 @@ export function settleSupersededCommit(queue: CheckpointQueue, capture: Checkpoi
     && capture.nativeToken > original.nativeToken && capture.createdAt >= original.createdAt
     && lineage?.pid === capture.producer.pid && lineage.ownTownIdentity === capture.producer.ownTownIdentity
     && lineage.acknowledged === true && lineage.acceptedRevision >= revision
-    && lineage.currentGameInstance > 0 && lineage.reconciledInstance === lineage.currentGameInstance
-    && lineage.reconciledRevision >= revision) { queue.unboundCommit = null; return true; }
+    && lineage.currentGameInstance > 0 && lineage.gameInstance === lineage.currentGameInstance) { queue.unboundCommit = null; return true; }
   return false;
 }
 
 /** Coalesced captures retain their exact origin; an older failed request cannot replace a newer one. */
 export async function flushPendingCheckpoints(queue: CheckpointQueue, write: (capture: CheckpointCapture) => Promise<CheckpointWriteAck | null>, active: () => boolean): Promise<void> {
-  const reconciled = new Set<string>();
   for (;;) {
-    const capture = pendingRepaymentWitnesses(queue).find(value => !reconciled.has(value.id)) ?? queue.pendingCapture;
+    const capture = queue.pendingCapture;
     if (!capture || !active()) return;
-    if (queue.pendingCapture?.id === capture.id) queue.pendingCapture = null;
-    if (!capture.repaymentWitness && sameCheckpoint(capture.checkpoint, queue.storedCheckpoint)) continue;
+    queue.pendingCapture = null;
+    if (sameCheckpoint(capture.checkpoint, queue.storedCheckpoint)) continue;
     try {
       const ack = await write(capture);
       if (ack === null) { queue.pendingCapture ??= capture; return; }
@@ -258,7 +246,6 @@ export async function flushPendingCheckpoints(queue: CheckpointQueue, write: (ca
       queue.storedRevision = ack.revision;
       queue.storedCheckpoint = ack.checkpoint;
       if (!ack.reconciled) { queue.pendingCapture ??= capture; return; }
-      reconciled.add(capture.id);
     } catch (error) {
       queue.pendingCapture ??= capture;
       if (error instanceof CheckpointConflictError) queue.conflictCapture ??= capture;
@@ -278,18 +265,17 @@ export function journalCaptures(journal: Pick<CheckpointJournal, 'latestCapture'
   const records = [...journal.recoveryCaptures, journal.conflictCapture, journal.unboundCommit, journal.latestCapture];
   return [...new Map(records.filter((capture): capture is CheckpointCapture => capture !== null).map(capture => [capture.id, capture])).values()];
 }
-/** Archives remain downloadable; retained repayment captures must finish before another boot. */
+/** Archives remain downloadable; active captures must finish before another boot. */
 export function pendingJournalCaptures(journal: CheckpointJournal | null): CheckpointCapture[] {
   if (!journal) return [];
   const active = new Set([journal.latestCapture?.id, journal.conflictCapture?.id, journal.unboundCommit?.id]);
-  return journalCaptures(journal).filter(capture => capture.repaymentWitness || active.has(capture.id))
-    .sort((a, b) => Number(!!b.repaymentWitness) - Number(!!a.repaymentWitness) || a.createdAt - b.createdAt || a.nativeToken - b.nativeToken);
+  return journalCaptures(journal).filter(capture => active.has(capture.id)).sort((a, b) => a.createdAt - b.createdAt || a.nativeToken - b.nativeToken);
 }
 
 /** A pre-room entry copy carries no gameplay delta. Its original bytes remain downloadable. */
 export function entryCommitContainedByLive(original: CheckpointCapture, later: CheckpointCapture): boolean {
   if (!validStoredCapture(original) || !validStoredCapture(later) || original.source !== 'commit' || later.source !== 'live'
-    || original.repaymentWitness || later.repaymentWitness || original.checkpoint.passport !== null || later.checkpoint.passport !== null
+    || original.checkpoint.passport !== null || later.checkpoint.passport !== null
     || original.gameInstance !== later.gameInstance || original.nativeToken >= later.nativeToken || original.createdAt > later.createdAt
     || !original.producer || !later.producer || original.producer.pid !== later.producer.pid
     || original.producer.ownTownIdentity !== later.producer.ownTownIdentity || original.baseline.revision < 1
@@ -332,34 +318,6 @@ export function entryCommitContainedByLive(original: CheckpointCapture, later: C
   for (let offset = 0; offset < entry.length; offset++) {
     if (offset >= 0x26040 && offset < 0x4c040 || offset >= 0x4c040 && offset < 0x72040 || offset >= 0x28 && offset < 0x2c) continue;
     if (entry[offset] !== before[offset]) return false;
-  }
-  return true;
-}
-
-/** Only a metadata-only LIVE can leave the stale-sequence gate automatically. */
-export function metadataOnlyStaleLiveRecovery(original: CheckpointCapture, later: CheckpointCapture, canonical: NativeCheckpoint): boolean {
-  if (!validStoredCapture(original) || !validStoredCapture(later) || original.source !== 'live' || later.source !== 'live'
-    || original.repaymentWitness || later.repaymentWitness || original.checkpoint.passport !== null || later.checkpoint.passport !== null
-    || canonical.passport !== null || original.gameInstance !== later.gameInstance || original.nativeToken >= later.nativeToken
-    || original.createdAt > later.createdAt || !original.producer || !later.producer || !original.context || !later.context
-    || original.producer.pid !== later.producer.pid || original.producer.ownTownIdentity !== later.producer.ownTownIdentity
-    || original.context.activeWorldTownId !== later.context.activeWorldTownId
-    || original.context.appliedSequence >= later.context.appliedSequence
-    || original.baseline.revision < 1 || original.baseline.revision !== later.baseline.revision
-    || !original.baseline.checkpoint || !later.baseline.checkpoint || !sameCheckpoint(original.baseline.checkpoint, later.baseline.checkpoint)
-    || !checkpointNamesProducer(original.checkpoint, original.producer) || !checkpointNamesProducer(later.checkpoint, later.producer)
-    || !checkpointNamesProducer(original.baseline.checkpoint, original.producer) || !checkpointNamesProducer(canonical, original.producer)) return false;
-  if(original.checkpoint.nes===null ? original.baseline.checkpoint.nes!==null : original.baseline.checkpoint.nes===null || !sameBytes(original.checkpoint.nes,original.baseline.checkpoint.nes))return false;
-  const before = new Uint8Array(original.baseline.checkpoint.town), first = new Uint8Array(original.checkpoint.town);
-  const current = new Uint8Array(later.checkpoint.town), confirmed = new Uint8Array(canonical.town);
-  for (const bytes of [before, first, current, confirmed]) {
-    for (let offset = 0; offset < 0x26000; offset++) if (bytes[0x26040 + offset] !== bytes[0x4c040 + offset]) return false;
-  }
-  for (let offset = 0; offset < first.length; offset++) {
-    // Only the native serialization timestamp/checksum and scene are excluded.
-    const local = offset >= 0x4c040 ? offset - 0x4c040 : offset >= 0x26040 ? offset - 0x26040 : -1;
-    if (offset >= 0x28 && offset < 0x2c || local >= 0x0a && local < 0x18) continue;
-    if (first[offset] !== before[offset]) return false;
   }
   return true;
 }
@@ -469,9 +427,10 @@ export async function recoverPriorBootCommit(capture: CheckpointCapture,
     if (!unchanged()) return blocked('Outra partida começou durante a verificação. A recuperação foi preservada.');
     const current = downloadedCurrent && isCheckpoint(downloadedCurrent.checkpoint)
       ? { revision: downloadedCurrent.revision, checkpoint: cloneCheckpoint(downloadedCurrent.checkpoint) } : null;
+    // An entry copy is superseded by any later card of its producer, a departure to a visit included.
     if (!current || !Number.isSafeInteger(current.revision) || current.revision < (origin?.currentOwnRevision ?? original.baseline.revision)
       || current.revision < original.baseline.revision
-      || !checkpointNamesProducer(current.checkpoint, original.producer!, original.checkpoint.passport !== null)) return blocked('A cidade atual do servidor não confirma a origem desta cópia. Ela foi preservada.');
+      || !checkpointNamesProducer(current.checkpoint, original.producer!, (original.entry ? current : original).checkpoint.passport !== null)) return blocked('A cidade atual do servidor não confirma a origem desta cópia. Ela foi preservada.');
     const downloadedBaseline = await transport.download(original.baseline.revision);
     if (!unchanged()) return blocked('Outra partida começou durante a verificação. A recuperação foi preservada.');
     const baseline = downloadedBaseline && isCheckpoint(downloadedBaseline.checkpoint)
@@ -528,38 +487,21 @@ export type PriorBootLiveRecoveryResult =
 
 function sameStoredCapture(a: CheckpointCapture, b: CheckpointCapture): boolean {
   return a.id === b.id && a.source === b.source && a.gameInstance === b.gameInstance && a.nativeToken === b.nativeToken
-    && a.repaymentWitness === b.repaymentWitness && a.entry === b.entry
+    && a.entry === b.entry
     && a.createdAt === b.createdAt && (a.context === null ? b.context === null : sameCheckpointContext(a.context, b.context))
     && a.producer?.pid === b.producer?.pid && a.producer?.ownTownIdentity === b.producer?.ownTownIdentity
     && sameCheckpoint(a.checkpoint, b.checkpoint) && a.baseline.revision === b.baseline.revision
     && (a.baseline.checkpoint === null ? b.baseline.checkpoint === null : sameCheckpoint(a.baseline.checkpoint, b.baseline.checkpoint));
 }
 
-type LiveRecoveryOwner = { userId: string; ownTownId: string; currentGameInstance: string; ownTownIdentity: string };
-
 /** Recovers an exact old live origin by server receipt, without touching native RAM or its old token. */
 export async function recoverPriorBootLive(capture: CheckpointCapture,
   owner: { userId: string; ownTownId: string; currentGameInstance: string; ownTownIdentity: string },
   transport: PriorBootLiveRecoveryTransport, factory: IDBFactory = indexedDB): Promise<PriorBootLiveRecoveryResult> {
-  if (capture.gameInstance === owner.currentGameInstance) return { status: 'blocked', captureId: capture.id,
-    reason: 'A cópia pertence à partida atual. Ela foi preservada.' };
-  return recoverLiveOrigin(capture, owner, transport, factory);
-}
-
-/** Explicit current-session retry preserves its exact origin. Native reconciliation remains the caller's duty. */
-export async function recoverCurrentBootLive(capture: CheckpointCapture, owner: LiveRecoveryOwner,
-  transport: PriorBootLiveRecoveryTransport, factory: IDBFactory = indexedDB): Promise<PriorBootLiveRecoveryResult> {
-  if (capture.gameInstance !== owner.currentGameInstance || capture.repaymentWitness || capture.checkpoint.passport !== null)
-    return { status: 'blocked', captureId: capture.id, reason: 'A cópia não pertence à recuperação ao vivo desta partida. Ela foi preservada.' };
-  return recoverLiveOrigin(capture, owner, transport, factory);
-}
-
-async function recoverLiveOrigin(capture: CheckpointCapture, owner: LiveRecoveryOwner,
-  transport: PriorBootLiveRecoveryTransport, factory: IDBFactory): Promise<PriorBootLiveRecoveryResult> {
   const captureId = capture.id;
   const blocked = (reason: string): PriorBootLiveRecoveryResult => ({ status: 'blocked', captureId, reason });
   if (!validStoredCapture(capture) || capture.source !== 'live' || !capture.context || !capture.producer
-    || !owner.currentGameInstance
+    || capture.gameInstance === owner.currentGameInstance || !owner.currentGameInstance
     || !Number.isSafeInteger(capture.createdAt) || capture.createdAt < 0
     || capture.context.activeWorldTownId !== owner.ownTownId || capture.producer.ownTownIdentity !== owner.ownTownIdentity
     || capture.baseline.revision < 1 || capture.baseline.revision !== capture.context.ramBaselineRevision
@@ -661,7 +603,7 @@ export async function assertPreviousCheckpointJournalSettled(userId: string, fac
     const record=previous as Record<string,unknown>;
     if(record.userId!==userId||!Number.isSafeInteger(record.updatedAt)||(record.updatedAt as number)<0||record.latestCapture!==null||record.conflictCapture!==null||record.unboundCommit!==null||
       !Array.isArray(record.recoveryCaptures)||record.recoveryCaptures.some(value=>!value||typeof value!=='object'||
-        (value.source!=='live'&&value.source!=='commit')||typeof value.id!=='string'||!value.id||value.repaymentWitness!==undefined||
+        (value.source!=='live'&&value.source!=='commit')||typeof value.id!=='string'||!value.id||
         !Number.isSafeInteger(value.nativeToken)||(value.source==='live'?value.nativeToken<=0:value.nativeToken===0)||
         typeof value.gameInstance!=='string'||!value.gameInstance||!Number.isSafeInteger(value.createdAt)||value.createdAt<0||
         !(isCheckpointContext(value.context)||value.context===null&&value.source==='commit')||
@@ -688,7 +630,6 @@ function validStoredCapture(value: unknown): value is CheckpointCapture {
     && (isCheckpointContext(capture.context) || capture.context === null && capture.source === 'commit')
     && Number.isSafeInteger(capture.nativeToken) && (capture.source === 'live' ? capture.nativeToken > 0 : capture.nativeToken !== 0)
     && (capture.source === 'live' || capture.source === 'commit')
-    && (capture.repaymentWitness === undefined || capture.repaymentWitness === true && capture.source === 'live' && capture.checkpoint.passport === null)
     && (capture.entry === undefined || capture.entry === true && capture.source === 'commit' && capture.context === null && capture.checkpoint.passport === null)
     && typeof capture.gameInstance === 'string' && !!capture.gameInstance && (!capture.context || capture.context.gameInstance === capture.gameInstance)
     && Number.isSafeInteger(capture.createdAt) && capture.createdAt >= 0
@@ -742,7 +683,7 @@ export async function acknowledgeCheckpointJournal(userId: string, captureId: st
       const store = transaction.objectStore(JOURNAL_STORE), request = store.get(userId);
       request.onsuccess = () => {
         const entry = request.result;
-        if (validJournal(entry, userId) && entry.latestCapture?.id === captureId && !entry.latestCapture.repaymentWitness && !entry.conflictCapture && !entry.unboundCommit) {
+        if (validJournal(entry, userId) && entry.latestCapture?.id === captureId && !entry.conflictCapture && !entry.unboundCommit) {
           if (entry.recoveryCaptures.length) store.put({ ...entry, latestCapture: null, updatedAt: Date.now() });
           else store.delete(userId);
         }

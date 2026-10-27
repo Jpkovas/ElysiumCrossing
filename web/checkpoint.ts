@@ -456,7 +456,9 @@ export async function recoverPriorBootCommit(capture: CheckpointCapture,
     const intentHash=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(intentJSON));
     const intentSHA256=Array.from(new Uint8Array(intentHash),byte=>byte.toString(16).padStart(2,'0')).join('');
     if(!unchanged())return blocked('A origem mudou antes da recuperação. A cópia foi preservada.');
-    const receipt=await transport.recover({intent,expectedOwnRevision:current.revision},cloneCheckpoint(original.checkpoint));
+    let receipt:CheckpointRecoveryReceipt;
+    try{receipt=await transport.recover({intent,expectedOwnRevision:current.revision},cloneCheckpoint(original.checkpoint));}
+    catch(error){if(superseded(error)&&unchanged())return{status:'superseded',captureId:original.id,canonical:current,verifiedCapture:cloneCheckpointCapture(original)};throw error;}
     if(!unchanged()||receipt.captureId!==original.id||receipt.intentSHA256!==intentSHA256||receipt.baselineRevision!==original.baseline.revision||
       receipt.baselineSHA256!==baselineSHA256||receipt.submittedSHA256!==checkpointSHA256||!Number.isSafeInteger(receipt.revision)||!Number.isSafeInteger(receipt.previousOwnRevision)||
       receipt.previousOwnRevision<origin!.currentOwnRevision||receipt.previousOwnRevision>current.revision||
@@ -483,7 +485,10 @@ export type PriorBootLiveRecoveryTransport = {
 };
 export type PriorBootLiveRecoveryResult =
   | { status: 'recovered'; captureId: string; canonical: PriorBootCheckpoint; receipt: CheckpointRecoveryReceipt; verifiedCapture: CheckpointCapture }
+  | { status: 'superseded'; captureId: string; canonical: PriorBootCheckpoint; verifiedCapture: CheckpointCapture }
   | { status: 'blocked'; captureId: string; reason: string };
+/** The server refuses a copy older than a game save it never saw: the newer progress stays, the copy is archived. */
+const superseded = (error: unknown) => (error as { code?: unknown } | null)?.code === 'recovery_superseded';
 
 function sameStoredCapture(a: CheckpointCapture, b: CheckpointCapture): boolean {
   return a.id === b.id && a.source === b.source && a.gameInstance === b.gameInstance && a.nativeToken === b.nativeToken
@@ -548,7 +553,12 @@ export async function recoverPriorBootLive(capture: CheckpointCapture,
     const intentSHA256 = Array.from(new Uint8Array(intentDigest), byte => byte.toString(16).padStart(2, '0')).join('');
     if (!unchanged() || !await journalUnchanged()) return blocked('A cópia local mudou antes da publicação. Ela foi preservada.');
     const request: CheckpointRecoveryRequest = Object.freeze({ intent, expectedOwnRevision: current.revision });
-    const receipt = { ...await transport.recover(request, cloneCheckpoint(original.checkpoint)) };
+    let receipt: CheckpointRecoveryReceipt;
+    try { receipt = { ...await transport.recover(request, cloneCheckpoint(original.checkpoint)) }; }
+    catch (error) {
+      if (superseded(error) && unchanged()) return { status: 'superseded', captureId, canonical: current, verifiedCapture: cloneCheckpointCapture(original) };
+      throw error;
+    }
     if (!unchanged()) return blocked('A cópia local mudou durante a publicação. Ela foi preservada.');
     const sha = (value: unknown): value is string => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value);
     if (receipt.captureId !== captureId || receipt.intentSHA256 !== intentSHA256 || receipt.baselineRevision !== original.baseline.revision

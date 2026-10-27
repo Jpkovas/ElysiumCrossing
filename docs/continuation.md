@@ -1,9 +1,10 @@
-# Retomada — multiplayer fantasma, 26/10/2026
+# Retomada — multiplayer fantasma, 27/10/2026
 
 A referência exata desta exportação é `privateCanonicalCommit` no manifesto
-(`c66884d`, branch privada `fantasmas-1025`). O manifesto também fixa a origem
+(`598c1a0`, branch privada `fantasmas-1025`). O manifesto também fixa a origem
 de cada arquivo. A fonte completa continua no workspace privado: leia as regras,
-o guia de manutenção e o handoff de 26/10 antes de mudar componentes.
+o guia de manutenção, o handoff de 26/10 e a triagem da auditoria de 27/10 antes
+de mudar componentes.
 
 O GitHub publica 31 fontes próprias selecionadas e documentação. Ele não contém o
 jogo executável, o Native/decomp, os providers nem os recursos licenciados.

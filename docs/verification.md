@@ -1,4 +1,4 @@
-# Verificação — multiplayer fantasma, 26/10/2026
+# Verificação — multiplayer fantasma, 27/10/2026
 
 ## Recorte público
 
@@ -16,15 +16,17 @@ deploy. O código completo de servidor, sala e Native é privado.
 
 ## Verificação privada delimitada
 
-- **Suíte integrada:** 712 testes, 667 passam e 45 falham. As 45 falhas são
+- **Suíte integrada:** 717 testes, 680 passam e 37 falham. As 37 falhas são
   antigas e descrevem a vila compartilhada removida ou usam fixtures defasadas;
-  nenhuma é nova. A suíte global não está verde.
+  nenhuma é nova. A suíte global não está verde. As correções da auditoria de
+  27/10 têm testes novos que falham no código antigo.
 - **Unidades da vila:** testes próprios de unidades, cliente de unidades e cartões fantasma passam.
 - **Native:** rebuild limpo, com 0 erros. O harness de entrada de morador passou
   com 187 checks e 12 casos fatais.
 - **Jogo:** QA em navegador automatizado (Chromium/Playwright, 390x844 e outras
   medidas) com dados novos em servidor isolado. As jornadas conferidas estão no
-  [marco](milestones/2026-10-26-fantasmas.md).
+  [marco de 26/10](milestones/2026-10-26-fantasmas.md) e no
+  [marco de 27/10](milestones/2026-10-27-auditoria.md).
 
 Os números acima não equivalem à aprovação do jogador. iPhone físico, áudio
 percebido, saída de vizinho e decreto ao vivo seguem sem verificação no jogo.

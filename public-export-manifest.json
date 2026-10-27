@@ -1,13 +1,13 @@
 {
   "schema": 1,
-  "export": "fantasmas-2026-10-26",
+  "export": "fantasmas-2026-10-27-auditoria",
   "scope": "Reviewed authored application subset and sanitized continuation; full Native and private resources excluded",
   "promotionAuthorized": true,
-  "qualification": "reviewed authored source subset of the official ghost multiplayer line; private suite 667/712 with 45 known old failures; physical iPhone and perceived audio unverified; publication to friends NOT done (needs backup, wipe and written operator OK); no deployment",
-  "privateCanonicalCommit": "c66884d97183026ffdb484a2098fb39c28af92ac",
+  "qualification": "reviewed authored source subset of the official ghost multiplayer line after the 27/10 code audit; private suite 680/717 with 37 known old failures; physical iPhone and perceived audio unverified; publication to friends NOT done (needs backup, wipe and written operator OK); no deployment",
+  "privateCanonicalCommit": "096918f5400597dac09d9860aac88b6008727b07",
   "privateBranch": "fantasmas-1025",
   "privateBase": "dfac0208f86f51288d5981acdd854a4547b376bb",
-  "priorPrivateCanonical": "7b28d75e81094679d4124897f4e2879889c90429",
+  "priorPrivateCanonical": "c66884d97183026ffdb484a2098fb39c28af92ac",
   "native": {
     "exports": 101,
     "imports": 457,
@@ -57,22 +57,22 @@
     },
     {
       "path": "README.md",
-      "bytes": 3072,
-      "sha256": "a7f305e9b335009ef62dbeb66b5b4d749cce2a69cd209d126976c3cbc0f73ede",
+      "bytes": 3215,
+      "sha256": "b3503f63eaddeb73955379c3820452570ef64402acf48a3f52d92a6dcb95d45e",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "fantasmas-2026-10-26"
+        "createdFor": "fantasmas-2026-10-27-auditoria"
       }
     },
     {
       "path": "docs/continuation.md",
-      "bytes": 1751,
-      "sha256": "269acc1537b8d70a280d0f0ac316b63d8ac02b2f1e010bbd6a106c6f6032a43b",
+      "bytes": 1784,
+      "sha256": "147f7dfbe4a6b4df19379bcf1adb984c8c9f5dc53956676d0a4c1fab876fdd8e",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "fantasmas-2026-10-26"
+        "createdFor": "fantasmas-2026-10-27-auditoria"
       }
     },
     {
@@ -156,6 +156,16 @@
       }
     },
     {
+      "path": "docs/milestones/2026-10-27-auditoria.md",
+      "bytes": 4313,
+      "sha256": "87330a6bed65d9dd0ba539ae5c5b778e77a68b2feb9fe2b434279b8cbc6cd8d9",
+      "mode": "100644",
+      "origin": {
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "fantasmas-2026-10-27-auditoria"
+      }
+    },
+    {
       "path": "docs/modernization/architecture-baseline.md",
       "bytes": 5253,
       "sha256": "56e1902546d1b6453e488cbbc566a3a541d57a3686b7b17796fe189032f81f9a",
@@ -227,12 +237,12 @@
     },
     {
       "path": "docs/verification.md",
-      "bytes": 1711,
-      "sha256": "f0c27c1a5b44ff16cc1ef193edf0762185b42a82fea399a81d1c5010614e6a0a",
+      "bytes": 1867,
+      "sha256": "cbca5d21716258b3a4789f898c45b0da4fc28c20f375288cc529db1a0301bee7",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
-        "createdFor": "fantasmas-2026-10-26"
+        "createdFor": "fantasmas-2026-10-27-auditoria"
       }
     },
     {
@@ -580,14 +590,14 @@
     },
     {
       "path": "web/checkpoint.ts",
-      "bytes": 56968,
-      "sha256": "e820b2e344ea1aa410751fed149d4fefc8bc482677587c30e9f2a50344c55d52",
+      "bytes": 57785,
+      "sha256": "b1803b912da8735602a33ab15dc07527ffffd8d094d06bb5397bf1531665cfde",
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "c66884d97183026ffdb484a2098fb39c28af92ac",
+        "sourceTree": "096918f5400597dac09d9860aac88b6008727b07",
         "relativeSource": "web/checkpoint.ts",
-        "sourceSHA256": "e820b2e344ea1aa410751fed149d4fefc8bc482677587c30e9f2a50344c55d52",
+        "sourceSHA256": "b1803b912da8735602a33ab15dc07527ffffd8d094d06bb5397bf1531665cfde",
         "exportMode": "byte-identical"
       }
     },

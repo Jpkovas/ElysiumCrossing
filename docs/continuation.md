@@ -1,7 +1,7 @@
 # Retomada — multiplayer fantasma, 27/10/2026
 
 A referência exata desta exportação é `privateCanonicalCommit` no manifesto
-(`598c1a0`, branch privada `fantasmas-1025`). O manifesto também fixa a origem
+(`70d6442`, branch privada `fantasmas-1025`, integração de 27/10). O manifesto também fixa a origem
 de cada arquivo. A fonte completa continua no workspace privado: leia as regras,
 o guia de manutenção, o handoff de 26/10 e a triagem da auditoria de 27/10 antes
 de mudar componentes.
@@ -11,11 +11,9 @@ jogo executável, o Native/decomp, os providers nem os recursos licenciados.
 
 ## Estado e limites
 
-- Produção e o ambiente publicado de teste não mudaram. A publicação da versão
-  fantasma para os amigos depende de três coisas:
-  - backup verificado;
-  - wipe completo;
-  - OK escrito do operador.
+- A versão fantasma está no ar para os amigos desde 27/10 (com wipe e OK escrito
+  do operador). O candidato da integração de 27/10 está só no ambiente de teste;
+  a troca depende de backup verificado e de novo OK escrito, sem wipe.
 - Publicar fontes no GitHub não autoriza nem executa essas operações.
 - As versões anteriores (RC Opção B, worktrees de 19 e 20/10, builds de 13 a 18/10)
   estão arquivadas no workspace privado, com um bundle Git de todas as branches.
@@ -26,7 +24,7 @@ jogo executável, o Native/decomp, os providers nem os recursos licenciados.
 - Fechar a duplicação possível dentro de uma mesma rodada de 4 s.
 - Esconder "Guardar" do barril para quem não é dono.
 - Confirmar áudio e desempenho em iPhone físico.
-- Preparar a publicação para os amigos: backup, wipe e OK escrito.
+- Conferir o santuário no candidato da integração.
 
 Usar stores exclusivos da execução e remover as contas de teste ao terminar. Não
 editar saves nem afrouxar guards para fazer a QA passar. Máximo de duas instâncias

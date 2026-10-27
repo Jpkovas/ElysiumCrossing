@@ -4,18 +4,20 @@ Port para navegador de Animal Crossing GameCube, com integração Deluxe,
 autenticação, persistência e recursos multiplayer próprios.
 
 Esta é a **exportação pública sanitizada de 27/10/2026**: o multiplayer
-fantasma é a versão oficial desde 26/10, e esta rodada traz as correções de uma
-auditoria de código. Cada conta joga o próprio save. Só uma lista
+fantasma é a versão oficial desde 26/10, e esta rodada junta as frentes de
+27/10 (eventos do Deluxe, K.K. e dívida, desempenho, tutoriais, telemetria e o
+site novo) num candidato antes do Halloween. Cada conta joga o próprio save. Só uma lista
 pequena de trechos da vila é compartilhada pelo servidor, e os outros jogadores
 aparecem como fantasmas. A fonte privada e a origem de cada arquivo estão em
 `public-export-manifest.json`. Produção e o ambiente publicado de teste não
-mudaram; o envio destas fontes não implanta o jogo e não executa wipe.
+mudaram com este envio; o envio destas fontes não implanta o jogo e não executa wipe.
 
 O recorte contém 31 fontes próprias, contratos e testes. Ele não executa o jogo
 sozinho e não é um backup da composição privada. Native/decomp, recursos
 licenciados e dados dos jogadores ficam fora. Consulte o
 [escopo](docs/public-source-scope.md), a [retomada](docs/continuation.md) e o
-[marco atual](docs/milestones/2026-10-27-auditoria.md), que segue o
+[marco atual](docs/milestones/2026-10-27-integracao.md), que segue a
+[auditoria de 27/10](docs/milestones/2026-10-27-auditoria.md) e o
 [marco de 26/10](docs/milestones/2026-10-26-fantasmas.md).
 
 ## O que mudou desde 19/10

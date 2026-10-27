@@ -1,13 +1,13 @@
 {
   "schema": 1,
-  "export": "fantasmas-2026-10-27-auditoria",
+  "export": "fantasmas-2026-10-27-integracao",
   "scope": "Reviewed authored application subset and sanitized continuation; full Native and private resources excluded",
   "promotionAuthorized": true,
-  "qualification": "reviewed authored source subset of the official ghost multiplayer line after the 27/10 code audit; private suite 716/716 and clean typecheck; physical iPhone and perceived audio unverified; publication to friends NOT done (needs backup, wipe and written operator OK); no deployment",
-  "privateCanonicalCommit": "598c1a03f45fd53f00b2c7b55a00912c95d3781c",
+  "qualification": "reviewed authored source subset of the official ghost multiplayer line after the 27/10 integration of seven fronts (Deluxe events, K.K./debt, performance, touch tutorials, telemetry, site menus and navigation); private suite 738/738 and clean typecheck; Native ABI equal to the live release; physical iPhone and perceived audio unverified; candidate installed only in the operator test environment; switching the live release needs a verified backup and written operator OK; no deployment by this export",
+  "privateCanonicalCommit": "70d6442a8f6100004fb87e44b58d3a9ed70637f8",
   "privateBranch": "fantasmas-1025",
   "privateBase": "dfac0208f86f51288d5981acdd854a4547b376bb",
-  "priorPrivateCanonical": "c66884d97183026ffdb484a2098fb39c28af92ac",
+  "priorPrivateCanonical": "598c1a03f45fd53f00b2c7b55a00912c95d3781c",
   "native": {
     "exports": 101,
     "imports": 457,
@@ -57,8 +57,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 3215,
-      "sha256": "b3503f63eaddeb73955379c3820452570ef64402acf48a3f52d92a6dcb95d45e",
+      "bytes": 3393,
+      "sha256": "4405eda3dd5ec0e1aa5d7a8e8752c0f34a174d3df9b24ff3eea45041f3c7815f",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
@@ -67,8 +67,8 @@
     },
     {
       "path": "docs/continuation.md",
-      "bytes": 1784,
-      "sha256": "8891d1c3687ab9a493544f42eb25baee713b4e243a344affe002bbe55886ddf4",
+      "bytes": 1825,
+      "sha256": "cea1a615de4587b4bbe8f229a153daaf246ef289768d47c220b66e9d914cc693",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
@@ -166,6 +166,16 @@
       }
     },
     {
+      "path": "docs/milestones/2026-10-27-integracao.md",
+      "bytes": 2993,
+      "sha256": "d84b559101a1a1a029e10a8f526478ec66d6c4d4a4d0898fcf2a96b0611e6ea5",
+      "mode": "100644",
+      "origin": {
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "fantasmas-2026-10-27-integracao"
+      }
+    },
+    {
       "path": "docs/modernization/architecture-baseline.md",
       "bytes": 5253,
       "sha256": "56e1902546d1b6453e488cbbc566a3a541d57a3686b7b17796fe189032f81f9a",
@@ -237,8 +247,8 @@
     },
     {
       "path": "docs/verification.md",
-      "bytes": 1872,
-      "sha256": "e30e95c8b154186e600015351d273aadee046abe942a81c8a0dbc103d05c5dd9",
+      "bytes": 1818,
+      "sha256": "11567d019c87d92cf48a49f28ab5dd80193d672b47ecf4ebab30bfba10f7ac34",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
@@ -293,14 +303,14 @@
     },
     {
       "path": "shared/contracts.ts",
-      "bytes": 23771,
-      "sha256": "e1cba73aa32668fc789f3f015f4d3f452c9ed71c8a720d1a682985b6232a223e",
+      "bytes": 23922,
+      "sha256": "4fb1ddc6ec697a957d6c081ec32fe0a257c3702c9ecbaefa0b5aa555085fef61",
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "c66884d97183026ffdb484a2098fb39c28af92ac",
+        "sourceTree": "70d6442a8f6100004fb87e44b58d3a9ed70637f8",
         "relativeSource": "shared/contracts.ts",
-        "sourceSHA256": "e1cba73aa32668fc789f3f015f4d3f452c9ed71c8a720d1a682985b6232a223e",
+        "sourceSHA256": "4fb1ddc6ec697a957d6c081ec32fe0a257c3702c9ecbaefa0b5aa555085fef61",
         "exportMode": "byte-identical"
       }
     },
@@ -436,14 +446,14 @@
     },
     {
       "path": "shared/ranking.ts",
-      "bytes": 1861,
-      "sha256": "1d6cfd83e1c557a305969edae601042574a98101f7858bae3abba11d2c799c82",
+      "bytes": 2331,
+      "sha256": "57c0bc5a6f0984b58b4cc880ffc8045bf4f2dc99e33d6182e08047c2a31393e2",
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "c66884d97183026ffdb484a2098fb39c28af92ac",
+        "sourceTree": "70d6442a8f6100004fb87e44b58d3a9ed70637f8",
         "relativeSource": "shared/ranking.ts",
-        "sourceSHA256": "1d6cfd83e1c557a305969edae601042574a98101f7858bae3abba11d2c799c82",
+        "sourceSHA256": "57c0bc5a6f0984b58b4cc880ffc8045bf4f2dc99e33d6182e08047c2a31393e2",
         "exportMode": "byte-identical"
       }
     },
@@ -475,14 +485,14 @@
     },
     {
       "path": "shared/town-units.ts",
-      "bytes": 9301,
-      "sha256": "799fb08cbc08a2a84cf16e1683989999181c36d01fbd24360a81e1f19fdee8f9",
+      "bytes": 9615,
+      "sha256": "8d253a5cb1b31f937d520722a25f3966351567df5a954b9e8d6d22b8abb8b113",
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "c66884d97183026ffdb484a2098fb39c28af92ac",
+        "sourceTree": "70d6442a8f6100004fb87e44b58d3a9ed70637f8",
         "relativeSource": "shared/town-units.ts",
-        "sourceSHA256": "799fb08cbc08a2a84cf16e1683989999181c36d01fbd24360a81e1f19fdee8f9",
+        "sourceSHA256": "8d253a5cb1b31f937d520722a25f3966351567df5a954b9e8d6d22b8abb8b113",
         "exportMode": "byte-identical"
       }
     },

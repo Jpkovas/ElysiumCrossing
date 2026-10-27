@@ -3,8 +3,8 @@
   "export": "fantasmas-2026-10-27-auditoria",
   "scope": "Reviewed authored application subset and sanitized continuation; full Native and private resources excluded",
   "promotionAuthorized": true,
-  "qualification": "reviewed authored source subset of the official ghost multiplayer line after the 27/10 code audit; private suite 680/717 with 37 known old failures; physical iPhone and perceived audio unverified; publication to friends NOT done (needs backup, wipe and written operator OK); no deployment",
-  "privateCanonicalCommit": "096918f5400597dac09d9860aac88b6008727b07",
+  "qualification": "reviewed authored source subset of the official ghost multiplayer line after the 27/10 code audit; private suite 716/716 and clean typecheck; physical iPhone and perceived audio unverified; publication to friends NOT done (needs backup, wipe and written operator OK); no deployment",
+  "privateCanonicalCommit": "598c1a03f45fd53f00b2c7b55a00912c95d3781c",
   "privateBranch": "fantasmas-1025",
   "privateBase": "dfac0208f86f51288d5981acdd854a4547b376bb",
   "priorPrivateCanonical": "c66884d97183026ffdb484a2098fb39c28af92ac",
@@ -68,7 +68,7 @@
     {
       "path": "docs/continuation.md",
       "bytes": 1784,
-      "sha256": "147f7dfbe4a6b4df19379bcf1adb984c8c9f5dc53956676d0a4c1fab876fdd8e",
+      "sha256": "8891d1c3687ab9a493544f42eb25baee713b4e243a344affe002bbe55886ddf4",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
@@ -157,8 +157,8 @@
     },
     {
       "path": "docs/milestones/2026-10-27-auditoria.md",
-      "bytes": 4313,
-      "sha256": "87330a6bed65d9dd0ba539ae5c5b778e77a68b2feb9fe2b434279b8cbc6cd8d9",
+      "bytes": 4257,
+      "sha256": "cf235867e7d5c3dc2cdc0deabea08d8a764787f6cbd70933e41775a2fd63608f",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
@@ -237,8 +237,8 @@
     },
     {
       "path": "docs/verification.md",
-      "bytes": 1867,
-      "sha256": "cbca5d21716258b3a4789f898c45b0da4fc28c20f375288cc529db1a0301bee7",
+      "bytes": 1872,
+      "sha256": "e30e95c8b154186e600015351d273aadee046abe942a81c8a0dbc103d05c5dd9",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
@@ -595,7 +595,7 @@
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "096918f5400597dac09d9860aac88b6008727b07",
+        "sourceTree": "598c1a03f45fd53f00b2c7b55a00912c95d3781c",
         "relativeSource": "web/checkpoint.ts",
         "sourceSHA256": "b1803b912da8735602a33ab15dc07527ffffd8d094d06bb5397bf1531665cfde",
         "exportMode": "byte-identical"

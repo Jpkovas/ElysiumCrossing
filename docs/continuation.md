@@ -1,7 +1,7 @@
 # Retomada — multiplayer fantasma, 27/10/2026
 
 A referência exata desta exportação é `privateCanonicalCommit` no manifesto
-(`096918f`, branch privada `fantasmas-1025`). O manifesto também fixa a origem
+(`598c1a0`, branch privada `fantasmas-1025`). O manifesto também fixa a origem
 de cada arquivo. A fonte completa continua no workspace privado: leia as regras,
 o guia de manutenção, o handoff de 26/10 e a triagem da auditoria de 27/10 antes
 de mudar componentes.

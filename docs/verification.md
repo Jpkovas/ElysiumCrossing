@@ -16,10 +16,10 @@ deploy. O código completo de servidor, sala e Native é privado.
 
 ## Verificação privada delimitada
 
-- **Suíte integrada:** 717 testes, 680 passam e 37 falham. As 37 falhas são
-  antigas e descrevem a vila compartilhada removida ou usam fixtures defasadas;
-  nenhuma é nova. A suíte global não está verde. As correções da auditoria de
-  27/10 têm testes novos que falham no código antigo.
+- **Suíte integrada:** 716 testes, todos passam, e o typecheck não tem erro.
+  Os testes antigos de caminhos removidos (entrada pelo canal World, importação
+  de save) saíram; os demais seguem as regras atuais. As correções da auditoria
+  de 27/10 têm testes novos que falham no código antigo.
 - **Unidades da vila:** testes próprios de unidades, cliente de unidades e cartões fantasma passam.
 - **Native:** rebuild limpo, com 0 erros. O harness de entrada de morador passou
   com 187 checks e 12 casos fatais.

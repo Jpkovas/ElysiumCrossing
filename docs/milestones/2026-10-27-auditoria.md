@@ -1,6 +1,6 @@
 # Auditoria de código do multiplayer fantasma — 27/10/2026
 
-A fonte privada desta exportação é o commit `096918f` da branch `fantasmas-1025`,
+A fonte privada desta exportação é o commit `598c1a0` da branch `fantasmas-1025`,
 sobre o marco de 26/10 (`c66884d`). Uma auditoria de código listou 45 achados.
 Cada um foi comparado com o comportamento esperado (Original/Deluxe, regras do
 projeto e modelo fantasma) antes de virar correção. Produção e o ambiente
@@ -63,10 +63,9 @@ correções está no servidor, na sala e no Native, que são privados.
 ## Verificação
 
 - Cada correção de servidor tem teste novo que falha no código antigo.
-- **Suíte privada:** 717 testes, 680 passam e 37 falham. As 37 falhas são as
-  mesmas da base e são antigas; nenhuma é nova.
-- **Typecheck:** sem erro em `web/`, `server/` e `shared/`. Os 23 erros restantes
-  estão em testes antigos.
+- **Suíte privada:** 716 testes, todos passam. Os 37 testes antigos que falhavam
+  foram apagados (caminho removido) ou atualizados para as regras atuais.
+- **Typecheck:** sem erro.
 - **Native:** rebuild limpo com 0 erros. A ABI é igual à da base: 101 exports,
   457 imports e o mesmo `index.data`.
 - **Jogo:** navegador automatizado com dados novos em servidor isolado. A troca

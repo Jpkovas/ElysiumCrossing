@@ -3,13 +3,13 @@
   "export": "fantasmas-2026-10-28-integracao",
   "scope": "Reviewed authored application subset and sanitized continuation; full Native and private resources excluded",
   "promotionAuthorized": true,
-  "qualification": "reviewed authored source subset of the official ghost multiplayer line after the final 28/10 integration (goal progression, event rankings, morning aerobics, seasonal tournament, Halloween talk fix, party popper, gyroid theft, donations and seasonal projects) on top of the live 27/10 integration; private suite 774/774 and clean typecheck; Native imports equal to the live release, three new exports; physical iPhone and perceived audio unverified; candidate installed only in the operator test environment; switching the live release needs a verified backup and written operator OK; no deployment by this export",
-  "privateCanonicalCommit": "2518cf4daee42a6be029228c7b4ab9fa87dd1dca",
+  "qualification": "reviewed authored source subset of the official ghost multiplayer line after the final 28/10 integration (goal progression, event rankings, morning aerobics, seasonal tournament, Halloween talk fix, party popper, gyroid theft, donations and seasonal projects, Deluxe Renna and monuments) on top of the live 27/10 integration; private suite 782/782 and clean typecheck; Native imports equal to the live release, three new exports, ABI equal to the previous candidate; physical iPhone and perceived audio unverified; candidate installed only in the operator test environment; switching the live release needs a verified backup and written operator OK; no deployment by this export",
+  "privateCanonicalCommit": "504d3cf2ceadd176debc1753a310874d998a7c3b",
   "privateBranch": "integracao-1027",
   "privateBase": "dfac0208f86f51288d5981acdd854a4547b376bb",
-  "priorPrivateCanonical": "a928fa04537583340168f35e036d7cabbf730b5e",
+  "priorPrivateCanonical": "2518cf4daee42a6be029228c7b4ab9fa87dd1dca",
   "native": {
-    "exports": 101,
+    "exports": 104,
     "imports": 457,
     "cleanRebuild": true
   },
@@ -67,8 +67,8 @@
     },
     {
       "path": "docs/continuation.md",
-      "bytes": 1825,
-      "sha256": "35950067bae87cef85a0da83d89e1d81e5cee7a16a94406f542dd9bceb0d24f7",
+      "bytes": 1837,
+      "sha256": "0cee679f0ddf1eb372b25fea451d855b4f7368058efa77522ff5c33f65cbf4ac",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
@@ -177,8 +177,8 @@
     },
     {
       "path": "docs/milestones/2026-10-28-integracao.md",
-      "bytes": 4984,
-      "sha256": "d161b0b3692bdef6a2308bc71d8daef222bcdcca8823934ab7a1dfc1267dafb1",
+      "bytes": 6943,
+      "sha256": "b585dbc59196e1d38879249870ce1febde42b82a6693a3ceab02f5259a3c5dd4",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
@@ -495,14 +495,14 @@
     },
     {
       "path": "shared/town-units.ts",
-      "bytes": 9648,
-      "sha256": "0a86dff80a57bd1025b9731b93c22dd8de0280699543ed0da0fd136671e98717",
+      "bytes": 10111,
+      "sha256": "18227538675a6b16eb4bd848119306f762bf6019223b5f7e1165a121843323bb",
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "bf6a74a359accb09cc2522a8e9536b1cb394b4a0",
+        "sourceTree": "504d3cf2ceadd176debc1753a310874d998a7c3b",
         "relativeSource": "shared/town-units.ts",
-        "sourceSHA256": "0a86dff80a57bd1025b9731b93c22dd8de0280699543ed0da0fd136671e98717",
+        "sourceSHA256": "18227538675a6b16eb4bd848119306f762bf6019223b5f7e1165a121843323bb",
         "exportMode": "byte-identical"
       }
     },

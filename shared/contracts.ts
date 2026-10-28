@@ -221,6 +221,8 @@ export interface NativeGame {
   /** Original lifecycle only, ignoring the bootstrap title until a real game has run. */
   lifecycle(): GameLifecycle;
   worldIdentity(): WorldIdentity | null;
+  /** Whose one-time touch tutorials these are: the server town and its Native resident, null before the arrival. */
+  tutorialOwner(): string | null;
   /** Frozen city bound to the actual NES GAME; does not grant world actions. */
   checkpointContinuation(): WorldIdentity | null;
   /** Crafting runs in the player's own copy: the notebook the game menu asked for. */

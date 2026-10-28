@@ -8,7 +8,7 @@
  * a server unit is written only by the server; a unit with a house belongs to that house's owner.
  * Offsets are wasm32 Save_t fields measured with offsetof (emcc, client headers):
  * homes, mHm_hs_c.mailbox/haniwa, Haniwa_c.message/bells, Shop_c, kabu_price_schedule, noticeboard, museum_display,
- * fg, deposit, watered_flowers, all_grow_renew_time, event_save_data, event_save_common, event_year, animals (Animal_c),
+ * fg, deposit, watered_flowers, all_grow_renew_time, event_save_data, event_save_common (and its dates[BIRTHDAY]), event_year, animals (Animal_c),
  * now_npc_max, remove_animal_idx, last_removed_animal_id, npc_used_tbl, return_animal, last_grow_time, force_remove_date,
  * private_data (Private_c), police_box, num_statues, bridge, melody, needlework, snowmen and their date, LightHouse,
  * mask_cat and _241A8 (the ordinances). A unit with a profile is that player slot's public face, written only by its resident. */
@@ -16,7 +16,7 @@ export type TownUnit = { key: string; ranges: [offset: number, length: number][]
 
 export const UNIT_SAVE = { saveSize: 149536, homes: 40552, homeSize: 9904, kabu: 132608, kabuSize: 24, board: 37548, boardSize: 3000, museum: 136488, museumSize: 63,
   fg: 80168, deposit: 135324, watered: 148540, growth: 133132, acres: 30,
-  events: 132632, eventsSize: 188, eventsCommon: 132820, eventsCommonSize: 308, eventYear: 136472,
+  events: 132632, eventsSize: 188, eventsCommon: 132820, eventsCommonSize: 308, eventsBirthday: 132828, eventYear: 136472,
   animals: 95672, animalSize: 2440, animalCount: 15, privates: 32, privateSize: 9376, ordinance: 148264 } as const;
 /** An acre's bytes in a tiles unit: 256 u16 items, then the 16 u16 rows of buried and of watered bits (row z, bit x). */
 export const ACRE = { items: 512, rows: 32 } as const;
@@ -50,9 +50,12 @@ units.push({ key: 'growth', ranges: [[UNIT_SAVE.growth, 8]], kind: 'replace' });
 // The town's events: the special visitor (Saharah, Wendell, Katrina, Redd...), the week's (Gulliver, Joan, K.K.),
 // their dates and places, and the event year. Each copy draws them at its scene changes (mEv init_event); the first
 // draw of a day to reach the town stays, and a copy that receives it keeps it at its next scene change. The
-// residents' own event bits (event_save_data.flags, the last 4 bytes) stay with each card.
+// residents' own event bits (event_save_data.flags, the last 4 bytes) and the birthday date each copy writes for
+// its own resident at every scene change (event_save_common.dates[BIRTHDAY]) stay with each card.
 units.push({ key: 'events', kind: 'replace', ranges: [[UNIT_SAVE.events, UNIT_SAVE.eventsSize - 4],
-  [UNIT_SAVE.eventsCommon, UNIT_SAVE.eventsCommonSize], [UNIT_SAVE.eventYear, 2]] });
+  [UNIT_SAVE.eventsCommon, UNIT_SAVE.eventsBirthday - UNIT_SAVE.eventsCommon],
+  [UNIT_SAVE.eventsBirthday + 2, UNIT_SAVE.eventsCommon + UNIT_SAVE.eventsCommonSize - UNIT_SAVE.eventsBirthday - 2],
+  [UNIT_SAVE.eventYear, 2]] });
 // Who lives where and the moves: each villager's id, home, catchphrase, request, clothes and move state, with the
 // town's count, the one who wants to leave, the last to leave, who has lived here and the dates of the last move-in
 // and move-out. One unit, so a move arrives whole. Each villager's memories of each player (friendship, letters),

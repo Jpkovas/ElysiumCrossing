@@ -11,7 +11,7 @@
  * fg, deposit, watered_flowers, all_grow_renew_time, event_save_data, event_save_common (and its dates[BIRTHDAY]), event_year, animals (Animal_c),
  * now_npc_max, remove_animal_idx, last_removed_animal_id, npc_used_tbl, return_animal, last_grow_time, force_remove_date,
  * private_data (Private_c), police_box, num_statues, bridge, melody, needlework, snowmen and their date, LightHouse,
- * mask_cat and _241A8 (the ordinances). A unit with a profile is that player slot's public face, written only by its resident. */
+ * mask_cat and _241A8 (the ordinances), special_event_weights and monument_pos1/2/exists (Deluxe's Renna). A unit with a profile is that player slot's public face, written only by its resident. */
 export type TownUnit = { key: string; ranges: [offset: number, length: number][]; kind: 'replace' | 'counter' | 'board' | 'mailbox' | 'museum' | 'tiles' | 'server'; house?: number; profile?: number };
 
 export const UNIT_SAVE = { saveSize: 149536, homes: 40552, homeSize: 9904, kabu: 132608, kabuSize: 24, board: 37548, boardSize: 3000, museum: 136488, museumSize: 63,
@@ -83,6 +83,10 @@ units.push({ key: 'statues', kind: 'replace', ranges: [[133131, 1]] });
 units.push({ key: 'snowmen', kind: 'replace', ranges: [[135288, 12], [136463, 4]] });
 units.push({ key: 'lighthouse', kind: 'replace', ranges: [[148204, 8]] });
 units.push({ key: 'mask', kind: 'replace', ranges: [[147616, 576]] });
+// Deluxe (Renna): the special visitors' draw weights (special_event_weights), drawn with 'events' in the same round,
+// and the monument removal Renna takes for the next growth (monument_pos1/2/exists), which the day's growth clears.
+units.push({ key: 'visitor-weights', kind: 'replace', ranges: [[148236, 4]] });
+units.push({ key: 'monument-removal', kind: 'replace', ranges: [[148528, 9]] });
 // The ground, an acre each: items, buried items and watered flowers.
 for (let acre = 0; acre < UNIT_SAVE.acres; acre++) units.push({ key: `ground:${acre}`, kind: 'tiles', ranges: [
   [UNIT_SAVE.fg + acre * ACRE.items, ACRE.items], [UNIT_SAVE.deposit + acre * ACRE.rows, ACRE.rows], [UNIT_SAVE.watered + acre * ACRE.rows, ACRE.rows]] });

@@ -99,3 +99,38 @@ das formas dos móveis, tabelas geradas do jogo que continuam privadas.
   - roubo pelo giroide no build integrado (foi verificado pela frente no build
     dela);
   - iPhone físico e áudio.
+
+## Renna no candidato (28/10, noite)
+
+O candidato passou a ser o commit privado `504d3cf`: a rodada final mais a Renna
+do Deluxe (`15397c5`). Ela visita a vila e encomenda monumentos (chafariz, poço,
+relógio e outros), que crescem na virada do dia e podem ser removidos por ela.
+
+No recorte público muda de novo `shared/town-units.ts`. Duas unidades novas da
+vila: os pesos do sorteio dos visitantes especiais e o pedido de remoção de
+monumento. As outras fontes públicas não mudam.
+
+### Verificação da Renna
+
+- Suíte privada com 782 testes, todos passam; typecheck limpo.
+- Rebuild Native completo e limpo, com os monumentos do Deluxe. A ABI é igual à
+  da rodada final: 104 exports, os mesmos imports e o mesmo `index.data`.
+- Navegador automatizado, servidor isolado, retrato 390x844, com os artefatos
+  do candidato:
+  - 28/10 às 10h05, Renna agendada na vila: ela aparece no lugar sorteado,
+    conversa ("Olá, eu sou a Renna!") e oferece "Obra nova!", "Remover uma
+    obra" e "Deixa para lá";
+  - na vila de um amigo que está fora, o giroide mostra "Checar itens", "Roubar"
+    e "Deixa pra lá...". Com o bolso cheio de Bells, o servidor recusa o roubo
+    e o giroide avisa;
+  - Halloween, 31/10 às 18h30: o morador fantasiado pede doce, o bolso abre, o
+    doce é entregue e sai do bolso; o Jack aparece, conversa e faz a travessura;
+  - o site abre Início, Vila, Amigos e Ranking sem erro.
+  - Nenhum crash e nenhuma resposta 5xx.
+- A encomenda, o pagamento, o crescimento e a remoção dos monumentos foram
+  verificados pela frente da Renna no build dela, não refeitos aqui.
+- A troca no domínio inclui, antes de tudo, uma conferência só de leitura: os
+  bytes que a Renna passa a usar precisam estar zerados nas vilas atuais. Depois
+  vêm o backup, o passo do banco da rodada final e a troca.
+- **Não verificado:** roubo com sucesso no build integrado (verificado pela
+  frente no build dela), iPhone físico e áudio.

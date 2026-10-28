@@ -24,7 +24,6 @@ jogo executável, o Native/decomp, os providers nem os recursos licenciados.
 - Fechar a duplicação possível dentro de uma mesma rodada de 4 s.
 - Esconder "Guardar" do barril para quem não é dono.
 - Confirmar áudio e desempenho em iPhone físico.
-- Conferir o santuário no candidato da integração.
 
 Usar stores exclusivos da execução e remover as contas de teste ao terminar. Não
 editar saves nem afrouxar guards para fazer a QA passar. Máximo de duas instâncias

@@ -23,7 +23,7 @@ privados.
   - torneio de pesca aos domingos de junho e novembro, com o Chip dando vara;
   - fogos de agosto e o Dia dos Voluntários;
   - Jack com doze presentes;
-  - santuário sem crash;
+  - poço sem crash (o ator do poço, `ac_shrine`);
   - regador com o próprio modelo na loja;
   - entrada que não falha depois de uma carta para um morador ausente.
 - **K.K., porta e dívida:**
@@ -61,6 +61,6 @@ privados.
   - carta para morador ausente;
   - as quatro abas em quatro medidas;
   - arraste do Ranking por toque e mouse;
-  - aviso do dia.
-- **Não verificado nesta rodada:** o santuário (as vilas de teste tinham poço),
-  iPhone físico e áudio percebido.
+  - aviso do dia;
+  - parada na frente do poço no Halloween, sem crash.
+- **Não verificado nesta rodada:** iPhone físico e áudio percebido.

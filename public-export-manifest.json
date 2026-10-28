@@ -67,8 +67,8 @@
     },
     {
       "path": "docs/continuation.md",
-      "bytes": 1825,
-      "sha256": "cea1a615de4587b4bbe8f229a153daaf246ef289768d47c220b66e9d914cc693",
+      "bytes": 1771,
+      "sha256": "49bb6cd7dcc3beb1ab6b9a3bbcaf411204b75791ecf583e18af02506bab41164",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
@@ -167,8 +167,8 @@
     },
     {
       "path": "docs/milestones/2026-10-27-integracao.md",
-      "bytes": 2993,
-      "sha256": "d84b559101a1a1a029e10a8f526478ec66d6c4d4a4d0898fcf2a96b0611e6ea5",
+      "bytes": 3025,
+      "sha256": "290c56cdcd56a2fb0085d2a3164ea2c3ce64f2008eb2eb25a59d640569d9a49b",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",

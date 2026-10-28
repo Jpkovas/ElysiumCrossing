@@ -51,3 +51,48 @@ lembranças), que ficam privadas.
     crash.
 - **Não verificado nesta rodada:** iPhone físico, áudio percebido e o
   pagamento das metas de visitante no jogo (coberto só por testes).
+
+## Rodada final de 28/10
+
+O candidato passou a ser o commit privado `bf6a74a`, com mais duas frentes por
+cima do `a928fa0`:
+
+- **Torneio sazonal e pendentes:**
+  - tema novo do torneio toda segunda, pontos na temporada do mês e prêmios do
+    mês e do trimestre;
+  - selos no perfil e na Liga, moldura no retrato do pódio;
+  - correção preventiva da trava na conversa de Halloween;
+  - textos em PT-BR revisados;
+  - cornetinha do Deluxe, vendida na loja do Nook de 16 a 30/12.
+- **Roubo e ajuda:**
+  - o roubo passa a ser escolhido no giroide e só atinge quem está fora do jogo;
+  - doação de Bells sem taxa;
+  - obras da estação com premiação dos três maiores doadores;
+  - qualquer móvel pode ficar ao ar livre;
+  - a obra pronta decora todas as vilas (árvore de Natal, luzes, pontes
+    vermelhas).
+
+No recorte público muda `shared/town-units.ts`: o pedido de móvel ao ar livre
+leva o item. `shared/competition.ts`, `shared/contracts.ts` e `shared/world.ts`
+ficam na versão anterior. As versões novas dependem do calendário de eventos e
+das formas dos móveis, tabelas geradas do jogo que continuam privadas.
+
+### Verificação da rodada final
+
+- Suíte privada com 774 testes, todos passam; typecheck limpo.
+- Rebuild Native completo e limpo. Os imports são iguais aos da versão no ar, e
+  há três exports novos (roubo pelo giroide e pontes). O Native e o site são
+  trocados juntos.
+- Navegador automatizado, servidor isolado, retrato 390x844, Halloween de
+  31/10 às 18h30:
+  - o morador fantasiado pede doce, "Claro!" abre o bolso, o doce é entregue e
+    a conversa termina;
+  - o site abre Início, Vila, Ranking, Torneio e a página da obra de Natal sem
+    erro.
+- A troca no domínio inclui um passo no banco (a tabela de móveis ao ar livre
+  passa a aceitar qualquer móvel). O passo foi ensaiado no ambiente de teste do
+  operador e roda com backup e o servidor parado.
+- **Não verificado nesta rodada:**
+  - roubo pelo giroide no build integrado (foi verificado pela frente no build
+    dela);
+  - iPhone físico e áudio.

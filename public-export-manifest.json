@@ -3,11 +3,11 @@
   "export": "fantasmas-2026-10-28-integracao",
   "scope": "Reviewed authored application subset and sanitized continuation; full Native and private resources excluded",
   "promotionAuthorized": true,
-  "qualification": "reviewed authored source subset of the official ghost multiplayer line after the 28/10 integration (goal progression, event rankings, morning aerobics) on top of the live 27/10 integration; private suite 757/757 and clean typecheck; Native ABI equal to the live release; physical iPhone and perceived audio unverified; candidate installed only in the operator test environment; switching the live release needs a verified backup and written operator OK; no deployment by this export",
-  "privateCanonicalCommit": "a928fa04537583340168f35e036d7cabbf730b5e",
+  "qualification": "reviewed authored source subset of the official ghost multiplayer line after the final 28/10 integration (goal progression, event rankings, morning aerobics, seasonal tournament, Halloween talk fix, party popper, gyroid theft, donations and seasonal projects) on top of the live 27/10 integration; private suite 774/774 and clean typecheck; Native imports equal to the live release, three new exports; physical iPhone and perceived audio unverified; candidate installed only in the operator test environment; switching the live release needs a verified backup and written operator OK; no deployment by this export",
+  "privateCanonicalCommit": "bf6a74a359accb09cc2522a8e9536b1cb394b4a0",
   "privateBranch": "integracao-1027",
   "privateBase": "dfac0208f86f51288d5981acdd854a4547b376bb",
-  "priorPrivateCanonical": "70d6442a8f6100004fb87e44b58d3a9ed70637f8",
+  "priorPrivateCanonical": "a928fa04537583340168f35e036d7cabbf730b5e",
   "native": {
     "exports": 101,
     "imports": 457,
@@ -57,8 +57,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 3600,
-      "sha256": "fce8a71ac533d4ce489f6243e44f16e4d0e228c43b7f23a8d325cfff2709a712",
+      "bytes": 3655,
+      "sha256": "6623c8a95b8b4d488df061a056e62a615e0c9079bfdd40487bdfa25387c66f80",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
@@ -68,7 +68,7 @@
     {
       "path": "docs/continuation.md",
       "bytes": 1825,
-      "sha256": "243b2d8daac58fcafd88ff6c8f177a34ed29a1cd7d2003356ae0d6f5b3b3164b",
+      "sha256": "6b47ca3e696936f14f4b4009c3b3f603104285020a62f5c970031fd7d2399fa9",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
@@ -177,8 +177,8 @@
     },
     {
       "path": "docs/milestones/2026-10-28-integracao.md",
-      "bytes": 2582,
-      "sha256": "2e35226c8d008636fb58858a4d2f01f53d22bfa5918ce4188531ab706c0c4c68",
+      "bytes": 4653,
+      "sha256": "39e1ec323a4283ced8c7613857bbba74a3baebe6729a35758bfc9fc86f01008a",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
@@ -258,7 +258,7 @@
     {
       "path": "docs/verification.md",
       "bytes": 1869,
-      "sha256": "589e007c6159a7c1eff1bd324ee6dccca53231aaff295b804299deffaa988982",
+      "sha256": "a138a40a9bc276d5c4200d98307d8ec7ed8d9afc872ceca153078554bc655f9c",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
@@ -495,14 +495,14 @@
     },
     {
       "path": "shared/town-units.ts",
-      "bytes": 9615,
-      "sha256": "8d253a5cb1b31f937d520722a25f3966351567df5a954b9e8d6d22b8abb8b113",
+      "bytes": 9648,
+      "sha256": "0a86dff80a57bd1025b9731b93c22dd8de0280699543ed0da0fd136671e98717",
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "70d6442a8f6100004fb87e44b58d3a9ed70637f8",
+        "sourceTree": "bf6a74a359accb09cc2522a8e9536b1cb394b4a0",
         "relativeSource": "shared/town-units.ts",
-        "sourceSHA256": "8d253a5cb1b31f937d520722a25f3966351567df5a954b9e8d6d22b8abb8b113",
+        "sourceSHA256": "0a86dff80a57bd1025b9731b93c22dd8de0280699543ed0da0fd136671e98717",
         "exportMode": "byte-identical"
       }
     },

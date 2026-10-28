@@ -6,8 +6,9 @@ autenticação, persistência e recursos multiplayer próprios.
 Esta é a **exportação pública sanitizada de 28/10/2026**: o multiplayer
 fantasma é a versão oficial desde 26/10. A integração de 27/10 (eventos do
 Deluxe, K.K. e dívida, desempenho, tutoriais, telemetria e o site novo) está no
-ar desde 28/10, e esta rodada junta progressão de metas, rankings de eventos e
-a ginástica matinal num novo candidato antes do Halloween. Cada conta joga o próprio save. Só uma lista
+ar desde 28/10, e esta rodada junta progressão de metas, rankings de eventos,
+ginástica matinal, torneio sazonal, roubo pelo giroide e obras da estação num
+novo candidato antes do Halloween. Cada conta joga o próprio save. Só uma lista
 pequena de trechos da vila é compartilhada pelo servidor, e os outros jogadores
 aparecem como fantasmas. A fonte privada e a origem de cada arquivo estão em
 `public-export-manifest.json`. Produção e o ambiente publicado de teste não

@@ -16,7 +16,7 @@ deploy. O código completo de servidor, sala e Native é privado.
 
 ## Verificação privada delimitada
 
-- **Suíte integrada:** 757 testes, todos passam, e o typecheck não tem erro
+- **Suíte integrada:** 774 testes, todos passam, e o typecheck não tem erro
   (integração de 28/10). As correções da auditoria e das frentes de 27/10 têm
   testes próprios.
 - **Unidades da vila:** testes próprios de unidades, cliente de unidades e cartões fantasma passam.

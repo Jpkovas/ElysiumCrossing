@@ -1,7 +1,7 @@
 # Retomada — multiplayer fantasma, 28/10/2026
 
 A referência exata desta exportação é `privateCanonicalCommit` no manifesto
-(`a928fa0`, branch privada `integracao-1027`, integração de 28/10). O manifesto também fixa a origem
+(`bf6a74a`, branch privada `integracao-1027`, rodada final de 28/10). O manifesto também fixa a origem
 de cada arquivo. A fonte completa continua no workspace privado: leia as regras,
 o guia de manutenção, o handoff de 26/10 e a triagem da auditoria de 27/10 antes
 de mudar componentes.

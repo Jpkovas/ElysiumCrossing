@@ -88,9 +88,9 @@ for (let acre = 0; acre < UNIT_SAVE.acres; acre++) units.push({ key: `ground:${a
   [UNIT_SAVE.fg + acre * ACRE.items, ACRE.items], [UNIT_SAVE.deposit + acre * ACRE.rows, ACRE.rows], [UNIT_SAVE.watered + acre * ACRE.rows, ACRE.rows]] });
 
 export const TOWN_UNITS: readonly TownUnit[] = units;
-/** A barrel placed or taken back by a resident, carried by the next units round. The page names the
- * request once, so a round sent again finds the barrel already placed or taken and answers the same. */
-export type FurnitureAsk = { op: 'place'; id: string; x: number; z: number; rotation: number } | { op: 'remove'; id: string };
+/** A piece of furniture placed outside or taken back by a resident, carried by the next units round. The page names the
+ * request once, so a round sent again finds the piece already placed or taken and answers the same. */
+export type FurnitureAsk = { op: 'place'; id: string; item: number; x: number; z: number; rotation: number } | { op: 'remove'; id: string };
 export const TOWN_UNIT = new Map(units.map(unit => [unit.key, unit]));
 export const unitSize = (unit: TownUnit) => unit.ranges.reduce((sum, [, length]) => sum + length, 0);
 /** The unit's bytes in a big-endian save image that starts at `base`. */

@@ -54,7 +54,7 @@ lembranças), que ficam privadas.
 
 ## Rodada final de 28/10
 
-O candidato passou a ser o commit privado `bf6a74a`, com mais duas frentes por
+O candidato passou a ser o commit privado `2518cf4`, com mais duas frentes por
 cima do `a928fa0`:
 
 - **Torneio sazonal e pendentes:**
@@ -70,7 +70,10 @@ cima do `a928fa0`:
   - obras da estação com premiação dos três maiores doadores;
   - qualquer móvel pode ficar ao ar livre;
   - a obra pronta decora todas as vilas (árvore de Natal, luzes, pontes
-    vermelhas).
+    vermelhas) e as obras de 2027 trazem efeitos próprios (vaga-lumes, fogos aos
+    sábados de agosto, canteiros e pétalas);
+  - o prêmio do Natal é o machado dourado; "Roubar" usa uma opção de menu fora da
+    faixa que o Deluxe reserva para a Renna.
 
 No recorte público muda `shared/town-units.ts`: o pedido de móvel ao ar livre
 leva o item. `shared/competition.ts`, `shared/contracts.ts` e `shared/world.ts`
@@ -81,14 +84,14 @@ das formas dos móveis, tabelas geradas do jogo que continuam privadas.
 
 - Suíte privada com 774 testes, todos passam; typecheck limpo.
 - Rebuild Native completo e limpo. Os imports são iguais aos da versão no ar, e
-  há três exports novos (roubo pelo giroide e pontes). O Native e o site são
+  há três exports novos (roubo pelo giroide e efeitos das obras). O Native e o site são
   trocados juntos.
 - Navegador automatizado, servidor isolado, retrato 390x844, Halloween de
   31/10 às 18h30:
   - o morador fantasiado pede doce, "Claro!" abre o bolso, o doce é entregue e
-    a conversa termina;
+    a conversa termina (duas vezes seguidas, com dois moradores);
   - o site abre Início, Vila, Ranking, Torneio e a página da obra de Natal sem
-    erro.
+    erro, com o machado dourado no prêmio.
 - A troca no domínio inclui um passo no banco (a tabela de móveis ao ar livre
   passa a aceitar qualquer móvel). O passo foi ensaiado no ambiente de teste do
   operador e roda com backup e o servidor parado.

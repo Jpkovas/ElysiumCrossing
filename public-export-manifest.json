@@ -4,7 +4,7 @@
   "scope": "Reviewed authored application subset and sanitized continuation; full Native and private resources excluded",
   "promotionAuthorized": true,
   "qualification": "reviewed authored source subset of the official ghost multiplayer line after the final 28/10 integration (goal progression, event rankings, morning aerobics, seasonal tournament, Halloween talk fix, party popper, gyroid theft, donations and seasonal projects) on top of the live 27/10 integration; private suite 774/774 and clean typecheck; Native imports equal to the live release, three new exports; physical iPhone and perceived audio unverified; candidate installed only in the operator test environment; switching the live release needs a verified backup and written operator OK; no deployment by this export",
-  "privateCanonicalCommit": "bf6a74a359accb09cc2522a8e9536b1cb394b4a0",
+  "privateCanonicalCommit": "2518cf4daee42a6be029228c7b4ab9fa87dd1dca",
   "privateBranch": "integracao-1027",
   "privateBase": "dfac0208f86f51288d5981acdd854a4547b376bb",
   "priorPrivateCanonical": "a928fa04537583340168f35e036d7cabbf730b5e",
@@ -68,7 +68,7 @@
     {
       "path": "docs/continuation.md",
       "bytes": 1825,
-      "sha256": "6b47ca3e696936f14f4b4009c3b3f603104285020a62f5c970031fd7d2399fa9",
+      "sha256": "35950067bae87cef85a0da83d89e1d81e5cee7a16a94406f542dd9bceb0d24f7",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
@@ -177,8 +177,8 @@
     },
     {
       "path": "docs/milestones/2026-10-28-integracao.md",
-      "bytes": 4653,
-      "sha256": "39e1ec323a4283ced8c7613857bbba74a3baebe6729a35758bfc9fc86f01008a",
+      "bytes": 4984,
+      "sha256": "d161b0b3692bdef6a2308bc71d8daef222bcdcca8823934ab7a1dfc1267dafb1",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",

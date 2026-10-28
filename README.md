@@ -3,10 +3,11 @@
 Port para navegador de Animal Crossing GameCube, com integração Deluxe,
 autenticação, persistência e recursos multiplayer próprios.
 
-Esta é a **exportação pública sanitizada de 27/10/2026**: o multiplayer
-fantasma é a versão oficial desde 26/10, e esta rodada junta as frentes de
-27/10 (eventos do Deluxe, K.K. e dívida, desempenho, tutoriais, telemetria e o
-site novo) num candidato antes do Halloween. Cada conta joga o próprio save. Só uma lista
+Esta é a **exportação pública sanitizada de 28/10/2026**: o multiplayer
+fantasma é a versão oficial desde 26/10. A integração de 27/10 (eventos do
+Deluxe, K.K. e dívida, desempenho, tutoriais, telemetria e o site novo) está no
+ar desde 28/10, e esta rodada junta progressão de metas, rankings de eventos e
+a ginástica matinal num novo candidato antes do Halloween. Cada conta joga o próprio save. Só uma lista
 pequena de trechos da vila é compartilhada pelo servidor, e os outros jogadores
 aparecem como fantasmas. A fonte privada e a origem de cada arquivo estão em
 `public-export-manifest.json`. Produção e o ambiente publicado de teste não
@@ -16,7 +17,8 @@ O recorte contém 31 fontes próprias, contratos e testes. Ele não executa o jo
 sozinho e não é um backup da composição privada. Native/decomp, recursos
 licenciados e dados dos jogadores ficam fora. Consulte o
 [escopo](docs/public-source-scope.md), a [retomada](docs/continuation.md) e o
-[marco atual](docs/milestones/2026-10-27-integracao.md), que segue a
+[marco atual](docs/milestones/2026-10-28-integracao.md), que segue a
+[integração de 27/10](docs/milestones/2026-10-27-integracao.md), a
 [auditoria de 27/10](docs/milestones/2026-10-27-auditoria.md) e o
 [marco de 26/10](docs/milestones/2026-10-26-fantasmas.md).
 
@@ -35,8 +37,8 @@ licenciados e dados dos jogadores ficam fora. Consulte o
   - NES, troca de nomes e mudança pelo site;
   - pesca pelo toque e bricolagem.
 
-**A publicação para os amigos não foi feita.** Ela depende de backup, wipe e
-OK escrito do operador. iPhone físico e áudio percebido continuam pendentes.
+**A versão fantasma está no ar para os amigos desde 27/10.** Cada troca de
+release depende de backup verificado e de OK escrito do operador. iPhone físico e áudio percebido continuam pendentes.
 Os [limites de verificação](docs/verification.md) separam teste e jornada.
 
 ## Verificar o recorte público

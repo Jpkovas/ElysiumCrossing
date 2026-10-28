@@ -1,13 +1,13 @@
 {
   "schema": 1,
-  "export": "fantasmas-2026-10-27-integracao",
+  "export": "fantasmas-2026-10-28-integracao",
   "scope": "Reviewed authored application subset and sanitized continuation; full Native and private resources excluded",
   "promotionAuthorized": true,
-  "qualification": "reviewed authored source subset of the official ghost multiplayer line after the 27/10 integration of seven fronts (Deluxe events, K.K./debt, performance, touch tutorials, telemetry, site menus and navigation); private suite 738/738 and clean typecheck; Native ABI equal to the live release; physical iPhone and perceived audio unverified; candidate installed only in the operator test environment; switching the live release needs a verified backup and written operator OK; no deployment by this export",
-  "privateCanonicalCommit": "70d6442a8f6100004fb87e44b58d3a9ed70637f8",
-  "privateBranch": "fantasmas-1025",
+  "qualification": "reviewed authored source subset of the official ghost multiplayer line after the 28/10 integration (goal progression, event rankings, morning aerobics) on top of the live 27/10 integration; private suite 757/757 and clean typecheck; Native ABI equal to the live release; physical iPhone and perceived audio unverified; candidate installed only in the operator test environment; switching the live release needs a verified backup and written operator OK; no deployment by this export",
+  "privateCanonicalCommit": "a928fa04537583340168f35e036d7cabbf730b5e",
+  "privateBranch": "integracao-1027",
   "privateBase": "dfac0208f86f51288d5981acdd854a4547b376bb",
-  "priorPrivateCanonical": "598c1a03f45fd53f00b2c7b55a00912c95d3781c",
+  "priorPrivateCanonical": "70d6442a8f6100004fb87e44b58d3a9ed70637f8",
   "native": {
     "exports": 101,
     "imports": 457,
@@ -57,8 +57,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 3393,
-      "sha256": "4405eda3dd5ec0e1aa5d7a8e8752c0f34a174d3df9b24ff3eea45041f3c7815f",
+      "bytes": 3600,
+      "sha256": "fce8a71ac533d4ce489f6243e44f16e4d0e228c43b7f23a8d325cfff2709a712",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
@@ -67,8 +67,8 @@
     },
     {
       "path": "docs/continuation.md",
-      "bytes": 1771,
-      "sha256": "49bb6cd7dcc3beb1ab6b9a3bbcaf411204b75791ecf583e18af02506bab41164",
+      "bytes": 1825,
+      "sha256": "243b2d8daac58fcafd88ff6c8f177a34ed29a1cd7d2003356ae0d6f5b3b3164b",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
@@ -176,6 +176,16 @@
       }
     },
     {
+      "path": "docs/milestones/2026-10-28-integracao.md",
+      "bytes": 2582,
+      "sha256": "2e35226c8d008636fb58858a4d2f01f53d22bfa5918ce4188531ab706c0c4c68",
+      "mode": "100644",
+      "origin": {
+        "kind": "publication-documentation-or-tooling",
+        "createdFor": "fantasmas-2026-10-28-integracao"
+      }
+    },
+    {
       "path": "docs/modernization/architecture-baseline.md",
       "bytes": 5253,
       "sha256": "56e1902546d1b6453e488cbbc566a3a541d57a3686b7b17796fe189032f81f9a",
@@ -247,8 +257,8 @@
     },
     {
       "path": "docs/verification.md",
-      "bytes": 1818,
-      "sha256": "11567d019c87d92cf48a49f28ab5dd80193d672b47ecf4ebab30bfba10f7ac34",
+      "bytes": 1869,
+      "sha256": "589e007c6159a7c1eff1bd324ee6dccca53231aaff295b804299deffaa988982",
       "mode": "100644",
       "origin": {
         "kind": "publication-documentation-or-tooling",
@@ -316,27 +326,27 @@
     },
     {
       "path": "shared/crafting-recipes.json",
-      "bytes": 3798,
-      "sha256": "496becdb4308086a2f8950b819275a469a993f85af996c1b5e43ec280772b293",
+      "bytes": 4140,
+      "sha256": "66110e06aaf2a6da8edef53d0dbac2cdff48e34d92b8fd90a30f802f5f360c3c",
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "c66884d97183026ffdb484a2098fb39c28af92ac",
+        "sourceTree": "a928fa04537583340168f35e036d7cabbf730b5e",
         "relativeSource": "shared/crafting-recipes.json",
-        "sourceSHA256": "496becdb4308086a2f8950b819275a469a993f85af996c1b5e43ec280772b293",
+        "sourceSHA256": "66110e06aaf2a6da8edef53d0dbac2cdff48e34d92b8fd90a30f802f5f360c3c",
         "exportMode": "byte-identical"
       }
     },
     {
       "path": "shared/crafting.ts",
-      "bytes": 747,
-      "sha256": "7dee6780741d263eb1533cb1fcfce7b8e8d2d2a383824214ce318261204b214e",
+      "bytes": 1113,
+      "sha256": "206586202bbd34515604e8cc3443e1b2d0ff6003d39c11e926fc8190206da667",
       "mode": "100644",
       "origin": {
         "kind": "project-source",
-        "sourceTree": "c66884d97183026ffdb484a2098fb39c28af92ac",
+        "sourceTree": "a928fa04537583340168f35e036d7cabbf730b5e",
         "relativeSource": "shared/crafting.ts",
-        "sourceSHA256": "7dee6780741d263eb1533cb1fcfce7b8e8d2d2a383824214ce318261204b214e",
+        "sourceSHA256": "206586202bbd34515604e8cc3443e1b2d0ff6003d39c11e926fc8190206da667",
         "exportMode": "byte-identical"
       }
     },
